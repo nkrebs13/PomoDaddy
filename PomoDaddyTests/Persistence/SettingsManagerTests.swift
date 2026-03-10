@@ -28,7 +28,8 @@ final class SettingsManagerTests: XCTestCase {
         XCTAssertEqual(settingsManager.settings.shortBreakDurationMinutes, 5)
         XCTAssertEqual(settingsManager.settings.longBreakDurationMinutes, 15)
         XCTAssertEqual(settingsManager.settings.pomodorosUntilLongBreak, 4)
-        XCTAssertFalse(settingsManager.settings.autoStartNextSession)
+        XCTAssertFalse(settingsManager.settings.autoStartBreaks)
+        XCTAssertFalse(settingsManager.settings.autoStartWork)
         XCTAssertTrue(settingsManager.settings.showNotifications)
     }
 
@@ -40,7 +41,8 @@ final class SettingsManagerTests: XCTestCase {
             shortBreakDurationMinutes: 10,
             longBreakDurationMinutes: 20,
             pomodorosUntilLongBreak: 3,
-            autoStartNextSession: true,
+            autoStartBreaks: true,
+            autoStartWork: true,
             showNotifications: false,
             showFloatingWindow: false,
             showMenuBarCountdown: false
@@ -52,18 +54,21 @@ final class SettingsManagerTests: XCTestCase {
         XCTAssertEqual(settingsManager.settings.shortBreakDurationMinutes, 10)
         XCTAssertEqual(settingsManager.settings.longBreakDurationMinutes, 20)
         XCTAssertEqual(settingsManager.settings.pomodorosUntilLongBreak, 3)
-        XCTAssertTrue(settingsManager.settings.autoStartNextSession)
+        XCTAssertTrue(settingsManager.settings.autoStartBreaks)
+        XCTAssertTrue(settingsManager.settings.autoStartWork)
         XCTAssertFalse(settingsManager.settings.showNotifications)
     }
 
     func testUpdateWithClosure() {
         settingsManager.update { settings in
             settings.workDurationMinutes = 45
-            settings.autoStartNextSession = true
+            settings.autoStartBreaks = true
+            settings.autoStartWork = true
         }
 
         XCTAssertEqual(settingsManager.settings.workDurationMinutes, 45)
-        XCTAssertTrue(settingsManager.settings.autoStartNextSession)
+        XCTAssertTrue(settingsManager.settings.autoStartBreaks)
+        XCTAssertTrue(settingsManager.settings.autoStartWork)
     }
 
     // MARK: - Individual Setting Updates
@@ -90,10 +95,12 @@ final class SettingsManagerTests: XCTestCase {
 
     func testSetAutoStartNextSession() {
         settingsManager.setAutoStartNextSession(enabled: true)
-        XCTAssertTrue(settingsManager.settings.autoStartNextSession)
+        XCTAssertTrue(settingsManager.settings.autoStartBreaks)
+        XCTAssertTrue(settingsManager.settings.autoStartWork)
 
         settingsManager.setAutoStartNextSession(enabled: false)
-        XCTAssertFalse(settingsManager.settings.autoStartNextSession)
+        XCTAssertFalse(settingsManager.settings.autoStartBreaks)
+        XCTAssertFalse(settingsManager.settings.autoStartWork)
     }
 
     func testSetShowNotifications() {
@@ -132,7 +139,8 @@ final class SettingsManagerTests: XCTestCase {
 
         // Should load persisted settings
         XCTAssertEqual(newManager.settings.workDurationMinutes, 40)
-        XCTAssertTrue(newManager.settings.autoStartNextSession)
+        XCTAssertTrue(newManager.settings.autoStartBreaks)
+        XCTAssertTrue(newManager.settings.autoStartWork)
     }
 
     func testSettingsAutomaticallySaveOnChange() {
@@ -161,7 +169,8 @@ final class SettingsManagerTests: XCTestCase {
         XCTAssertEqual(settingsManager.settings.shortBreakDurationMinutes, 5)
         XCTAssertEqual(settingsManager.settings.longBreakDurationMinutes, 15)
         XCTAssertEqual(settingsManager.settings.pomodorosUntilLongBreak, 4)
-        XCTAssertFalse(settingsManager.settings.autoStartNextSession)
+        XCTAssertFalse(settingsManager.settings.autoStartBreaks)
+        XCTAssertFalse(settingsManager.settings.autoStartWork)
     }
 
     // MARK: - Preset Tests
@@ -181,7 +190,7 @@ final class SettingsManagerTests: XCTestCase {
         XCTAssertEqual(settingsManager.settings.workDurationMinutes, 50)
         XCTAssertEqual(settingsManager.settings.shortBreakDurationMinutes, 10)
         XCTAssertEqual(settingsManager.settings.longBreakDurationMinutes, 30)
-        XCTAssertEqual(settingsManager.settings.pomodorosUntilLongBreak, 3)
+        XCTAssertEqual(settingsManager.settings.pomodorosUntilLongBreak, 4)
     }
 
     func testApplyQuickSprintsPreset() {
@@ -190,7 +199,7 @@ final class SettingsManagerTests: XCTestCase {
         XCTAssertEqual(settingsManager.settings.workDurationMinutes, 15)
         XCTAssertEqual(settingsManager.settings.shortBreakDurationMinutes, 3)
         XCTAssertEqual(settingsManager.settings.longBreakDurationMinutes, 10)
-        XCTAssertEqual(settingsManager.settings.pomodorosUntilLongBreak, 6)
+        XCTAssertEqual(settingsManager.settings.pomodorosUntilLongBreak, 4)
     }
 
     // MARK: - Validation Tests
@@ -202,7 +211,8 @@ final class SettingsManagerTests: XCTestCase {
             shortBreakDurationMinutes: 0, // Below min
             longBreakDurationMinutes: 150, // Above max
             pomodorosUntilLongBreak: 15, // Above max
-            autoStartNextSession: false,
+            autoStartBreaks: false,
+            autoStartWork: false,
             showNotifications: true,
             showFloatingWindow: true,
             showMenuBarCountdown: true

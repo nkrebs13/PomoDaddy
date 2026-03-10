@@ -25,8 +25,11 @@ struct PomodoroSettings: Codable, Equatable {
 
     // MARK: - Behavior Settings
 
-    /// Whether to automatically start the next session (break or work).
-    var autoStartNextSession: Bool
+    /// Whether to automatically start breaks after work sessions complete.
+    var autoStartBreaks: Bool
+
+    /// Whether to automatically start work sessions after breaks complete.
+    var autoStartWork: Bool
 
     /// Whether to show system notifications.
     var showNotifications: Bool
@@ -47,7 +50,8 @@ struct PomodoroSettings: Codable, Equatable {
         shortBreakDurationMinutes: 5,
         longBreakDurationMinutes: 15,
         pomodorosUntilLongBreak: 4,
-        autoStartNextSession: false,
+        autoStartBreaks: false,
+        autoStartWork: false,
         showNotifications: true,
         showFloatingWindow: true,
         showMenuBarCountdown: true
@@ -68,6 +72,17 @@ struct PomodoroSettings: Codable, Equatable {
     /// Long break duration as TimeInterval (seconds).
     var longBreakDuration: TimeInterval {
         TimeInterval(longBreakDurationMinutes * 60)
+    }
+
+    /// Whether to automatically start the next session (break or work).
+    /// This computed property provides backward compatibility and convenience.
+    /// Setting this property sets both autoStartBreaks and autoStartWork to the same value.
+    var autoStartNextSession: Bool {
+        get { autoStartBreaks && autoStartWork }
+        set {
+            autoStartBreaks = newValue
+            autoStartWork = newValue
+        }
     }
 
     // MARK: - Validation
@@ -110,7 +125,8 @@ extension PomodoroSettings {
         shortBreakDurationMinutes: 10,
         longBreakDurationMinutes: 30,
         pomodorosUntilLongBreak: 4,
-        autoStartNextSession: false,
+        autoStartBreaks: false,
+        autoStartWork: false,
         showNotifications: true,
         showFloatingWindow: true,
         showMenuBarCountdown: true
@@ -122,7 +138,8 @@ extension PomodoroSettings {
         shortBreakDurationMinutes: 3,
         longBreakDurationMinutes: 10,
         pomodorosUntilLongBreak: 4,
-        autoStartNextSession: true,
+        autoStartBreaks: true,
+        autoStartWork: true,
         showNotifications: true,
         showFloatingWindow: true,
         showMenuBarCountdown: true

@@ -38,9 +38,11 @@ enum PomodoroDataContainer {
                 configurations: [configuration]
             )
         } catch {
-            // In production, we should handle this more gracefully
-            // For now, fall back to in-memory storage
-            fatalError("Failed to create ModelContainer: \(error.localizedDescription)")
+            // Log the error for debugging
+            Logger.logError(error, context: "Failed to create persistent ModelContainer, falling back to in-memory storage", log: Logger.persistence)
+
+            // Fall back to in-memory storage so app remains functional
+            return createInMemory()
         }
     }
 
@@ -60,6 +62,7 @@ enum PomodoroDataContainer {
                 configurations: [configuration]
             )
         } catch {
+            // If even in-memory fails, this is a catastrophic Swift runtime issue
             fatalError("Failed to create in-memory ModelContainer: \(error.localizedDescription)")
         }
     }

@@ -11,7 +11,8 @@ final class PomodoroSettingsTests: XCTestCase {
         XCTAssertEqual(settings.shortBreakDurationMinutes, 5)
         XCTAssertEqual(settings.longBreakDurationMinutes, 15)
         XCTAssertEqual(settings.pomodorosUntilLongBreak, 4)
-        XCTAssertFalse(settings.autoStartNextSession)
+        XCTAssertFalse(settings.autoStartBreaks)
+        XCTAssertFalse(settings.autoStartWork)
         XCTAssertTrue(settings.showNotifications)
         XCTAssertTrue(settings.showFloatingWindow)
         XCTAssertTrue(settings.showMenuBarCountdown)
@@ -34,7 +35,7 @@ final class PomodoroSettingsTests: XCTestCase {
         XCTAssertEqual(settings.workDurationMinutes, 50)
         XCTAssertEqual(settings.shortBreakDurationMinutes, 10)
         XCTAssertEqual(settings.longBreakDurationMinutes, 30)
-        XCTAssertEqual(settings.pomodorosUntilLongBreak, 3)
+        XCTAssertEqual(settings.pomodorosUntilLongBreak, 4)
     }
 
     func testQuickSprintsPreset() {
@@ -43,7 +44,7 @@ final class PomodoroSettingsTests: XCTestCase {
         XCTAssertEqual(settings.workDurationMinutes, 15)
         XCTAssertEqual(settings.shortBreakDurationMinutes, 3)
         XCTAssertEqual(settings.longBreakDurationMinutes, 10)
-        XCTAssertEqual(settings.pomodorosUntilLongBreak, 6)
+        XCTAssertEqual(settings.pomodorosUntilLongBreak, 4)
     }
 
     // MARK: - Duration Conversion Tests
@@ -54,7 +55,8 @@ final class PomodoroSettingsTests: XCTestCase {
             shortBreakDurationMinutes: 5,
             longBreakDurationMinutes: 15,
             pomodorosUntilLongBreak: 4,
-            autoStartNextSession: false,
+            autoStartBreaks: false,
+            autoStartWork: false,
             showNotifications: true,
             showFloatingWindow: true,
             showMenuBarCountdown: true
@@ -69,7 +71,8 @@ final class PomodoroSettingsTests: XCTestCase {
             shortBreakDurationMinutes: 8,
             longBreakDurationMinutes: 15,
             pomodorosUntilLongBreak: 4,
-            autoStartNextSession: false,
+            autoStartBreaks: false,
+            autoStartWork: false,
             showNotifications: true,
             showFloatingWindow: true,
             showMenuBarCountdown: true
@@ -84,7 +87,8 @@ final class PomodoroSettingsTests: XCTestCase {
             shortBreakDurationMinutes: 5,
             longBreakDurationMinutes: 20,
             pomodorosUntilLongBreak: 4,
-            autoStartNextSession: false,
+            autoStartBreaks: false,
+            autoStartWork: false,
             showNotifications: true,
             showFloatingWindow: true,
             showMenuBarCountdown: true
@@ -101,7 +105,8 @@ final class PomodoroSettingsTests: XCTestCase {
             shortBreakDurationMinutes: 0, // Below min
             longBreakDurationMinutes: -5, // Below min
             pomodorosUntilLongBreak: 15, // Above max
-            autoStartNextSession: false,
+            autoStartBreaks: false,
+            autoStartWork: false,
             showNotifications: true,
             showFloatingWindow: true,
             showMenuBarCountdown: true
@@ -124,7 +129,8 @@ final class PomodoroSettingsTests: XCTestCase {
             shortBreakDurationMinutes: 0,
             longBreakDurationMinutes: 0,
             pomodorosUntilLongBreak: 0,
-            autoStartNextSession: false,
+            autoStartBreaks: false,
+            autoStartWork: false,
             showNotifications: true,
             showFloatingWindow: true,
             showMenuBarCountdown: true
@@ -144,7 +150,8 @@ final class PomodoroSettingsTests: XCTestCase {
             shortBreakDurationMinutes: 999,
             longBreakDurationMinutes: 999,
             pomodorosUntilLongBreak: 999,
-            autoStartNextSession: false,
+            autoStartBreaks: false,
+            autoStartWork: false,
             showNotifications: true,
             showFloatingWindow: true,
             showMenuBarCountdown: true
@@ -166,7 +173,8 @@ final class PomodoroSettingsTests: XCTestCase {
             shortBreakDurationMinutes: 7,
             longBreakDurationMinutes: 18,
             pomodorosUntilLongBreak: 3,
-            autoStartNextSession: true,
+            autoStartBreaks: true,
+            autoStartWork: true,
             showNotifications: false,
             showFloatingWindow: false,
             showMenuBarCountdown: false
@@ -182,7 +190,8 @@ final class PomodoroSettingsTests: XCTestCase {
         XCTAssertEqual(decoded.shortBreakDurationMinutes, original.shortBreakDurationMinutes)
         XCTAssertEqual(decoded.longBreakDurationMinutes, original.longBreakDurationMinutes)
         XCTAssertEqual(decoded.pomodorosUntilLongBreak, original.pomodorosUntilLongBreak)
-        XCTAssertEqual(decoded.autoStartNextSession, original.autoStartNextSession)
+        XCTAssertEqual(decoded.autoStartBreaks, original.autoStartBreaks)
+        XCTAssertEqual(decoded.autoStartWork, original.autoStartWork)
         XCTAssertEqual(decoded.showNotifications, original.showNotifications)
         XCTAssertEqual(decoded.showFloatingWindow, original.showFloatingWindow)
         XCTAssertEqual(decoded.showMenuBarCountdown, original.showMenuBarCountdown)

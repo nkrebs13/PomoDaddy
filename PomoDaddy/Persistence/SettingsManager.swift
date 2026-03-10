@@ -94,10 +94,22 @@ final class SettingsManager {
         update { $0.pomodorosUntilLongBreak = count }
     }
 
-    /// Updates the auto-start setting.
-    /// - Parameter enabled: Whether auto-start is enabled.
+    /// Updates the auto-start setting for both breaks and work.
+    /// - Parameter enabled: Whether auto-start is enabled for both.
     func setAutoStartNextSession(enabled: Bool) {
         update { $0.autoStartNextSession = enabled }
+    }
+
+    /// Updates the auto-start breaks setting.
+    /// - Parameter enabled: Whether breaks should auto-start after work sessions.
+    func setAutoStartBreaks(enabled: Bool) {
+        update { $0.autoStartBreaks = enabled }
+    }
+
+    /// Updates the auto-start work setting.
+    /// - Parameter enabled: Whether work sessions should auto-start after breaks.
+    func setAutoStartWork(enabled: Bool) {
+        update { $0.autoStartWork = enabled }
     }
 
     /// Updates the notifications setting.

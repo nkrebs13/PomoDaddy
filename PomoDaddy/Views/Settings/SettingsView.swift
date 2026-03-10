@@ -79,8 +79,8 @@ struct SettingsView: View {
                         title: "Auto-start Breaks",
                         subtitle: "Automatically start break after focus ends",
                         isOn: Binding(
-                            get: { coordinator.settingsManager.settings.autoStartNextSession },
-                            set: { coordinator.settingsManager.setAutoStartNextSession(enabled: $0) }
+                            get: { coordinator.settingsManager.settings.autoStartBreaks },
+                            set: { coordinator.settingsManager.setAutoStartBreaks(enabled: $0) }
                         ),
                         iconName: "arrow.triangle.2.circlepath",
                         iconColor: .mint
@@ -89,8 +89,8 @@ struct SettingsView: View {
                         title: "Auto-start Focus",
                         subtitle: "Automatically start focus after break ends",
                         isOn: Binding(
-                            get: { coordinator.settingsManager.settings.autoStartNextSession },
-                            set: { coordinator.settingsManager.setAutoStartNextSession(enabled: $0) }
+                            get: { coordinator.settingsManager.settings.autoStartWork },
+                            set: { coordinator.settingsManager.setAutoStartWork(enabled: $0) }
                         ),
                         iconName: "play.circle.fill",
                         iconColor: .tomatoRed
