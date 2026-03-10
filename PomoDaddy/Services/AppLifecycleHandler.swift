@@ -115,7 +115,7 @@ final class AppLifecycleHandler {
     /// Handles the app termination event.
     private func handleWillTerminate() {
         #if DEBUG
-        print("AppLifecycleHandler: App will terminate - saving state")
+        Logger.debug("App will terminate - saving state", log: Logger.lifecycle)
         #endif
         onSave()
     }
@@ -123,7 +123,7 @@ final class AppLifecycleHandler {
     /// Handles the system sleep event.
     private func handleWillSleep() {
         #if DEBUG
-        print("AppLifecycleHandler: System will sleep - saving state")
+        Logger.debug("System will sleep - saving state", log: Logger.lifecycle)
         #endif
         wasAsleep = true
         onSave()
@@ -132,7 +132,7 @@ final class AppLifecycleHandler {
     /// Handles the system wake event.
     private func handleDidWake() {
         #if DEBUG
-        print("AppLifecycleHandler: System did wake - restoring state")
+        Logger.debug("System did wake - restoring state", log: Logger.lifecycle)
         #endif
 
         guard wasAsleep else { return }
@@ -148,7 +148,7 @@ final class AppLifecycleHandler {
     /// Handles the app becoming active.
     private func handleDidBecomeActive() {
         #if DEBUG
-        print("AppLifecycleHandler: App did become active")
+        Logger.debug("App did become active", log: Logger.lifecycle)
         #endif
         onActivate?()
     }
@@ -156,7 +156,7 @@ final class AppLifecycleHandler {
     /// Handles the app resigning active status.
     private func handleWillResignActive() {
         #if DEBUG
-        print("AppLifecycleHandler: App will resign active")
+        Logger.debug("App will resign active", log: Logger.lifecycle)
         #endif
         // Optionally save state when going to background
         // This provides an extra safety net
@@ -203,7 +203,7 @@ extension AppLifecycleHandler {
         )
         .sink { [weak self] _ in
             #if DEBUG
-            print("AppLifecycleHandler: Screen locked - saving state")
+            Logger.debug("Screen locked - saving state", log: Logger.lifecycle)
             #endif
             self?.onSave()
         }
@@ -215,7 +215,7 @@ extension AppLifecycleHandler {
         )
         .sink { [weak self] _ in
             #if DEBUG
-            print("AppLifecycleHandler: Screen unlocked")
+            Logger.debug("Screen unlocked", log: Logger.lifecycle)
             #endif
             self?.onActivate?()
         }

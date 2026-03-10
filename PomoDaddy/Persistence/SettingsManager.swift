@@ -157,7 +157,7 @@ final class SettingsManager {
         do {
             settings = try decoder.decode(PomodoroSettings.self, from: data)
         } catch {
-            print("Failed to decode settings: \(error). Using defaults.")
+            Logger.logError(error, context: "Failed to decode settings, using defaults", log: Logger.persistence)
             settings = PomodoroSettings.default
         }
     }
@@ -168,7 +168,7 @@ final class SettingsManager {
             let data = try encoder.encode(settings)
             defaults.set(data, forKey: Keys.settings)
         } catch {
-            print("Failed to encode settings: \(error)")
+            Logger.logError(error, context: "Failed to encode settings", log: Logger.persistence)
         }
     }
 }

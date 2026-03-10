@@ -69,7 +69,7 @@ final class AppNapManager {
         // Don't create duplicate tokens
         guard activityToken == nil else {
             #if DEBUG
-            print("AppNapManager: Activity already active, skipping")
+            Logger.debug("Activity already active, skipping", log: Logger.lifecycle)
             #endif
             return
         }
@@ -80,7 +80,7 @@ final class AppNapManager {
         )
 
         #if DEBUG
-        print("AppNapManager: Started timing activity - App Nap disabled")
+        Logger.debug("Started timing activity - App Nap disabled", log: Logger.lifecycle)
         #endif
     }
 
@@ -94,7 +94,7 @@ final class AppNapManager {
     func endTimingActivity() {
         guard let token = activityToken else {
             #if DEBUG
-            print("AppNapManager: No activity to end")
+            Logger.debug("No activity to end", log: Logger.lifecycle)
             #endif
             return
         }
@@ -103,7 +103,7 @@ final class AppNapManager {
         activityToken = nil
 
         #if DEBUG
-        print("AppNapManager: Ended timing activity - App Nap re-enabled")
+        Logger.debug("Ended timing activity - App Nap re-enabled", log: Logger.lifecycle)
         #endif
     }
 

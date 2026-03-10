@@ -102,7 +102,7 @@ extension ButtonStyle where Self == AnimatedButtonStyle {
 #Preview("Animated Button Style") {
     VStack(spacing: 20) {
         Button("Start Focus") {
-            print("Focus started")
+            Logger.debug("Focus started", log: Logger.ui)
         }
         .buttonStyle(.animated)
         .padding()
@@ -111,7 +111,7 @@ extension ButtonStyle where Self == AnimatedButtonStyle {
         .cornerRadius(12)
 
         Button("Take a Break") {
-            print("Break started")
+            Logger.debug("Break started", log: Logger.ui)
         }
         .buttonStyle(.animated)
         .padding()
@@ -120,7 +120,7 @@ extension ButtonStyle where Self == AnimatedButtonStyle {
         .cornerRadius(12)
 
         Button("Custom Scale") {
-            print("Custom tapped")
+            Logger.debug("Custom tapped", log: Logger.ui)
         }
         .buttonStyle(.animated(hoverScale: 1.15, pressedScale: 0.9))
         .padding()

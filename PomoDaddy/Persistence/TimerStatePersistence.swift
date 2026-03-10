@@ -154,7 +154,7 @@ final class TimerStatePersistence {
             let data = try encoder.encode(state)
             defaults.set(data, forKey: Keys.timerState)
         } catch {
-            print("Failed to save timer state: \(error)")
+            Logger.logError(error, context: "Failed to save timer state", log: Logger.persistence)
         }
     }
 
@@ -176,7 +176,7 @@ final class TimerStatePersistence {
 
             return state
         } catch {
-            print("Failed to load timer state: \(error)")
+            Logger.logError(error, context: "Failed to load timer state", log: Logger.persistence)
             clear()
             return nil
         }
