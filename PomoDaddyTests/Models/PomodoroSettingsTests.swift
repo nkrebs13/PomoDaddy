@@ -213,4 +213,32 @@ final class PomodoroSettingsTests: XCTestCase {
 
         XCTAssertNotEqual(settings1, settings2)
     }
+
+    // MARK: - Backward Compatibility Tests
+
+    func testAutoStartNextSessionComputedProperty() {
+        var settings = PomodoroSettings.default
+
+        // Test setting via computed property sets both
+        settings.autoStartNextSession = true
+        XCTAssertTrue(settings.autoStartBreaks)
+        XCTAssertTrue(settings.autoStartWork)
+        XCTAssertTrue(settings.autoStartNextSession)
+
+        // Test unsetting via computed property unsets both
+        settings.autoStartNextSession = false
+        XCTAssertFalse(settings.autoStartBreaks)
+        XCTAssertFalse(settings.autoStartWork)
+        XCTAssertFalse(settings.autoStartNextSession)
+
+        // Test edge case: split preferences (one true, one false)
+        settings.autoStartBreaks = true
+        settings.autoStartWork = false
+        XCTAssertFalse(settings.autoStartNextSession) // Returns false when split (uses &&)
+
+        // Test edge case: opposite split
+        settings.autoStartBreaks = false
+        settings.autoStartWork = true
+        XCTAssertFalse(settings.autoStartNextSession) // Returns false when split (uses &&)
+    }
 }
