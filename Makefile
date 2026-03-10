@@ -1,4 +1,4 @@
-.PHONY: help setup build test test-coverage lint format format-check clean install-tools
+.PHONY: help setup build test test-coverage lint format format-check clean install-tools install-hooks security-check
 
 help:
 	@echo "PomoDaddy Development Commands:"
@@ -11,6 +11,8 @@ help:
 	@echo "  make format-check   - Check code formatting"
 	@echo "  make clean          - Clean build artifacts"
 	@echo "  make install-tools  - Install development tools"
+	@echo "  make install-hooks  - Install pre-commit hooks"
+	@echo "  make security-check - Run security scanning"
 
 setup: install-tools
 	@echo "📦 Generating Xcode project..."
@@ -72,5 +74,15 @@ clean:
 install-tools:
 	@echo "🔧 Installing development tools..."
 	@command -v brew >/dev/null 2>&1 || { echo "Homebrew required"; exit 1; }
-	@brew install xcodegen swiftlint swiftformat xcpretty || true
+	@brew install xcodegen swiftlint swiftformat xcpretty pre-commit || true
 	@echo "✅ Tools installed!"
+
+install-hooks:
+	@echo "🪝 Installing pre-commit hooks..."
+	@command -v pre-commit >/dev/null 2>&1 || { echo "Installing pre-commit..."; brew install pre-commit; }
+	@pre-commit install
+	@echo "✅ Pre-commit hooks installed!"
+
+security-check:
+	@echo "🔒 Running security scan..."
+	@bash scripts/security-scan.sh

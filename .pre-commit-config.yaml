@@ -1,0 +1,42 @@
+# Pre-commit hooks for PomoDaddy
+# Install: brew install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  - repo: local
+    hooks:
+      - id: swiftlint
+        name: SwiftLint
+        entry: swiftlint lint --strict
+        language: system
+        types: [swift]
+        pass_filenames: false
+
+      - id: swiftformat-check
+        name: SwiftFormat Check
+        entry: swiftformat --lint .
+        language: system
+        types: [swift]
+        pass_filenames: false
+
+      - id: no-force-unwrap
+        name: Check for force unwraps
+        entry: bash -c 'if grep -r "!" PomoDaddy/ --include="*.swift" | grep -v "//" | grep -v "!="; then echo "ERROR: Force unwraps found"; exit 1; fi'
+        language: system
+        types: [swift]
+        pass_filenames: false
+
+      - id: no-print
+        name: Check for print statements
+        entry: bash -c 'if grep -r "print(" PomoDaddy/ --include="*.swift" | grep -v "//" | grep -v "Blueprint"; then echo "ERROR: print() statements found - use Logger instead"; exit 1; fi'
+        language: system
+        types: [swift]
+        pass_filenames: false
+
+      - id: no-fatalerror
+        name: Check for fatalError in non-test code
+        entry: bash -c 'if grep -r "fatalError" PomoDaddy/ --include="*.swift" --exclude-dir=PomoDaddyTests | grep -v "catastrophic" | grep -v "//"; then echo "WARNING: fatalError found - consider graceful error handling"; fi'
+        language: system
+        types: [swift]
+        pass_filenames: false
+        stages: [push]
