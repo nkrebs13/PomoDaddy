@@ -1,0 +1,24 @@
+disabled_rules:
+  - trailing_whitespace
+
+opt_in_rules:
+  - force_unwrapping
+  - explicit_init
+  - explicit_top_level_acl
+  - explicit_type_interface
+  - implicitly_unwrapped_optional
+  - weak_delegate
+
+force_unwrapping: error
+line_length: 120
+type_body_length: 400
+file_length: 600
+
+excluded:
+  - Pods
+  - build
+  - DerivedData
+  - .build
+  - PomoDaddyTests
+
+reporter: "xcode"

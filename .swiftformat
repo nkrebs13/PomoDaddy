@@ -1,0 +1,14 @@
+--swiftversion 5.9
+--indent 4
+--maxwidth 120
+--wraparguments before-first
+--wrapcollections before-first
+--funcattributes prev-line
+--typeattributes prev-line
+--varattributes preserve
+--commas inline
+--trimwhitespace always
+--insertlines enabled
+--removelines enabled
+--ifdef no-indent
+--exclude Pods,build,DerivedData,.build,PomoDaddyTests

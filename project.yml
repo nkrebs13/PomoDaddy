@@ -1,0 +1,81 @@
+name: PomoDaddy
+options:
+  bundleIdPrefix: com.nathankrebs
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "15.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: YES
+
+targets:
+  PomoDaddy:
+    type: application
+    platform: macOS
+    sources:
+      - path: PomoDaddy
+        excludes:
+          - "**/.DS_Store"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nathankrebs.pomodaddy
+        PRODUCT_NAME: PomoDaddy
+        INFOPLIST_FILE: PomoDaddy/App/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+        COMBINE_HIDPI_IMAGES: YES
+        ENABLE_TESTABILITY: YES
+    dependencies:
+      - package: Vortex
+    entitlements:
+      path: PomoDaddy/App/PomoDaddy.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
+
+  PomoDaddyTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: PomoDaddyTests
+        excludes:
+          - "**/.DS_Store"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nathankrebs.pomodaddy.tests
+        GENERATE_INFOPLIST_FILE: YES
+        COMBINE_HIDPI_IMAGES: YES
+    dependencies:
+      - target: PomoDaddy
+      - package: Vortex
+
+packages:
+  Vortex:
+    url: https://github.com/twostraws/Vortex
+    from: "1.0.0"
+
+schemes:
+  PomoDaddy:
+    build:
+      targets:
+        PomoDaddy: all
+        PomoDaddyTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - name: PomoDaddyTests
+          parallelizable: true
+          randomExecutionOrder: true
+    profile:
+      config: Release
+    archive:
+      config: Release

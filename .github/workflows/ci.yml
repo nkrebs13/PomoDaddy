@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install xcodegen swiftlint swiftformat
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Run SwiftLint
+        run: swiftlint lint --strict
+
+      - name: Run SwiftFormat check
+        run: swiftformat --lint .
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project PomoDaddy.xcodeproj \
+            -scheme PomoDaddy \
+            -destination 'platform=macOS'
+
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -project PomoDaddy.xcodeproj \
+            -scheme PomoDaddy \
+            -destination 'platform=macOS' \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults
+
+      - name: Check coverage
+        run: |
+          xcrun xccov view --report TestResults.xcresult > coverage.txt || true
+          if [ -f coverage.txt ]; then
+            COVERAGE=$(grep "PomoDaddy.app" coverage.txt | awk '{print $NF}' | sed 's/%//' | head -1)
+            if [ ! -z "$COVERAGE" ] && (( $(echo "$COVERAGE < 70" | bc -l) )); then
+              echo "⚠️ Coverage $COVERAGE% < 70%"
+            else
+              echo "✅ Coverage: $COVERAGE%"
+            fi
+          else
+            echo "⚠️ Coverage report not generated"
+          fi
