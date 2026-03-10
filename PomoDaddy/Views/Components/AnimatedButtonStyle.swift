@@ -68,11 +68,11 @@ struct AnimatedButtonStyle: ButtonStyle {
     /// Calculates the appropriate scale value based on interaction state.
     private func scaleValue(isPressed: Bool) -> CGFloat {
         if isPressed {
-            return pressedScale
+            pressedScale
         } else if isHovering {
-            return hoverScale
+            hoverScale
         } else {
-            return AnimationConstants.defaultScale
+            AnimationConstants.defaultScale
         }
     }
 }

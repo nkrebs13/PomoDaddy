@@ -33,7 +33,7 @@ struct SettingsView: View {
                             get: { coordinator.settingsManager.settings.workDurationMinutes },
                             set: { coordinator.settingsManager.setWorkDuration(minutes: $0) }
                         ),
-                        range: 1...60,
+                        range: 1 ... 60,
                         unit: "min",
                         iconName: "flame.fill",
                         iconColor: .tomatoRed
@@ -44,7 +44,7 @@ struct SettingsView: View {
                             get: { coordinator.settingsManager.settings.shortBreakDurationMinutes },
                             set: { coordinator.settingsManager.setShortBreakDuration(minutes: $0) }
                         ),
-                        range: 1...30,
+                        range: 1 ... 30,
                         unit: "min",
                         iconName: "leaf.fill",
                         iconColor: .mint
@@ -55,7 +55,7 @@ struct SettingsView: View {
                             get: { coordinator.settingsManager.settings.longBreakDurationMinutes },
                             set: { coordinator.settingsManager.setLongBreakDuration(minutes: $0) }
                         ),
-                        range: 5...60,
+                        range: 5 ... 60,
                         unit: "min",
                         iconName: "cup.and.saucer.fill",
                         iconColor: .lavender
@@ -66,7 +66,7 @@ struct SettingsView: View {
                             get: { coordinator.settingsManager.settings.pomodorosUntilLongBreak },
                             set: { coordinator.settingsManager.setPomodorosUntilLongBreak(count: $0) }
                         ),
-                        range: 2...8,
+                        range: 2 ... 8,
                         unit: "pomodoros",
                         iconName: "repeat.circle.fill",
                         iconColor: .skyBlue
@@ -246,16 +246,16 @@ struct SettingsView: View {
         switch preset {
         case .classic:
             return settings.workDurationMinutes == 25 &&
-                   settings.shortBreakDurationMinutes == 5 &&
-                   settings.longBreakDurationMinutes == 15
+                settings.shortBreakDurationMinutes == 5 &&
+                settings.longBreakDurationMinutes == 15
         case .extendedFocus:
             return settings.workDurationMinutes == 50 &&
-                   settings.shortBreakDurationMinutes == 10 &&
-                   settings.longBreakDurationMinutes == 30
+                settings.shortBreakDurationMinutes == 10 &&
+                settings.longBreakDurationMinutes == 30
         case .quickSprints:
             return settings.workDurationMinutes == 15 &&
-                   settings.shortBreakDurationMinutes == 3 &&
-                   settings.longBreakDurationMinutes == 10
+                settings.shortBreakDurationMinutes == 3 &&
+                settings.longBreakDurationMinutes == 10
         }
     }
 }
@@ -306,7 +306,7 @@ struct DurationStepper: View {
     @Binding var value: Int
     let range: ClosedRange<Int>
     let unit: String
-    var iconName: String = "clock"
+    var iconName = "clock"
     var iconColor: Color = .tomatoRed
 
     @State private var isHoveringMinus = false
@@ -378,7 +378,6 @@ struct DurationStepper: View {
     // MARK: - Private Views
 
     /// Creates a stepper button with hover effects.
-    @ViewBuilder
     private func stepperButton(
         systemName: String,
         isHovering: Binding<Bool>,
@@ -393,8 +392,8 @@ struct DurationStepper: View {
                 .background(
                     RoundedRectangle(cornerRadius: 6)
                         .fill(isHovering.wrappedValue && isEnabled ?
-                              Color(nsColor: .controlAccentColor).opacity(0.15) :
-                              Color(nsColor: .controlBackgroundColor))
+                            Color(nsColor: .controlAccentColor).opacity(0.15) :
+                            Color(nsColor: .controlBackgroundColor))
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 6)
@@ -420,7 +419,7 @@ struct SettingsToggle: View {
     let title: String
     let subtitle: String
     @Binding var isOn: Bool
-    var iconName: String = "circle"
+    var iconName = "circle"
     var iconColor: Color = .tomatoRed
 
     @State private var isHovering = false
@@ -516,7 +515,7 @@ struct PresetButton: View {
 
     let title: String
     let subtitle: String
-    var isSelected: Bool = false
+    var isSelected = false
     let action: () -> Void
 
     @State private var isHovering = false
@@ -604,7 +603,7 @@ struct PresetButton: View {
         DurationStepper(
             label: "Focus",
             value: .constant(25),
-            range: 1...60,
+            range: 1 ... 60,
             unit: "min",
             iconName: "flame.fill",
             iconColor: .tomatoRed
@@ -612,7 +611,7 @@ struct PresetButton: View {
         DurationStepper(
             label: "Short Break",
             value: .constant(5),
-            range: 1...30,
+            range: 1 ... 30,
             unit: "min",
             iconName: "leaf.fill",
             iconColor: .mint
@@ -660,4 +659,3 @@ struct PresetButton: View {
     }
     .padding()
 }
-

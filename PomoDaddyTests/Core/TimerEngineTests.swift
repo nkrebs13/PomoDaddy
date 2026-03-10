@@ -150,25 +150,25 @@ final class TimerEngineTests: XCTestCase {
 
     // MARK: - State Capture Tests
 
-    func testCaptureRemainingTime_Running() async {
+    func testCaptureRemainingTime_Running() async throws {
         engine.start(seconds: 10)
 
         try? await Task.sleep(nanoseconds: 200_000_000)
 
         let captured = engine.captureRemainingTime()
         XCTAssertNotNil(captured)
-        XCTAssertLessThan(captured!, 10)
-        XCTAssertGreaterThan(captured!, 9)
+        XCTAssertLessThan(try XCTUnwrap(captured), 10)
+        XCTAssertGreaterThan(try XCTUnwrap(captured), 9)
     }
 
-    func testCaptureRemainingTime_Paused() async {
+    func testCaptureRemainingTime_Paused() async throws {
         engine.start(seconds: 10)
         try? await Task.sleep(nanoseconds: 200_000_000)
         engine.pause()
 
         let captured = engine.captureRemainingTime()
         XCTAssertNotNil(captured)
-        XCTAssertLessThan(captured!, 10)
+        XCTAssertLessThan(try XCTUnwrap(captured), 10)
     }
 
     func testCaptureRemainingTime_Idle() {

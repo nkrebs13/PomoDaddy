@@ -33,7 +33,7 @@ enum AnimationConstants {
     // MARK: Celebration Animations
 
     /// Duration for confetti celebration animation in seconds
-    static let confettiDuration: Double = 2.5
+    static let confettiDuration = 2.5
 
     // MARK: Scale Values
 
@@ -52,7 +52,7 @@ enum AnimationConstants {
     static let hoverShadowRadius: CGFloat = 8
 
     /// Shadow opacity for hover state
-    static let hoverShadowOpacity: Double = 0.15
+    static let hoverShadowOpacity = 0.15
 }
 
 // MARK: - Animation Extensions

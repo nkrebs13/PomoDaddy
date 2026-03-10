@@ -21,7 +21,6 @@ import SwiftData
 /// let weekly = try calculator.weeklySummary()
 /// ```
 struct StatsCalculator {
-
     // MARK: - Properties
 
     /// The model context used for queries.
@@ -255,7 +254,6 @@ struct StatsCalculator {
 // MARK: - Monthly Stats
 
 extension StatsCalculator {
-
     /// A summary of statistics for a calendar month.
     struct MonthlySummary {
         /// The month this summary represents.
@@ -283,7 +281,8 @@ extension StatsCalculator {
         let now = Date()
 
         guard let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: now)),
-              let monthEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: monthStart) else {
+              let monthEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: monthStart) else
+        {
             return MonthlySummary(
                 month: now,
                 totalFocusMinutes: 0,

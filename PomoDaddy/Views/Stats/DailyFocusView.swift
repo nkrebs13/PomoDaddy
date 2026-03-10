@@ -5,8 +5,8 @@
 //  Displays today's focus progress with a prominent progress ring.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 /// A view displaying today's focus progress with an animated progress ring.
 ///
@@ -16,22 +16,21 @@ import SwiftData
 /// - Completed pomodoro count
 /// - Row of tomato icons for visual session tracking
 struct DailyFocusView: View {
-
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
     @Environment(\.modelContext) private var modelContext
 
-    @State private var focusMinutes: Int = 0
-    @State private var completedPomodoros: Int = 0
+    @State private var focusMinutes = 0
+    @State private var completedPomodoros = 0
     @State private var ringProgress: Double = 0
-    @State private var hasAppeared: Bool = false
+    @State private var hasAppeared = false
 
     /// Daily goal in minutes (defaults to 2 hours).
-    private let dailyGoalMinutes: Int = 120
+    private let dailyGoalMinutes = 120
 
     /// Maximum tomatoes to display in the row.
-    private let maxTomatoDisplay: Int = 8
+    private let maxTomatoDisplay = 8
 
     // MARK: - Body
 
@@ -118,7 +117,7 @@ struct DailyFocusView: View {
     /// Row of tomato icons representing completed sessions.
     private var tomatoRow: some View {
         HStack(spacing: 8) {
-            ForEach(0..<min(completedPomodoros, maxTomatoDisplay), id: \.self) { index in
+            ForEach(0 ..< min(completedPomodoros, maxTomatoDisplay), id: \.self) { index in
                 tomatoIcon(index: index)
             }
 
@@ -133,7 +132,6 @@ struct DailyFocusView: View {
     }
 
     /// Individual tomato icon with staggered animation.
-    @ViewBuilder
     private func tomatoIcon(index: Int) -> some View {
         Image(systemName: "circle.fill")
             .font(.system(size: 12))
@@ -148,7 +146,7 @@ struct DailyFocusView: View {
             .opacity(hasAppeared ? 1.0 : 0.0)
             .animation(
                 .spring(response: 0.4, dampingFraction: 0.6)
-                .delay(Double(index) * 0.08),
+                    .delay(Double(index) * 0.08),
                 value: hasAppeared
             )
     }

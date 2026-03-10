@@ -11,7 +11,6 @@ import SwiftData
 /// Represents a single pomodoro focus session.
 @Model
 final class PomodoroSession {
-
     // MARK: - Properties
 
     /// Unique identifier for this session.
@@ -82,7 +81,6 @@ final class PomodoroSession {
 // MARK: - Predicates
 
 extension PomodoroSession {
-
     /// Predicate for sessions on a specific calendar day.
     static func onDay(_ date: Date) -> Predicate<PomodoroSession> {
         let calendar = Calendar.current

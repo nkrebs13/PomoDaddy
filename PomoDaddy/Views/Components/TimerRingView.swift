@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct TimerRingView: View {
-    let progress: Double  // 0.0 to 1.0
+    let progress: Double // 0.0 to 1.0
     let remainingSeconds: Int?
     let intervalType: IntervalType?
     let ringColor: Color?
     var size: CGFloat = 160
     var lineWidth: CGFloat = 8
-    var showTime: Bool = true
-    var showLabel: Bool = true
+    var showTime = true
+    var showLabel = true
 
     /// Full initializer with interval type for automatic styling.
     init(
@@ -30,7 +30,7 @@ struct TimerRingView: View {
         self.progress = progress
         self.remainingSeconds = remainingSeconds
         self.intervalType = intervalType
-        self.ringColor = nil
+        ringColor = nil
         self.size = size
         self.lineWidth = lineWidth
         self.showTime = showTime
@@ -45,18 +45,18 @@ struct TimerRingView: View {
         lineWidth: CGFloat = 8
     ) {
         self.progress = progress
-        self.remainingSeconds = nil
-        self.intervalType = nil
+        remainingSeconds = nil
+        intervalType = nil
         self.ringColor = ringColor
         self.size = size
         self.lineWidth = lineWidth
-        self.showTime = false
-        self.showLabel = false
+        showTime = false
+        showLabel = false
     }
 
     /// Computed accent color - uses ringColor if set, otherwise derives from intervalType.
     private var accentColor: Color {
-        if let ringColor = ringColor {
+        if let ringColor {
             return ringColor
         }
         return intervalType?.accentColor ?? .tomatoRed
@@ -75,7 +75,7 @@ struct TimerRingView: View {
                     progressGradient,
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
-                .rotationEffect(.degrees(-90))  // Start from top
+                .rotationEffect(.degrees(-90)) // Start from top
                 .animation(AnimationConstants.timerTick, value: progress)
 
             // Optional glow effect behind progress
@@ -88,14 +88,14 @@ struct TimerRingView: View {
             // Center content (only shown when we have interval type data)
             if showTime || showLabel {
                 VStack(spacing: 4) {
-                    if showTime, let remainingSeconds = remainingSeconds {
+                    if showTime, let remainingSeconds {
                         Text(formatTime(remainingSeconds))
                             .font(.system(size: size * 0.25, weight: .bold, design: .rounded))
                             .monospacedDigit()
                             .contentTransition(.numericText())
                     }
 
-                    if showLabel, let intervalType = intervalType {
+                    if showLabel, let intervalType {
                         Text(intervalType.displayName)
                             .font(.system(size: size * 0.09, weight: .medium))
                             .foregroundStyle(.secondary)
@@ -108,19 +108,18 @@ struct TimerRingView: View {
 
     /// Returns the appropriate gradient based on interval type or ring color.
     private var progressGradient: AngularGradient {
-        let colors: [Color]
-        if let ringColor = ringColor {
+        let colors: [Color] = if let ringColor {
             // Use the explicit ring color for gradient
-            colors = [ringColor, ringColor.opacity(0.7)]
-        } else if let intervalType = intervalType {
+            [ringColor, ringColor.opacity(0.7)]
+        } else if let intervalType {
             switch intervalType {
             case .work:
-                colors = [.tomatoRed, .coral]
+                [.tomatoRed, .coral]
             case .shortBreak, .longBreak:
-                colors = [.mint, .skyBlue]
+                [.mint, .skyBlue]
             }
         } else {
-            colors = [.tomatoRed, .coral]
+            [.tomatoRed, .coral]
         }
 
         return AngularGradient(

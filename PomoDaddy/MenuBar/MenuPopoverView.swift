@@ -64,15 +64,15 @@ struct MenuPopoverView: View {
     private var accentColor: Color {
         switch timerState {
         case .idle:
-            return .tomatoRed
+            .tomatoRed
         case .running(let type), .paused(let type):
             switch type {
             case .work:
-                return .tomatoRed
+                .tomatoRed
             case .shortBreak:
-                return .mint
+                .mint
             case .longBreak:
-                return .lavender
+                .lavender
             }
         }
     }
@@ -81,11 +81,11 @@ struct MenuPopoverView: View {
     private var accentGradient: LinearGradient {
         switch timerState {
         case .idle, .running(.work), .paused(.work):
-            return .focusGradient
+            .focusGradient
         case .running(.shortBreak), .paused(.shortBreak):
-            return .breakGradient
+            .breakGradient
         case .running(.longBreak), .paused(.longBreak):
-            return LinearGradient(
+            LinearGradient(
                 colors: [.lavender, .skyBlue],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -248,22 +248,22 @@ struct MenuPopoverView: View {
     private var playPauseIcon: String {
         switch timerState {
         case .idle:
-            return "play.fill"
+            "play.fill"
         case .running:
-            return "pause.fill"
+            "pause.fill"
         case .paused:
-            return "play.fill"
+            "play.fill"
         }
     }
 
     private var playPauseHelpText: String {
         switch timerState {
         case .idle:
-            return "Start focus session"
+            "Start focus session"
         case .running:
-            return "Pause timer"
+            "Pause timer"
         case .paused:
-            return "Resume timer"
+            "Resume timer"
         }
     }
 
@@ -287,7 +287,7 @@ struct MenuPopoverView: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 8) {
-                ForEach(0..<pomodorosUntilLongBreak, id: \.self) { index in
+                ForEach(0 ..< pomodorosUntilLongBreak, id: \.self) { index in
                     Circle()
                         .fill(index < completedPomodoros ? Color.tomatoRed : Color.secondary.opacity(0.2))
                         .frame(width: 12, height: 12)
@@ -441,7 +441,6 @@ struct MenuPopoverView: View {
         .help("Quit PomoDaddy")
     }
 }
-
 
 // MARK: - Preview
 

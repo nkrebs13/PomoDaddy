@@ -11,7 +11,6 @@ import SwiftData
 /// Tracks the user's daily activity streak for gamification.
 @Model
 final class UserStreak {
-
     // MARK: - Properties
 
     /// The current consecutive days streak.
@@ -144,7 +143,6 @@ final class UserStreak {
 // MARK: - Factory Methods
 
 extension UserStreak {
-
     /// Gets the singleton UserStreak, creating one if it doesn't exist.
     /// - Parameter context: The model context.
     /// - Returns: The user's streak record.

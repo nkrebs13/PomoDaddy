@@ -5,8 +5,8 @@
 //  Core timer engine using timestamp-based timing for accuracy.
 //
 
-import Foundation
 import Combine
+import Foundation
 import Observation
 
 // MARK: - Timer Engine
@@ -17,14 +17,13 @@ import Observation
 /// the timer remains accurate even if the app is suspended or the device sleeps.
 @Observable
 final class TimerEngine {
-
     // MARK: - Public Properties
 
     /// The number of seconds remaining in the current timer session.
     private(set) var remainingSeconds: TimeInterval = 0
 
     /// Whether the timer is currently running.
-    private(set) var isRunning: Bool = false
+    private(set) var isRunning = false
 
     /// The total duration of the current timer session in seconds.
     private(set) var totalDuration: TimeInterval = 0
@@ -163,10 +162,10 @@ final class TimerEngine {
 
         self.totalDuration = totalDuration
         self.remainingSeconds = remainingSeconds
-        self.tickHandler = onTick
-        self.completionHandler = onComplete
+        tickHandler = onTick
+        completionHandler = onComplete
 
-        if wasRunning && remainingSeconds > 0 {
+        if wasRunning, remainingSeconds > 0 {
             targetEndDate = Date().addingTimeInterval(remainingSeconds)
             isRunning = true
             startTimerPublisher()
@@ -245,16 +244,16 @@ struct TimerEngineState: Codable {
 
     /// Creates a state snapshot from a TimerEngine.
     init(from engine: TimerEngine) {
-        self.remainingSeconds = engine.captureRemainingTime() ?? 0
-        self.totalDuration = engine.totalDuration
-        self.wasRunning = engine.isRunning
-        self.savedAt = Date()
+        remainingSeconds = engine.captureRemainingTime() ?? 0
+        totalDuration = engine.totalDuration
+        wasRunning = engine.isRunning
+        savedAt = Date()
     }
 
     /// Calculates the adjusted remaining time accounting for elapsed time since save.
     /// - Parameter adjustForElapsed: If true, subtracts time elapsed since save (for running timers).
     func adjustedRemainingSeconds(adjustForElapsed: Bool = true) -> TimeInterval {
-        if wasRunning && adjustForElapsed {
+        if wasRunning, adjustForElapsed {
             let elapsed = Date().timeIntervalSince(savedAt)
             return max(0, remainingSeconds - elapsed)
         }

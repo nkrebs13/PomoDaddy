@@ -33,15 +33,14 @@ final class PomodoroSessionTests: XCTestCase {
 
         // Note: Predicates can't be fully tested without SwiftData context
         // but we can verify they compile and don't crash
-        let _ = PomodoroSession.onDay(today)
-        let _ = PomodoroSession.onDay(yesterday)
+        _ = PomodoroSession.onDay(today)
+        _ = PomodoroSession.onDay(yesterday)
     }
 
     func testCompletedPredicate() {
-        let _ = PomodoroSession.completed
+        _ = PomodoroSession.completed
         // Verify predicate compiles
     }
-
 
     // MARK: - Helper Tests
 
@@ -76,7 +75,7 @@ final class PomodoroSessionTests: XCTestCase {
         let startDate = TestFixtures.today
         let endDate = TestFixtures.tomorrow
 
-        let _ = PomodoroSession.inRange(from: startDate, to: endDate)
+        _ = PomodoroSession.inRange(from: startDate, to: endDate)
         // Verify predicate compiles
     }
 }

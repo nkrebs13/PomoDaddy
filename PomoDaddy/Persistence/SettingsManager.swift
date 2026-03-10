@@ -11,7 +11,6 @@ import SwiftUI
 /// Manages user settings with persistence to UserDefaults.
 @Observable
 final class SettingsManager {
-
     // MARK: - Constants
 
     private enum Keys {
@@ -44,7 +43,7 @@ final class SettingsManager {
     /// - Parameter defaults: The UserDefaults instance to use (defaults to standard).
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        self.settings = PomodoroSettings.default
+        settings = PomodoroSettings.default
         load()
     }
 
@@ -170,16 +169,18 @@ enum SettingsPreset: String, CaseIterable, Identifiable {
     case extendedFocus = "Extended Focus"
     case quickSprints = "Quick Sprints"
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var description: String {
         switch self {
         case .classic:
-            return "25 min work, 5 min break"
+            "25 min work, 5 min break"
         case .extendedFocus:
-            return "50 min work, 10 min break"
+            "50 min work, 10 min break"
         case .quickSprints:
-            return "15 min work, 3 min break"
+            "15 min work, 3 min break"
         }
     }
 }

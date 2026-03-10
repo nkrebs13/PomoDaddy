@@ -5,8 +5,8 @@
 //  Displays current and longest streak information in card format.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 /// A view displaying streak statistics in visually appealing cards.
 ///
@@ -14,15 +14,14 @@ import SwiftData
 /// - Current streak with animated flame icon
 /// - Longest streak ever achieved with trophy icon
 struct StreakDisplayView: View {
-
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
     @Environment(\.modelContext) private var modelContext
 
-    @State private var streakDays: Int = 0
-    @State private var longestStreak: Int = 0
-    @State private var hasAppeared: Bool = false
+    @State private var streakDays = 0
+    @State private var longestStreak = 0
+    @State private var hasAppeared = false
 
     // MARK: - Body
 
@@ -132,7 +131,6 @@ struct StreakCard: View {
     // MARK: - Subviews
 
     /// The animated icon view.
-    @ViewBuilder
     private var iconView: some View {
         ZStack {
             // Glow effect
@@ -179,7 +177,7 @@ struct StreakCard: View {
     private func startFlameAnimation() {
         withAnimation(
             .easeInOut(duration: 0.8)
-            .repeatForever(autoreverses: true)
+                .repeatForever(autoreverses: true)
         ) {
             flamePhase = 1
         }

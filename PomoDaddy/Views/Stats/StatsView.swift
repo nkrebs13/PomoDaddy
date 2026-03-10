@@ -5,8 +5,8 @@
 //  Main container view for displaying statistics and productivity insights.
 //
 
-import SwiftUI
 import Charts
+import SwiftUI
 
 /// Main statistics view that displays productivity metrics and trends.
 ///
@@ -14,12 +14,11 @@ import Charts
 /// organized by time period (Today, Week, Month). It provides a comprehensive
 /// overview of the user's Pomodoro activity.
 struct StatsView: View {
-
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
     @State private var selectedPeriod: StatsPeriod = .week
-    @State private var appearAnimation: Bool = false
+    @State private var appearAnimation = false
 
     // MARK: - Time Period
 
@@ -29,7 +28,9 @@ struct StatsView: View {
         case week = "Week"
         case month = "Month"
 
-        var id: String { rawValue }
+        var id: String {
+            rawValue
+        }
     }
 
     // MARK: - Body

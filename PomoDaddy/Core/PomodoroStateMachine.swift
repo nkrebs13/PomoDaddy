@@ -27,17 +27,16 @@ enum PomodoroEvent {
 /// interval tracking, and integration with the timer engine.
 @Observable
 final class PomodoroStateMachine {
-
     // MARK: - Public Properties
 
     /// The current state of the Pomodoro timer.
     private(set) var currentState: TimerState = .idle
 
     /// Number of completed pomodoros in the current cycle (resets after long break).
-    private(set) var completedPomodorosInCycle: Int = 0
+    private(set) var completedPomodorosInCycle = 0
 
     /// Total number of pomodoros completed today.
-    private(set) var totalCompletedToday: Int = 0
+    private(set) var totalCompletedToday = 0
 
     /// The underlying timer engine.
     let timerEngine: TimerEngine
@@ -73,7 +72,7 @@ final class PomodoroStateMachine {
     init(timerEngine: TimerEngine = TimerEngine(), settings: TimerSettings = .load()) {
         self.timerEngine = timerEngine
         self.settings = settings
-        self.lastResetDate = Calendar.current.startOfDay(for: Date())
+        lastResetDate = Calendar.current.startOfDay(for: Date())
 
         loadPersistedState()
     }
@@ -132,7 +131,7 @@ final class PomodoroStateMachine {
 
     /// Returns the duration for a given interval type.
     func duration(for intervalType: IntervalType) -> TimeInterval {
-        return settings.duration(for: intervalType)
+        settings.duration(for: intervalType)
     }
 
     /// Returns the formatted remaining time from the timer engine.
@@ -154,7 +153,7 @@ final class PomodoroStateMachine {
 
     private func handleStart(intervalType: IntervalType?) {
         let type = intervalType ?? nextIntervalType()
-        let duration = self.duration(for: type)
+        let duration = duration(for: type)
 
         let oldState = currentState
         currentState = .running(type)
@@ -203,11 +202,10 @@ final class PomodoroStateMachine {
             onWorkSessionComplete?(totalCompletedToday)
 
             // Determine next break type
-            let nextBreak: IntervalType
-            if completedPomodorosInCycle >= settings.pomodorosUntilLongBreak {
-                nextBreak = .longBreak
+            let nextBreak: IntervalType = if completedPomodorosInCycle >= settings.pomodorosUntilLongBreak {
+                .longBreak
             } else {
-                nextBreak = .shortBreak
+                .shortBreak
             }
 
             // Auto-start break if enabled
@@ -277,7 +275,7 @@ final class PomodoroStateMachine {
     // MARK: - Private Methods - Helpers
 
     private func startTimer(for intervalType: IntervalType) {
-        let duration = self.duration(for: intervalType)
+        let duration = duration(for: intervalType)
         timerEngine.start(
             seconds: duration,
             onTick: nil,

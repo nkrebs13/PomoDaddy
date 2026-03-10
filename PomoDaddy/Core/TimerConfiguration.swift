@@ -22,7 +22,7 @@ enum TimerConfiguration {
     static let defaultLongBreakDuration: TimeInterval = 15 * 60
 
     /// Number of pomodoros to complete before a long break.
-    static let defaultPomodorosUntilLongBreak: Int = 4
+    static let defaultPomodorosUntilLongBreak = 4
 
     /// Minimum allowed duration for any interval: 1 minute.
     static let minimumDuration: TimeInterval = 1 * 60
@@ -61,14 +61,14 @@ struct TimerSettings: Codable, Equatable {
 
     /// Creates settings with default values.
     init() {
-        self.workDuration = TimerConfiguration.defaultWorkDuration
-        self.shortBreakDuration = TimerConfiguration.defaultShortBreakDuration
-        self.longBreakDuration = TimerConfiguration.defaultLongBreakDuration
-        self.pomodorosUntilLongBreak = TimerConfiguration.defaultPomodorosUntilLongBreak
-        self.autoStartBreaks = false
-        self.autoStartWork = false
-        self.soundEnabled = true
-        self.notificationsEnabled = true
+        workDuration = TimerConfiguration.defaultWorkDuration
+        shortBreakDuration = TimerConfiguration.defaultShortBreakDuration
+        longBreakDuration = TimerConfiguration.defaultLongBreakDuration
+        pomodorosUntilLongBreak = TimerConfiguration.defaultPomodorosUntilLongBreak
+        autoStartBreaks = false
+        autoStartWork = false
+        soundEnabled = true
+        notificationsEnabled = true
     }
 
     /// Creates settings with custom values.
@@ -96,24 +96,24 @@ struct TimerSettings: Codable, Equatable {
     func duration(for intervalType: IntervalType) -> TimeInterval {
         switch intervalType {
         case .work:
-            return workDuration
+            workDuration
         case .shortBreak:
-            return shortBreakDuration
+            shortBreakDuration
         case .longBreak:
-            return longBreakDuration
+            longBreakDuration
         }
     }
 
     /// Validates and clamps all duration values to acceptable ranges.
     mutating func validate() {
         workDuration = workDuration.clamped(
-            to: TimerConfiguration.minimumDuration...TimerConfiguration.maximumDuration
+            to: TimerConfiguration.minimumDuration ... TimerConfiguration.maximumDuration
         )
         shortBreakDuration = shortBreakDuration.clamped(
-            to: TimerConfiguration.minimumDuration...TimerConfiguration.maximumDuration
+            to: TimerConfiguration.minimumDuration ... TimerConfiguration.maximumDuration
         )
         longBreakDuration = longBreakDuration.clamped(
-            to: TimerConfiguration.minimumDuration...TimerConfiguration.maximumDuration
+            to: TimerConfiguration.minimumDuration ... TimerConfiguration.maximumDuration
         )
         pomodorosUntilLongBreak = max(1, min(10, pomodorosUntilLongBreak))
     }
@@ -124,7 +124,7 @@ struct TimerSettings: Codable, Equatable {
 extension TimeInterval {
     /// Clamps the value to the specified range.
     func clamped(to range: ClosedRange<TimeInterval>) -> TimeInterval {
-        return Swift.min(Swift.max(self, range.lowerBound), range.upperBound)
+        Swift.min(Swift.max(self, range.lowerBound), range.upperBound)
     }
 }
 

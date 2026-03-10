@@ -19,7 +19,6 @@ import SwiftUI
 /// - Double-tap to toggle compact mode
 /// - Confetti celebration on pomodoro completion
 struct FloatingTimerView: View {
-
     // MARK: - Properties
 
     /// The app coordinator containing timer state.
@@ -112,7 +111,7 @@ struct FloatingTimerView: View {
     private var stateGradient: LinearGradient {
         switch coordinator.stateMachine.currentState {
         case .idle:
-            return LinearGradient(
+            LinearGradient(
                 colors: [.gray.opacity(0.3), .gray.opacity(0.1)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -120,11 +119,11 @@ struct FloatingTimerView: View {
         case .running(let type), .paused(let type):
             switch type {
             case .work:
-                return .focusGradient
+                .focusGradient
             case .shortBreak:
-                return .breakGradient
+                .breakGradient
             case .longBreak:
-                return LinearGradient(
+                LinearGradient(
                     colors: [.lavender, .skyBlue],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -174,15 +173,15 @@ struct FloatingTimerView: View {
     private var currentAccentColor: Color {
         switch coordinator.stateMachine.currentState {
         case .idle:
-            return .gray
+            .gray
         case .running(let type), .paused(let type):
             switch type {
             case .work:
-                return .tomatoRed
+                .tomatoRed
             case .shortBreak:
-                return .mint
+                .mint
             case .longBreak:
-                return .lavender
+                .lavender
             }
         }
     }
@@ -225,11 +224,11 @@ struct FloatingTimerView: View {
     private var playPauseIcon: String {
         switch coordinator.stateMachine.currentState {
         case .idle:
-            return "play.fill"
+            "play.fill"
         case .running:
-            return "pause.fill"
+            "pause.fill"
         case .paused:
-            return "play.fill"
+            "play.fill"
         }
     }
 
@@ -249,13 +248,16 @@ struct FloatingTimerView: View {
 
     private var sessionProgressView: some View {
         HStack(spacing: 8) {
-            ForEach(0..<coordinator.stateMachine.settings.pomodorosUntilLongBreak, id: \.self) { index in
+            ForEach(0 ..< coordinator.stateMachine.settings.pomodorosUntilLongBreak, id: \.self) { index in
                 Circle()
                     .fill(index < coordinator.stateMachine.completedPomodorosInCycle
-                          ? currentAccentColor
-                          : Color.gray.opacity(0.3))
+                        ? currentAccentColor
+                        : Color.gray.opacity(0.3))
                     .frame(width: 8, height: 8)
-                    .animation(AnimationConstants.modeTransition, value: coordinator.stateMachine.completedPomodorosInCycle)
+                    .animation(
+                        AnimationConstants.modeTransition,
+                        value: coordinator.stateMachine.completedPomodorosInCycle
+                    )
             }
         }
         .padding(.top, 4)
@@ -279,8 +281,8 @@ struct DragHandleView: View {
 struct ControlButton: View {
     let icon: String
     let action: () -> Void
-    var isPrimary: Bool = false
-    var isEnabled: Bool = true
+    var isPrimary = false
+    var isEnabled = true
     var accentColor: Color = .primary
 
     @State private var isHovering = false
@@ -328,13 +330,12 @@ struct ControlButton: View {
     private var scaleValue: CGFloat {
         if isPressed {
             return AnimationConstants.pressedScale
-        } else if isHovering && (isEnabled || isPrimary) {
+        } else if isHovering, isEnabled || isPrimary {
             return AnimationConstants.hoverScale
         }
         return AnimationConstants.defaultScale
     }
 }
-
 
 // MARK: - Preview
 

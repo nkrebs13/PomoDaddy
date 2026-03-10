@@ -9,7 +9,6 @@ import Foundation
 
 /// Represents the persisted state of the timer for app restoration.
 struct PersistedTimerState: Codable, Equatable {
-
     // MARK: - Timer Phase
 
     /// The phase the timer was in when captured.
@@ -116,7 +115,6 @@ struct PersistedTimerState: Codable, Equatable {
 
 /// Manages saving and loading timer state to UserDefaults.
 final class TimerStatePersistence {
-
     // MARK: - Constants
 
     private enum Keys {
@@ -223,7 +221,6 @@ enum TimerRestoreResult {
 }
 
 extension TimerStatePersistence {
-
     /// Attempts to restore timer state and determines the appropriate action.
     /// - Returns: A restoration result indicating what action to take.
     func restore() -> TimerRestoreResult {
@@ -251,7 +248,6 @@ extension TimerStatePersistence {
 // MARK: - Convenience Factory Methods
 
 extension PersistedTimerState {
-
     /// Creates a state representing an idle timer.
     static func idle(
         completedPomodorosInCycle: Int = 0,

@@ -5,9 +5,9 @@
 //  Central coordinator that wires up all app components and manages state.
 //
 
-import SwiftUI
-import SwiftData
 import os.log
+import SwiftData
+import SwiftUI
 
 /// Central coordinator that initializes and wires together all app components.
 ///
@@ -19,7 +19,6 @@ import os.log
 @Observable
 @MainActor
 final class AppCoordinator {
-
     // MARK: - Dependencies
 
     /// The SwiftData model container for persistence.
@@ -58,7 +57,7 @@ final class AppCoordinator {
     // MARK: - UI State
 
     /// Whether the floating window is visible.
-    var isFloatingWindowVisible: Bool = true {
+    var isFloatingWindowVisible = true {
         didSet {
             if oldValue != isFloatingWindowVisible {
                 handleFloatingWindowVisibilityChange()
@@ -67,10 +66,10 @@ final class AppCoordinator {
     }
 
     /// Whether the menu bar countdown is visible.
-    var isMenuBarCountdownVisible: Bool = true
+    var isMenuBarCountdownVisible = true
 
     /// Whether confetti should be shown (for work session completion).
-    var showConfetti: Bool = false
+    var showConfetti = false
 
     // MARK: - Session Tracking
 
@@ -82,32 +81,32 @@ final class AppCoordinator {
     /// Creates a new AppCoordinator, initializing all dependencies.
     init() {
         // 1. Initialize ModelContainer first (data layer)
-        self.modelContainer = PomodoroDataContainer.create()
+        modelContainer = PomodoroDataContainer.create()
 
         // 2. Initialize SettingsManager
-        self.settingsManager = SettingsManager()
+        settingsManager = SettingsManager()
 
         // 3. Initialize TimerEngine
-        self.timerEngine = TimerEngine()
+        timerEngine = TimerEngine()
 
         // 4. Initialize PomodoroStateMachine with TimerEngine and settings
         let timerSettings = Self.createTimerSettings(from: settingsManager.settings)
-        self.stateMachine = PomodoroStateMachine(
+        stateMachine = PomodoroStateMachine(
             timerEngine: timerEngine,
             settings: timerSettings
         )
 
         // 5. Initialize NotificationScheduler
-        self.notificationScheduler = NotificationScheduler()
+        notificationScheduler = NotificationScheduler()
 
         // 6. Initialize SessionRecorder with ModelContainer
-        self.sessionRecorder = SessionRecorder(modelContainer: modelContainer)
+        sessionRecorder = SessionRecorder(modelContainer: modelContainer)
 
         // 7. Initialize StatsCalculator with ModelContext
-        self.statsCalculator = StatsCalculator(modelContext: modelContainer.mainContext)
+        statsCalculator = StatsCalculator(modelContext: modelContainer.mainContext)
 
         // 8. Initialize AppNapManager
-        self.appNapManager = AppNapManager()
+        appNapManager = AppNapManager()
 
         // Restore persisted UI state
         restoreState()
@@ -116,7 +115,7 @@ final class AppCoordinator {
         setupCallbacks()
 
         // 9. Initialize AppLifecycleHandler (needs self, so done after init)
-        self.lifecycleHandler = AppLifecycleHandler(
+        lifecycleHandler = AppLifecycleHandler(
             onSave: { [weak self] in
                 self?.saveState()
             },
@@ -281,8 +280,8 @@ final class AppCoordinator {
     /// Sets up all state machine and component callbacks.
     private func setupCallbacks() {
         // Work session completion callback
-        stateMachine.onWorkSessionComplete = { [weak self] totalCompleted in
-            guard let self = self else { return }
+        stateMachine.onWorkSessionComplete = { [weak self] _ in
+            guard let self else { return }
 
             // Record the completed session
             Task { @MainActor in
@@ -290,7 +289,7 @@ final class AppCoordinator {
             }
 
             // Trigger confetti celebration
-            self.showConfetti = true
+            showConfetti = true
 
             // Reset confetti after animation
             confettiHideTask?.cancel()
@@ -301,58 +300,58 @@ final class AppCoordinator {
             }
 
             // Show notification if enabled
-            if self.settingsManager.settings.showNotifications {
-                self.notificationScheduler.scheduleCompletion(
+            if settingsManager.settings.showNotifications {
+                notificationScheduler.scheduleCompletion(
                     intervalType: .work,
-                    inSeconds: 0  // Immediate notification
+                    inSeconds: 0 // Immediate notification
                 )
             }
 
-            self.saveState()
+            saveState()
         }
 
         // Break completion callback
         stateMachine.onBreakComplete = { [weak self] intervalType in
-            guard let self = self else { return }
+            guard let self else { return }
 
             // Show notification if enabled
-            if self.settingsManager.settings.showNotifications {
-                self.notificationScheduler.scheduleCompletion(
+            if settingsManager.settings.showNotifications {
+                notificationScheduler.scheduleCompletion(
                     intervalType: intervalType,
-                    inSeconds: 0  // Immediate notification
+                    inSeconds: 0 // Immediate notification
                 )
             }
 
-            self.saveState()
+            saveState()
         }
 
         // Cycle completion callback
-        stateMachine.onCycleComplete = { [weak self] completedCycles in
+        stateMachine.onCycleComplete = { [weak self] _ in
             self?.saveState()
         }
 
         // State change callback - manage App Nap
-        stateMachine.onStateChange = { [weak self] oldState, newState in
-            guard let self = self else { return }
+        stateMachine.onStateChange = { [weak self] _, newState in
+            guard let self else { return }
 
             // Update App Nap based on timer state
             switch newState {
             case .running:
-                self.appNapManager.beginTimingActivity()
+                appNapManager.beginTimingActivity()
 
                 // Track session start for work intervals
-                if case .running(.work) = newState, self.currentSessionStartTime == nil {
-                    self.currentSessionStartTime = Date()
+                if case .running(.work) = newState, currentSessionStartTime == nil {
+                    currentSessionStartTime = Date()
                 }
 
             case .idle, .paused:
                 // Only end activity when fully idle
                 if case .idle = newState {
-                    self.appNapManager.endTimingActivity()
+                    appNapManager.endTimingActivity()
                 }
             }
 
-            self.saveState()
+            saveState()
         }
     }
 

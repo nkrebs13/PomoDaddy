@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import UserNotifications
 import os.log
+import UserNotifications
 
 /// Handles scheduling and managing local notifications for pomodoro timer events.
 ///
@@ -25,7 +25,6 @@ import os.log
 /// }
 /// ```
 final class NotificationScheduler {
-
     // MARK: - Constants
 
     /// Identifier for the pending timer completion notification.
@@ -52,8 +51,7 @@ final class NotificationScheduler {
     /// - Returns: `true` if notifications are authorized, `false` otherwise.
     func requestAuthorization() async -> Bool {
         do {
-            let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
-            return granted
+            return try await center.requestAuthorization(options: [.alert, .sound, .badge])
         } catch {
             Logger.logError(error, context: "Failed to request notification authorization", log: Logger.notifications)
             return false
@@ -111,7 +109,7 @@ final class NotificationScheduler {
         )
 
         center.add(request) { error in
-            if let error = error {
+            if let error {
                 Logger.logError(error, context: "Failed to schedule notification", log: Logger.notifications)
             }
         }
@@ -140,9 +138,9 @@ final class NotificationScheduler {
     private func notificationTitle(for intervalType: IntervalType) -> String {
         switch intervalType {
         case .work:
-            return "Pomodoro Complete!"
+            "Pomodoro Complete!"
         case .shortBreak, .longBreak:
-            return "Break Over!"
+            "Break Over!"
         }
     }
 
@@ -150,11 +148,11 @@ final class NotificationScheduler {
     private func notificationBody(for intervalType: IntervalType) -> String {
         switch intervalType {
         case .work:
-            return "Great work! Time to take a well-deserved break."
+            "Great work! Time to take a well-deserved break."
         case .shortBreak:
-            return "Ready to focus? Let's get back to work!"
+            "Ready to focus? Let's get back to work!"
         case .longBreak:
-            return "Feeling refreshed? Time to start a new focus session!"
+            "Feeling refreshed? Time to start a new focus session!"
         }
     }
 }
@@ -162,7 +160,6 @@ final class NotificationScheduler {
 // MARK: - Notification Categories
 
 extension NotificationScheduler {
-
     /// Registers notification categories for interactive notifications.
     ///
     /// Call this once during app initialization to enable notification actions.

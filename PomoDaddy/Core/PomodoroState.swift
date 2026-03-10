@@ -15,17 +15,19 @@ enum IntervalType: String, Codable, CaseIterable, Identifiable {
     case shortBreak
     case longBreak
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     /// Human-readable display name for the interval type.
     var displayName: String {
         switch self {
         case .work:
-            return "Focus"
+            "Focus"
         case .shortBreak:
-            return "Short Break"
+            "Short Break"
         case .longBreak:
-            return "Long Break"
+            "Long Break"
         }
     }
 
@@ -33,11 +35,11 @@ enum IntervalType: String, Codable, CaseIterable, Identifiable {
     var accentColor: Color {
         switch self {
         case .work:
-            return .tomatoRed
+            .tomatoRed
         case .shortBreak:
-            return .mint
+            .mint
         case .longBreak:
-            return .lavender
+            .lavender
         }
     }
 
@@ -45,11 +47,11 @@ enum IntervalType: String, Codable, CaseIterable, Identifiable {
     var defaultDuration: TimeInterval {
         switch self {
         case .work:
-            return TimerConfiguration.defaultWorkDuration
+            TimerConfiguration.defaultWorkDuration
         case .shortBreak:
-            return TimerConfiguration.defaultShortBreakDuration
+            TimerConfiguration.defaultShortBreakDuration
         case .longBreak:
-            return TimerConfiguration.defaultLongBreakDuration
+            TimerConfiguration.defaultLongBreakDuration
         }
     }
 }
@@ -66,9 +68,9 @@ enum TimerState: Equatable {
     var intervalType: IntervalType? {
         switch self {
         case .idle:
-            return nil
+            nil
         case .running(let type), .paused(let type):
-            return type
+            type
         }
     }
 
@@ -76,9 +78,9 @@ enum TimerState: Equatable {
     var isActive: Bool {
         switch self {
         case .idle:
-            return false
+            false
         case .running, .paused:
-            return true
+            true
         }
     }
 
@@ -102,11 +104,11 @@ enum TimerState: Equatable {
     var displayName: String {
         switch self {
         case .idle:
-            return "Ready"
+            "Ready"
         case .running(let type):
-            return type.displayName
+            type.displayName
         case .paused(let type):
-            return "\(type.displayName) (Paused)"
+            "\(type.displayName) (Paused)"
         }
     }
 
@@ -114,9 +116,9 @@ enum TimerState: Equatable {
     var accentColor: Color {
         switch self {
         case .idle:
-            return .gray
+            .gray
         case .running(let type), .paused(let type):
-            return type.accentColor
+            type.accentColor
         }
     }
 }

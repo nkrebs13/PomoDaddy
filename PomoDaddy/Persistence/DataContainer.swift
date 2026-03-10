@@ -6,12 +6,11 @@
 //
 
 import Foundation
-import SwiftData
 import os.log
+import SwiftData
 
 /// Provides the configured SwiftData ModelContainer for the app.
 enum PomodoroDataContainer {
-
     /// All model types managed by the container.
     static let modelTypes: [any PersistentModel.Type] = [
         PomodoroSession.self,
@@ -86,15 +85,15 @@ enum PomodoroDataContainer {
         let now = Date()
 
         // Create sample sessions for the past week
-        for dayOffset in 0..<7 {
+        for dayOffset in 0 ..< 7 {
             guard let day = calendar.date(byAdding: .day, value: -dayOffset, to: now) else { continue }
             let startOfDay = calendar.startOfDay(for: day)
 
             // Create 2-4 sessions per day
-            let sessionCount = Int.random(in: 2...4)
+            let sessionCount = Int.random(in: 2 ... 4)
             var dailyMinutes = 0
 
-            for sessionIndex in 0..<sessionCount {
+            for sessionIndex in 0 ..< sessionCount {
                 let sessionStart = calendar.date(
                     byAdding: .hour,
                     value: 9 + (sessionIndex * 2),
@@ -145,7 +144,6 @@ enum PomodoroDataContainer {
 // MARK: - ModelContext Extensions
 
 extension ModelContext {
-
     /// Saves changes if there are any pending changes.
     func saveIfNeeded() throws {
         if hasChanges {

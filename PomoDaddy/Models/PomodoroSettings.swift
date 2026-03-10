@@ -9,7 +9,6 @@ import Foundation
 
 /// User-configurable settings for the pomodoro timer.
 struct PomodoroSettings: Codable, Equatable {
-
     // MARK: - Timer Duration Settings
 
     /// Duration of a focus/work session in minutes.
@@ -102,7 +101,6 @@ struct PomodoroSettings: Codable, Equatable {
 // MARK: - Preset Configurations
 
 extension PomodoroSettings {
-
     /// Classic 25/5/15 Pomodoro Technique settings.
     static let classic = PomodoroSettings.default
 

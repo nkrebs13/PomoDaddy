@@ -19,7 +19,6 @@ import SwiftUI
 /// - Optional countdown time text
 /// - Smooth animations
 final class DynamicMenuBarIconView: NSView {
-
     // MARK: - Properties
 
     /// Reference to the app coordinator for state access.
@@ -42,6 +41,7 @@ final class DynamicMenuBarIconView: NSView {
         setupHostingView()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -50,9 +50,10 @@ final class DynamicMenuBarIconView: NSView {
 
     override var intrinsicContentSize: NSSize {
         // Calculate width based on whether time text is shown
-        if let coordinator = coordinator,
+        if let coordinator,
            coordinator.isMenuBarCountdownVisible,
-           coordinator.stateMachine.currentState.isActive {
+           coordinator.stateMachine.currentState.isActive
+        {
             // Icon + spacing + time text (approximately)
             return NSSize(width: 70, height: Self.iconSize)
         }
@@ -68,7 +69,7 @@ final class DynamicMenuBarIconView: NSView {
 
     /// Sets up the SwiftUI hosting view.
     private func setupHostingView() {
-        guard let coordinator = coordinator else { return }
+        guard let coordinator else { return }
 
         let content = MenuBarIconContent(coordinator: coordinator)
         let hosting = NSHostingView(rootView: content)
@@ -76,7 +77,7 @@ final class DynamicMenuBarIconView: NSView {
         hosting.autoresizingMask = [.width, .height]
 
         addSubview(hosting)
-        self.hostingView = hosting
+        hostingView = hosting
     }
 
     // MARK: - Public Methods
@@ -87,7 +88,7 @@ final class DynamicMenuBarIconView: NSView {
         invalidateIntrinsicContentSize()
 
         // Update the hosting view's root view
-        guard let coordinator = coordinator else { return }
+        guard let coordinator else { return }
         hostingView?.rootView = MenuBarIconContent(coordinator: coordinator)
     }
 }
@@ -136,15 +137,15 @@ struct MenuBarIconContent: View {
     private var accentColor: Color {
         switch timerState {
         case .idle:
-            return .tomatoRed
+            .tomatoRed
         case .running(let type), .paused(let type):
             switch type {
             case .work:
-                return .tomatoRed
+                .tomatoRed
             case .shortBreak:
-                return .mint
+                .mint
             case .longBreak:
-                return .lavender
+                .lavender
             }
         }
     }
@@ -203,7 +204,6 @@ struct MenuBarIconContent: View {
     // MARK: - Tomato Icon
 
     /// The tomato icon view.
-    @ViewBuilder
     private var tomatoIcon: some View {
         ZStack {
             // Tomato body

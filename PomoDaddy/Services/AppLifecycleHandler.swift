@@ -5,9 +5,9 @@
 //  Handles application lifecycle events for state persistence and timer management.
 //
 
-import Foundation
 import AppKit
 import Combine
+import Foundation
 import Observation
 
 /// Manages application lifecycle events to ensure proper state persistence and timer accuracy.
@@ -29,7 +29,6 @@ import Observation
 /// ```
 @Observable
 final class AppLifecycleHandler {
-
     // MARK: - Properties
 
     /// Set of Combine cancellables for notification subscriptions.
@@ -193,7 +192,6 @@ final class AppLifecycleHandler {
 // MARK: - Screen Lock Handling
 
 extension AppLifecycleHandler {
-
     /// Adds observers for screen lock/unlock events.
     ///
     /// Note: Screen lock notifications require additional entitlements

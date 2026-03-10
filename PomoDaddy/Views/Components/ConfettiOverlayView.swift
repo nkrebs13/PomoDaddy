@@ -19,15 +19,15 @@ struct ConfettiOverlayView: View {
 
     /// Celebration intensity levels with different particle counts
     enum CelebrationIntensity {
-        case normal      // Regular pomodoro complete (30 particles)
-        case milestone   // Daily goal or streak milestone (50 particles)
-        case epic        // Major achievement (80 particles)
+        case normal // Regular pomodoro complete (30 particles)
+        case milestone // Daily goal or streak milestone (50 particles)
+        case epic // Major achievement (80 particles)
 
         var particleCount: Int {
             switch self {
-            case .normal: return 30
-            case .milestone: return 50
-            case .epic: return 80
+            case .normal: 30
+            case .milestone: 50
+            case .epic: 80
             }
         }
     }
@@ -54,16 +54,16 @@ struct ConfettiOverlayView: View {
     /// Triggers the confetti celebration animation
     private func triggerCelebration() {
         // Create particles
-        particles = (0..<intensity.particleCount).map { index in
+        particles = (0 ..< intensity.particleCount).map { index in
             ConfettiParticle(
                 id: UUID(),
                 color: confettiColors.randomElement() ?? .tomatoRed,
                 shape: ConfettiShape.allCases.randomElement() ?? .rectangle,
-                xPosition: Double.random(in: 0...1),
+                xPosition: Double.random(in: 0 ... 1),
                 delay: Double(index) * 0.02,
-                rotationSpeed: Double.random(in: 2...6),
-                fallDuration: Double.random(in: 2.5...4.0),
-                horizontalDrift: Double.random(in: -0.2...0.2)
+                rotationSpeed: Double.random(in: 2 ... 6),
+                fallDuration: Double.random(in: 2.5 ... 4.0),
+                horizontalDrift: Double.random(in: -0.2 ... 0.2)
             )
         }
 
@@ -112,7 +112,7 @@ struct ConfettiPiece: View {
 
     @State private var yOffset: CGFloat = -20
     @State private var rotation: Double = 0
-    @State private var opacity: Double = 1.0
+    @State private var opacity = 1.0
     @State private var xOffset: CGFloat = 0
 
     var body: some View {

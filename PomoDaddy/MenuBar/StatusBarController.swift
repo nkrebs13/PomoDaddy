@@ -6,8 +6,8 @@
 //
 
 import AppKit
-import SwiftUI
 import Combine
+import SwiftUI
 
 // MARK: - Status Bar Controller
 
@@ -20,7 +20,6 @@ import Combine
 /// - Closes popover when clicking outside
 @MainActor
 final class StatusBarController {
-
     // MARK: - Properties
 
     /// The status item displayed in the menu bar.
@@ -49,10 +48,10 @@ final class StatusBarController {
         self.coordinator = coordinator
 
         // Create status item with variable length to accommodate time display
-        self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         // Create popover for timer controls
-        self.popover = NSPopover()
+        popover = NSPopover()
 
         setupStatusItem()
         setupPopover()
@@ -71,7 +70,7 @@ final class StatusBarController {
 
     /// Sets up the status bar item with a custom icon view.
     private func setupStatusItem() {
-        guard let coordinator = coordinator else { return }
+        guard let coordinator else { return }
 
         // Create custom icon view
         let iconView = DynamicMenuBarIconView(coordinator: coordinator)
@@ -101,7 +100,7 @@ final class StatusBarController {
 
     /// Sets up the popover with SwiftUI content.
     private func setupPopover() {
-        guard let coordinator = coordinator else { return }
+        guard let coordinator else { return }
 
         popover.contentSize = NSSize(width: 300, height: 420)
         popover.behavior = .transient
@@ -116,8 +115,8 @@ final class StatusBarController {
     private func setupEventMonitor() {
         // Monitor for clicks outside the popover
         eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
-            if let self = self, self.popover.isShown {
-                self.hidePopover()
+            if let self, popover.isShown {
+                hidePopover()
             }
         }
     }
@@ -141,9 +140,10 @@ final class StatusBarController {
         iconView?.update()
 
         // Update status item length based on whether time is shown
-        if let coordinator = coordinator,
+        if let coordinator,
            coordinator.isMenuBarCountdownVisible,
-           coordinator.stateMachine.currentState.isActive {
+           coordinator.stateMachine.currentState.isActive
+        {
             statusItem.length = NSStatusItem.variableLength
         } else {
             statusItem.length = 22
@@ -176,7 +176,8 @@ final class StatusBarController {
     // MARK: - Actions
 
     /// Handles clicks on the status bar button.
-    @objc private func statusBarButtonClicked(_ sender: NSStatusBarButton) {
+    @objc
+    private func statusBarButtonClicked(_ sender: NSStatusBarButton) {
         guard let event = NSApp.currentEvent else {
             togglePopover()
             return
@@ -196,7 +197,7 @@ final class StatusBarController {
         let menu = NSMenu()
 
         // Quick actions
-        if let coordinator = coordinator {
+        if let coordinator {
             let state = coordinator.stateMachine.currentState
 
             if state.isRunning {
@@ -234,23 +235,28 @@ final class StatusBarController {
         statusItem.menu = nil
     }
 
-    @objc private func startTimer() {
+    @objc
+    private func startTimer() {
         coordinator?.stateMachine.send(.start())
     }
 
-    @objc private func pauseTimer() {
+    @objc
+    private func pauseTimer() {
         coordinator?.stateMachine.send(.pause)
     }
 
-    @objc private func resumeTimer() {
+    @objc
+    private func resumeTimer() {
         coordinator?.stateMachine.send(.resume)
     }
 
-    @objc private func toggleFloatingWindow() {
+    @objc
+    private func toggleFloatingWindow() {
         coordinator?.isFloatingWindowVisible.toggle()
     }
 
-    @objc private func quitApp() {
+    @objc
+    private func quitApp() {
         NSApplication.shared.terminate(nil)
     }
 }

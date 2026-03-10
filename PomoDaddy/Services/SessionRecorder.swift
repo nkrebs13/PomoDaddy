@@ -21,7 +21,6 @@ import SwiftData
 /// ```
 @ModelActor
 actor SessionRecorder {
-
     // MARK: - Public Methods
 
     /// Records a completed pomodoro session and updates all related statistics.
@@ -130,7 +129,6 @@ actor SessionRecorder {
 // MARK: - Batch Operations
 
 extension SessionRecorder {
-
     /// Records multiple sessions in a single transaction.
     ///
     /// This is more efficient than recording sessions individually

@@ -32,7 +32,6 @@ import Foundation
 /// - Important: Always call `endTimingActivity()` when the timer stops to allow
 ///   power-saving features to resume. Failing to do so will impact battery life.
 final class AppNapManager {
-
     // MARK: - Properties
 
     /// The current activity assertion token, if any.
@@ -125,7 +124,6 @@ final class AppNapManager {
 // MARK: - Background Task Support
 
 extension AppNapManager {
-
     /// Activity options for different scenarios.
     enum ActivityType {
         /// Standard timing activity (default)
@@ -140,11 +138,11 @@ extension AppNapManager {
         var options: ProcessInfo.ActivityOptions {
             switch self {
             case .timing:
-                return [.userInitiated, .idleSystemSleepDisabled]
+                [.userInitiated, .idleSystemSleepDisabled]
             case .backgroundTask:
-                return [.background]
+                [.background]
             case .criticalTask:
-                return [.userInitiated, .idleSystemSleepDisabled, .suddenTerminationDisabled]
+                [.userInitiated, .idleSystemSleepDisabled, .suddenTerminationDisabled]
             }
         }
     }

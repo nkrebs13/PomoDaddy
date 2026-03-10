@@ -46,11 +46,19 @@ jobs:
           xcrun xccov view --report TestResults.xcresult > coverage.txt || true
           if [ -f coverage.txt ]; then
             COVERAGE=$(grep "PomoDaddy.app" coverage.txt | awk '{print $NF}' | sed 's/%//' | head -1)
-            if [ ! -z "$COVERAGE" ] && (( $(echo "$COVERAGE < 70" | bc -l) )); then
-              echo "⚠️ Coverage $COVERAGE% < 70%"
+            if [ ! -z "$COVERAGE" ]; then
+              echo "Coverage: $COVERAGE%"
+              if (( $(echo "$COVERAGE < 70" | bc -l) )); then
+                echo "❌ FAIL: Coverage $COVERAGE% is below minimum threshold of 70%"
+                exit 1
+              else
+                echo "✅ Coverage check passed: $COVERAGE%"
+              fi
             else
-              echo "✅ Coverage: $COVERAGE%"
+              echo "⚠️ Could not parse coverage percentage"
+              exit 1
             fi
           else
-            echo "⚠️ Coverage report not generated"
+            echo "❌ Coverage report not generated"
+            exit 1
           fi

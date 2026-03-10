@@ -19,7 +19,6 @@ import SwiftUI
 /// - Persists position across launches
 /// - Visible on all Spaces
 final class FloatingWindowController {
-
     // MARK: - Properties
 
     /// The floating panel instance.
@@ -60,7 +59,7 @@ final class FloatingWindowController {
 
     /// Creates and configures the NSPanel with all required properties.
     private func createPanel() {
-        guard let coordinator = coordinator else { return }
+        guard let coordinator else { return }
 
         // Calculate initial frame
         let contentRect = NSRect(
@@ -183,7 +182,7 @@ final class FloatingWindowController {
     /// Updates the window size for compact or full mode.
     /// - Parameter compact: Whether to use compact size.
     func setCompactMode(_ compact: Bool) {
-        guard let panel = panel else { return }
+        guard let panel else { return }
 
         let newSize = compact ? Self.compactSize : Self.defaultSize
 

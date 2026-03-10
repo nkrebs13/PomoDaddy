@@ -11,7 +11,6 @@ import SwiftData
 /// Aggregated statistics for a single calendar day.
 @Model
 final class DailyStats {
-
     // MARK: - Properties
 
     /// The calendar day these stats represent (start of day, midnight).
@@ -80,7 +79,6 @@ final class DailyStats {
 // MARK: - Predicates & Queries
 
 extension DailyStats {
-
     /// Predicate to find stats for a specific date.
     static func forDate(_ date: Date) -> Predicate<DailyStats> {
         let startOfDay = Calendar.current.startOfDay(for: date)
@@ -113,7 +111,6 @@ extension DailyStats {
 // MARK: - Factory Methods
 
 extension DailyStats {
-
     /// Creates or finds existing stats for today.
     /// - Parameter context: The model context to search/insert in.
     /// - Returns: The DailyStats for today.

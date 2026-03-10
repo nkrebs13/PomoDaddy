@@ -5,23 +5,22 @@
 //  Displays a 7-day trend chart using Swift Charts.
 //
 
-import SwiftUI
 import Charts
 import SwiftData
+import SwiftUI
 
 /// A chart view displaying the weekly focus time trend.
 ///
 /// `WeeklyTrendChartView` shows a bar chart of the past 7 days' focus minutes,
 /// with today's bar highlighted in a distinct color.
 struct WeeklyTrendChartView: View {
-
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
     @Environment(\.modelContext) private var modelContext
 
     @State private var weeklyData: [DayData] = []
-    @State private var hasAppeared: Bool = false
+    @State private var hasAppeared = false
     @State private var selectedDay: DayData?
 
     // MARK: - Data Model
@@ -89,7 +88,6 @@ struct WeeklyTrendChartView: View {
     // MARK: - Subviews
 
     /// The main chart content.
-    @ViewBuilder
     private var chartContent: some View {
         Chart(weeklyData) { day in
             BarMark(
@@ -103,7 +101,7 @@ struct WeeklyTrendChartView: View {
             )
             .cornerRadius(4)
             .annotation(position: .top) {
-                if day.focusMinutes > 0 && day.isToday {
+                if day.focusMinutes > 0, day.isToday {
                     Text("\(day.focusMinutes)m")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -138,12 +136,11 @@ struct WeeklyTrendChartView: View {
                 }
             }
         }
-        .chartYScale(domain: 0...(maxMinutes > 0 ? Double(maxMinutes) * 1.2 : 60))
+        .chartYScale(domain: 0 ... (maxMinutes > 0 ? Double(maxMinutes) * 1.2 : 60))
         .animation(.spring(response: 0.8, dampingFraction: 0.7), value: hasAppeared)
     }
 
     /// Detail view for a selected day.
-    @ViewBuilder
     private func selectedDayDetail(_ day: DayData) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
@@ -191,7 +188,7 @@ struct WeeklyTrendChartView: View {
             let calculator = StatsCalculator(modelContext: modelContext)
             let stats = try calculator.weeklyTrend()
 
-            for dayOffset in (0..<7).reversed() {
+            for dayOffset in (0 ..< 7).reversed() {
                 guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
 
                 let dayName = dayAbbreviation(for: date)
@@ -211,7 +208,7 @@ struct WeeklyTrendChartView: View {
             }
         } catch {
             // Generate empty data if fetching fails
-            for dayOffset in (0..<7).reversed() {
+            for dayOffset in (0 ..< 7).reversed() {
                 guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
 
                 data.append(DayData(

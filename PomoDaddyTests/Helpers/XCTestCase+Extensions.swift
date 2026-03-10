@@ -19,14 +19,19 @@ extension XCTestCase {
     }
 
     /// Expects a closure to throw a specific error type
-    func XCTAssertThrowsErrorType<T, E: Error>(
-        _ expression: @autoclosure () throws -> T,
+    func XCTAssertThrowsErrorType<E: Error>(
+        _ expression: @autoclosure () throws -> some Any,
         expectedErrorType: E.Type,
         file: StaticString = #file,
         line: UInt = #line
     ) {
         XCTAssertThrowsError(try expression(), file: file, line: line) { error in
-            XCTAssertTrue(error is E, "Expected error of type \(E.self), got \(type(of: error))", file: file, line: line)
+            XCTAssertTrue(
+                error is E,
+                "Expected error of type \(E.self), got \(type(of: error))",
+                file: file,
+                line: line
+            )
         }
     }
 }
