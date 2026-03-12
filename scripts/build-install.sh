@@ -33,6 +33,15 @@ if [ -z "$APP_PATH" ]; then
     exit 1
 fi
 
+# Ad-hoc sign
+codesign --force --deep -s "-" "$APP_PATH"
+
+# Create release zip
+cd "$(dirname "$APP_PATH")"
+ditto -c -k --keepParent "$APP_NAME.app" "$BUILD_DIR/$APP_NAME.zip"
+echo "==> Release zip: $BUILD_DIR/$APP_NAME.zip"
+
+# Install to /Applications
 echo "==> Installing to $INSTALL_DIR..."
 if [ -d "$INSTALL_DIR/$APP_NAME.app" ]; then
     echo "    Removing existing $APP_NAME.app..."
@@ -42,7 +51,8 @@ fi
 cp -R "$APP_PATH" "$INSTALL_DIR/$APP_NAME.app"
 echo "==> Installed: $INSTALL_DIR/$APP_NAME.app"
 
-echo "==> Cleaning build artifacts..."
-rm -rf "$BUILD_DIR"
+# Clean DerivedData but keep the zip
+rm -rf "$BUILD_DIR/DerivedData"
 
-echo "==> Done! $APP_NAME is ready in $INSTALL_DIR."
+echo "==> Done! $APP_NAME installed to $INSTALL_DIR."
+echo "    Release zip at: $BUILD_DIR/$APP_NAME.zip"

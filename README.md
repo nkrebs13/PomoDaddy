@@ -34,27 +34,26 @@
 
 ---
 
-## 🚀 Installation
+## 🚀 Install
 
-1. **Clone the repository**
+Download the latest release from the [Releases page](https://github.com/nkrebs13/PomoDaddy/releases), unzip, and drag **PomoDaddy.app** to `/Applications`.
+
+On first launch, macOS may block the app. Right-click > **Open** > click **Open**, or run:
+```bash
+xattr -cr /Applications/PomoDaddy.app
+```
+
+### Build from source
+
+1. **Clone and setup**
    ```bash
    git clone https://github.com/nkrebs13/PomoDaddy.git
    cd PomoDaddy
+   make setup
    ```
 
-2. **Install XcodeGen** (if not already installed)
-   ```bash
-   brew install xcodegen
-   ```
-
-3. **Generate the Xcode project**
-   ```bash
-   xcodegen generate
-   ```
-
-4. **Build and run**
-   - Open `PomoDaddy.xcodeproj` in Xcode
-   - Select your target and click **Run** (⌘R)
+2. **Build and run**
+   - Open `PomoDaddy.xcodeproj` in Xcode and click **Run** (Cmd+R)
 
 ---
 
