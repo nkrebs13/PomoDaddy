@@ -45,13 +45,14 @@ enum IntervalType: String, Codable, CaseIterable, Identifiable {
 
     /// Default duration in seconds for this interval type.
     var defaultDuration: TimeInterval {
+        let defaults = PomodoroSettings.default
         switch self {
         case .work:
-            TimerConfiguration.defaultWorkDuration
+            return defaults.workDuration
         case .shortBreak:
-            TimerConfiguration.defaultShortBreakDuration
+            return defaults.shortBreakDuration
         case .longBreak:
-            TimerConfiguration.defaultLongBreakDuration
+            return defaults.longBreakDuration
         }
     }
 }
