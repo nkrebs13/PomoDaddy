@@ -15,7 +15,7 @@ final class SessionRecorderTests: XCTestCase {
     var sessionRecorder: SessionRecorder!
 
     override func setUp() async throws {
-        super.setUp()
+        try await super.setUp()
         // Create in-memory container for testing
         modelContainer = PomodoroDataContainer.createInMemory()
         sessionRecorder = SessionRecorder(modelContainer: modelContainer)
@@ -24,7 +24,7 @@ final class SessionRecorderTests: XCTestCase {
     override func tearDown() async throws {
         sessionRecorder = nil
         modelContainer = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     // MARK: - Basic Recording Tests
@@ -93,7 +93,7 @@ final class SessionRecorderTests: XCTestCase {
         let streaks = try context.fetch(descriptor)
 
         XCTAssertEqual(streaks.count, 1)
-        XCTAssertEqual(streaks.first?.currentStreak, 1)
+        XCTAssertEqual(streaks.first?.currentStreakDays, 1)
     }
 
     func testRecordMultipleSessions() async throws {
