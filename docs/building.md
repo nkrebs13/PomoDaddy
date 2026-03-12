@@ -161,7 +161,7 @@ create-dmg \
   --icon "PomoDaddy.app" 150 190 \
   --hide-extension "PomoDaddy.app" \
   --app-drop-link 450 190 \
-  "PomoDaddy-1.0.0.dmg" \
+  "PomoDaddy-2026.3.0.dmg" \
   "build/export/"
 ```
 
