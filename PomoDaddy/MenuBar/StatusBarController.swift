@@ -37,8 +37,8 @@ final class StatusBarController {
     /// Monitor for detecting clicks outside the popover.
     private var eventMonitor: Any?
 
-    /// Cancellables for Combine subscriptions.
-    private var cancellables = Set<AnyCancellable>()
+    /// Cancellable for the icon update polling timer.
+    private var pollCancellable: AnyCancellable?
 
     // MARK: - Initialization
 
@@ -102,7 +102,7 @@ final class StatusBarController {
     private func setupPopover() {
         guard let coordinator else { return }
 
-        popover.contentSize = NSSize(width: 300, height: 420)
+        popover.contentSize = NSSize(width: AppConstants.MenuPopover.width, height: AppConstants.MenuPopover.height)
         popover.behavior = .transient
         popover.animates = true
 
@@ -123,14 +123,25 @@ final class StatusBarController {
 
     /// Sets up observation of coordinator state changes.
     private func setupObservation() {
-        // Update icon when timer state changes
-        // Using a timer to periodically update since @Observable doesn't work directly with NSView
-        Timer.publish(every: 0.1, on: .main, in: .common)
+        // Update icon periodically since @Observable doesn't work directly with NSView.
+        // Use 1s interval — countdown only changes once per second.
+        startPolling()
+    }
+
+    /// Starts the icon update polling timer.
+    private func startPolling() {
+        stopPolling()
+        pollCancellable = Timer.publish(every: AppConstants.MenuBar.iconUpdateInterval, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 self?.updateIcon()
             }
-            .store(in: &cancellables)
+    }
+
+    /// Stops the icon update polling timer.
+    private func stopPolling() {
+        pollCancellable?.cancel()
+        pollCancellable = nil
     }
 
     // MARK: - Public Methods
@@ -147,6 +158,12 @@ final class StatusBarController {
             statusItem.length = NSStatusItem.variableLength
         } else {
             statusItem.length = 22
+        }
+
+        // Update accessibility label
+        if let coordinator {
+            let state = coordinator.stateMachine.currentState
+            statusItem.button?.setAccessibilityLabel("PomoDaddy: \(state.displayName)")
         }
     }
 
@@ -237,17 +254,17 @@ final class StatusBarController {
 
     @objc
     private func startTimer() {
-        coordinator?.stateMachine.send(.start())
+        coordinator?.start()
     }
 
     @objc
     private func pauseTimer() {
-        coordinator?.stateMachine.send(.pause)
+        coordinator?.pause()
     }
 
     @objc
     private func resumeTimer() {
-        coordinator?.stateMachine.send(.resume)
+        coordinator?.resume()
     }
 
     @objc
@@ -257,6 +274,6 @@ final class StatusBarController {
 
     @objc
     private func quitApp() {
-        NSApplication.shared.terminate(nil)
+        coordinator?.quit()
     }
 }

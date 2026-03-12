@@ -86,6 +86,13 @@ extension LinearGradient {
         endPoint: .bottomTrailing
     )
 
+    /// Gradient for long break mode - lavender to skyBlue
+    static let longBreakGradient = LinearGradient(
+        colors: [.lavender, .skyBlue],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
     /// Gradient for celebrations - sunnyYellow to hotPink to lavender
     static let celebrationGradient = LinearGradient(
         colors: [.sunnyYellow, .hotPink, .lavender],

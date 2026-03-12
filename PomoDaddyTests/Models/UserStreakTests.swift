@@ -82,11 +82,10 @@ final class UserStreakTests: XCTestCase {
         let streak = UserStreak()
         let calendar = Calendar.current
 
-        // Build up a streak by recording backwards in time
         let today = calendar.startOfDay(for: Date())
 
-        // Record 5 consecutive days
-        for dayOffset in 0 ..< 5 {
+        // Build a 5-day streak in chronological order (oldest first)
+        for dayOffset in (0 ..< 5).reversed() {
             guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else {
                 continue
             }
@@ -96,22 +95,37 @@ final class UserStreakTests: XCTestCase {
         XCTAssertEqual(streak.currentStreakDays, 5)
         XCTAssertEqual(streak.longestStreakDays, 5)
 
-        // Break the streak by recording a date 7 days ago
-        if let weekAgo = calendar.date(byAdding: .day, value: -7, to: today) {
-            streak.recordActivity(on: weekAgo)
+        // Now simulate a broken streak: skip 2 days into the future then record
+        // We can't easily go forward in time, so instead create a new streak
+        // and build a shorter one to test longest tracking
+        let newStreak = UserStreak()
+
+        // Record a 3-day streak, then a gap, then a 2-day streak
+        guard let fiveDaysAgo = calendar.date(byAdding: .day, value: -5, to: today),
+              let fourDaysAgo = calendar.date(byAdding: .day, value: -4, to: today),
+              let threeDaysAgo = calendar.date(byAdding: .day, value: -3, to: today),
+              let yesterday = calendar.date(byAdding: .day, value: -1, to: today)
+        else {
+            XCTFail("Could not create test dates")
+            return
         }
 
-        // Build shorter streak of 3 days
-        for dayOffset in 0 ..< 3 {
-            guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: Date()) else {
-                continue
-            }
-            streak.recordActivity(on: date)
-        }
+        // 3-day streak
+        newStreak.recordActivity(on: fiveDaysAgo)
+        newStreak.recordActivity(on: fourDaysAgo)
+        newStreak.recordActivity(on: threeDaysAgo)
+        XCTAssertEqual(newStreak.currentStreakDays, 3)
+        XCTAssertEqual(newStreak.longestStreakDays, 3)
 
-        XCTAssertEqual(streak.currentStreakDays, 3)
-        // Longest should still be 5
-        XCTAssertEqual(streak.longestStreakDays, 5)
+        // Gap of 1 day, then 2-day streak
+        newStreak.recordActivity(on: yesterday)
+        XCTAssertEqual(newStreak.currentStreakDays, 1) // Streak broken
+
+        newStreak.recordActivity(on: today)
+        XCTAssertEqual(newStreak.currentStreakDays, 2)
+
+        // Longest should still be 3
+        XCTAssertEqual(newStreak.longestStreakDays, 3)
     }
 
     // MARK: - Edge Cases
@@ -244,8 +258,8 @@ final class UserStreakTests: XCTestCase {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
 
-        // Record 7 consecutive days
-        for dayOffset in 0 ..< 7 {
+        // Record 7 consecutive days in chronological order (oldest first)
+        for dayOffset in (0 ..< 7).reversed() {
             guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else {
                 continue
             }

@@ -16,6 +16,7 @@ import Observation
 /// This engine uses the system clock to calculate remaining time, ensuring that
 /// the timer remains accurate even if the app is suspended or the device sleeps.
 @Observable
+@MainActor
 final class TimerEngine {
     // MARK: - Public Properties
 
@@ -64,11 +65,7 @@ final class TimerEngine {
 
     // MARK: - Initialization
 
-    init() {}
-
-    deinit {
-        stop()
-    }
+    nonisolated init() {}
 
     // MARK: - Public Methods
 
@@ -243,6 +240,7 @@ struct TimerEngineState: Codable {
     let savedAt: Date
 
     /// Creates a state snapshot from a TimerEngine.
+    @MainActor
     init(from engine: TimerEngine) {
         remainingSeconds = engine.captureRemainingTime() ?? 0
         totalDuration = engine.totalDuration

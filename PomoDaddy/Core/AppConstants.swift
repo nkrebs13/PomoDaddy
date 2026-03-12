@@ -45,8 +45,38 @@ enum AppConstants {
         /// Menu popover width.
         static let width: CGFloat = 300
 
+        /// Menu popover height.
+        static let height: CGFloat = 420
+
         /// Timer ring size (diameter).
         static let timerRingSize: CGFloat = 120
+    }
+
+    // MARK: - Menu Bar
+
+    enum MenuBar {
+        /// Icon update polling interval in seconds.
+        static let iconUpdateInterval: TimeInterval = 1.0
+    }
+
+    // MARK: - Settings
+
+    enum Settings {
+        /// Settings view width.
+        static let width: CGFloat = 300
+
+        /// Settings view height.
+        static let height: CGFloat = 450
+    }
+
+    // MARK: - Daily Focus
+
+    enum DailyFocus {
+        /// Daily goal in minutes (2 hours).
+        static let dailyGoalMinutes = 120
+
+        /// Maximum tomato icons to display.
+        static let maxTomatoDisplay = 8
     }
 
     // MARK: - UserDefaults Keys

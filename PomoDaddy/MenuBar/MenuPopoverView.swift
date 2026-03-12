@@ -5,6 +5,7 @@
 //  SwiftUI popover content for the menu bar status item.
 //
 
+import os.log
 import SwiftUI
 
 // MARK: - Menu Popover View
@@ -85,11 +86,7 @@ struct MenuPopoverView: View {
         case .running(.shortBreak), .paused(.shortBreak):
             .breakGradient
         case .running(.longBreak), .paused(.longBreak):
-            LinearGradient(
-                colors: [.lavender, .skyBlue],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            .longBreakGradient
         }
     }
 
@@ -151,6 +148,7 @@ struct MenuPopoverView: View {
                     .rotationEffect(.degrees(showingSettings ? 90 : 0))
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(showingSettings ? "Close settings" : "Open settings")
             .help("Settings")
         }
     }
@@ -191,6 +189,9 @@ struct MenuPopoverView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(timerState.displayName), \(formattedTime) remaining, \(Int(progress * 100)) percent complete")
+            .accessibilityAddTraits(.updatesFrequently)
             .padding(.vertical, 8)
         }
     }
@@ -201,7 +202,7 @@ struct MenuPopoverView: View {
         HStack(spacing: 16) {
             // Reset button
             Button {
-                coordinator.stateMachine.send(.reset)
+                coordinator.reset()
             } label: {
                 Image(systemName: "arrow.counterclockwise")
                     .font(.system(size: 16, weight: .medium))
@@ -212,13 +213,14 @@ struct MenuPopoverView: View {
             .buttonStyle(.animated)
             .disabled(!timerState.isActive)
             .opacity(timerState.isActive ? 1 : 0.5)
+            .accessibilityLabel("Reset timer")
             .help("Reset timer")
 
             // Play/Pause button
             Button {
-                handlePlayPause()
+                coordinator.togglePlayPause()
             } label: {
-                Image(systemName: playPauseIcon)
+                Image(systemName: timerState.playPauseIcon)
                     .font(.system(size: 24, weight: .semibold))
                     .frame(width: 64, height: 64)
                     .foregroundStyle(.white)
@@ -226,11 +228,12 @@ struct MenuPopoverView: View {
                     .clipShape(Circle())
             }
             .buttonStyle(.animated)
-            .help(playPauseHelpText)
+            .accessibilityLabel(timerState.playPauseLabel)
+            .help(timerState.playPauseLabel)
 
             // Skip button
             Button {
-                coordinator.stateMachine.send(.skip)
+                coordinator.skip()
             } label: {
                 Image(systemName: "forward.fill")
                     .font(.system(size: 16, weight: .medium))
@@ -241,40 +244,8 @@ struct MenuPopoverView: View {
             .buttonStyle(.animated)
             .disabled(!timerState.isActive)
             .opacity(timerState.isActive ? 1 : 0.5)
+            .accessibilityLabel("Skip to next interval")
             .help("Skip to next interval")
-        }
-    }
-
-    private var playPauseIcon: String {
-        switch timerState {
-        case .idle:
-            "play.fill"
-        case .running:
-            "pause.fill"
-        case .paused:
-            "play.fill"
-        }
-    }
-
-    private var playPauseHelpText: String {
-        switch timerState {
-        case .idle:
-            "Start focus session"
-        case .running:
-            "Pause timer"
-        case .paused:
-            "Resume timer"
-        }
-    }
-
-    private func handlePlayPause() {
-        switch timerState {
-        case .idle:
-            coordinator.stateMachine.send(.start())
-        case .running:
-            coordinator.stateMachine.send(.pause)
-        case .paused:
-            coordinator.stateMachine.send(.resume)
         }
     }
 
@@ -301,6 +272,8 @@ struct MenuPopoverView: View {
                         .animation(.modeTransition, value: completedPomodoros)
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(completedPomodoros) of \(pomodorosUntilLongBreak) pomodoros completed in current cycle")
         }
     }
 
@@ -335,19 +308,20 @@ struct MenuPopoverView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(totalToday) pomodoros today, \(focusTimeText) focus time")
         .padding(.vertical, 4)
     }
 
     private var focusTimeText: String {
-        let workDuration = coordinator.stateMachine.settings.workDuration
-        let totalMinutes = Int(Double(totalToday) * workDuration / 60)
-
-        if totalMinutes >= 60 {
-            let hours = totalMinutes / 60
-            let mins = totalMinutes % 60
-            return mins > 0 ? "\(hours)h \(mins)m" : "\(hours)h"
+        let totalMinutes: Int
+        do {
+            totalMinutes = try coordinator.todayFocusMinutes()
+        } catch {
+            Logger.logError(error, context: "Failed to load today's focus minutes", log: Logger.stats)
+            totalMinutes = 0
         }
-        return "\(totalMinutes)m"
+        return TimeFormatting.formatFocusTime(minutes: totalMinutes)
     }
 
     // MARK: - Settings Section
@@ -383,11 +357,9 @@ struct MenuPopoverView: View {
 
                     // Auto-start breaks
                     Toggle(isOn: Binding(
-                        get: { coordinator.stateMachine.settings.autoStartBreaks },
+                        get: { coordinator.settingsManager.settings.autoStartBreaks },
                         set: {
-                            var settings = coordinator.stateMachine.settings
-                            settings.autoStartBreaks = $0
-                            coordinator.stateMachine.settings = settings
+                            coordinator.settingsManager.setAutoStartBreaks(enabled: $0)
                         }
                     )) {
                         Text("Auto-start Breaks")
@@ -397,11 +369,9 @@ struct MenuPopoverView: View {
 
                     // Auto-start work
                     Toggle(isOn: Binding(
-                        get: { coordinator.stateMachine.settings.autoStartWork },
+                        get: { coordinator.settingsManager.settings.autoStartWork },
                         set: {
-                            var settings = coordinator.stateMachine.settings
-                            settings.autoStartWork = $0
-                            coordinator.stateMachine.settings = settings
+                            coordinator.settingsManager.setAutoStartWork(enabled: $0)
                         }
                     )) {
                         Text("Auto-start Work")
@@ -418,7 +388,7 @@ struct MenuPopoverView: View {
 
     private var quitButton: some View {
         Button {
-            NSApplication.shared.terminate(nil)
+            coordinator.quit()
         } label: {
             HStack {
                 Image(systemName: "power")
@@ -432,6 +402,7 @@ struct MenuPopoverView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("Quit PomoDaddy")
         .help("Quit PomoDaddy")
     }
 }

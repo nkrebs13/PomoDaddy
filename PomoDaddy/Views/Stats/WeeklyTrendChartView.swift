@@ -6,6 +6,7 @@
 //
 
 import Charts
+import os.log
 import SwiftData
 import SwiftUI
 
@@ -35,14 +36,7 @@ struct WeeklyTrendChartView: View {
 
         /// Formatted focus time for display.
         var formattedTime: String {
-            let hours = focusMinutes / 60
-            let minutes = focusMinutes % 60
-
-            if hours > 0 {
-                return "\(hours)h \(minutes)m"
-            } else {
-                return "\(minutes)m"
-            }
+            TimeFormatting.formatFocusTime(minutes: focusMinutes)
         }
     }
 
@@ -138,6 +132,8 @@ struct WeeklyTrendChartView: View {
         }
         .chartYScale(domain: 0 ... (maxMinutes > 0 ? Double(maxMinutes) * 1.2 : 60))
         .animation(.spring(response: 0.8, dampingFraction: 0.7), value: hasAppeared)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Weekly focus chart: \(weeklyData.map { "\($0.dayName) \($0.formattedTime)" }.joined(separator: ", "))")
     }
 
     /// Detail view for a selected day.
@@ -207,6 +203,7 @@ struct WeeklyTrendChartView: View {
                 ))
             }
         } catch {
+            Logger.logError(error, context: "Failed to load weekly trend data", log: Logger.stats)
             // Generate empty data if fetching fails
             for dayOffset in (0 ..< 7).reversed() {
                 guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
@@ -239,21 +236,12 @@ struct WeeklyTrendChartView: View {
 
     /// Formats minutes as axis labels.
     private func formatAxisLabel(_ minutes: Int) -> String {
-        if minutes >= 60 {
-            return "\(minutes / 60)h"
-        }
-        return "\(minutes)m"
+        TimeFormatting.formatAxisLabel(minutes: minutes)
     }
 
     /// Formats total weekly time.
     private func formatTotalTime(_ minutes: Int) -> String {
-        let hours = minutes / 60
-        let mins = minutes % 60
-
-        if hours > 0 {
-            return "Total: \(hours)h \(mins)m"
-        }
-        return "Total: \(mins)m"
+        "Total: \(TimeFormatting.formatFocusTime(minutes: minutes))"
     }
 }
 

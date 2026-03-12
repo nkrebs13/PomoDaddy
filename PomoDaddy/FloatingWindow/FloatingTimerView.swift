@@ -75,6 +75,7 @@ struct FloatingTimerView: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 8)
+        .accessibilityHint("Double-tap to toggle compact mode")
         .onTapGesture(count: 2) {
             withAnimation(AnimationConstants.modeTransition) {
                 isCompact.toggle()
@@ -123,11 +124,7 @@ struct FloatingTimerView: View {
             case .shortBreak:
                 .breakGradient
             case .longBreak:
-                LinearGradient(
-                    colors: [.lavender, .skyBlue],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                .longBreakGradient
             }
         }
     }
@@ -155,6 +152,9 @@ struct FloatingTimerView: View {
                         .animation(AnimationConstants.timerTick, value: coordinator.stateMachine.formattedTime)
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(coordinator.stateMachine.currentState.displayName), \(coordinator.stateMachine.formattedTime) remaining, \(Int(coordinator.stateMachine.progress * 100)) percent complete")
+            .accessibilityAddTraits(.updatesFrequently)
 
             // Mode label
             Text(modeLabelText)
@@ -193,17 +193,19 @@ struct FloatingTimerView: View {
             // Previous / Reset button
             ControlButton(
                 icon: "arrow.counterclockwise",
+                accessibilityLabel: "Reset timer",
                 action: {
-                    coordinator.stateMachine.send(.reset)
+                    coordinator.reset()
                 },
                 isEnabled: coordinator.stateMachine.currentState.isActive
             )
 
             // Play / Pause button
             ControlButton(
-                icon: playPauseIcon,
+                icon: coordinator.stateMachine.currentState.playPauseIcon,
+                accessibilityLabel: coordinator.stateMachine.currentState.playPauseLabel,
                 action: {
-                    handlePlayPause()
+                    coordinator.togglePlayPause()
                 },
                 isPrimary: true,
                 accentColor: currentAccentColor
@@ -212,35 +214,12 @@ struct FloatingTimerView: View {
             // Skip button
             ControlButton(
                 icon: "forward.fill",
+                accessibilityLabel: "Skip to next interval",
                 action: {
-                    coordinator.stateMachine.send(.skip)
+                    coordinator.skip()
                 },
                 isEnabled: coordinator.stateMachine.currentState.isActive
             )
-        }
-    }
-
-    /// Returns the appropriate icon for play/pause button.
-    private var playPauseIcon: String {
-        switch coordinator.stateMachine.currentState {
-        case .idle:
-            "play.fill"
-        case .running:
-            "pause.fill"
-        case .paused:
-            "play.fill"
-        }
-    }
-
-    /// Handles play/pause button tap.
-    private func handlePlayPause() {
-        switch coordinator.stateMachine.currentState {
-        case .idle:
-            coordinator.stateMachine.send(.start())
-        case .running:
-            coordinator.stateMachine.send(.pause)
-        case .paused:
-            coordinator.stateMachine.send(.resume)
         }
     }
 
@@ -260,6 +239,8 @@ struct FloatingTimerView: View {
                     )
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(coordinator.stateMachine.completedPomodorosInCycle) of \(coordinator.stateMachine.settings.pomodorosUntilLongBreak) pomodoros completed in current cycle")
         .padding(.top, 4)
     }
 }
@@ -280,6 +261,7 @@ struct DragHandleView: View {
 /// A styled control button for timer actions.
 struct ControlButton: View {
     let icon: String
+    let accessibilityLabel: String
     let action: () -> Void
     var isPrimary = false
     var isEnabled = true
@@ -307,6 +289,7 @@ struct ControlButton: View {
         }
         .buttonStyle(.plain)
         .disabled(!isEnabled && !isPrimary)
+        .accessibilityLabel(accessibilityLabel)
         .onHover { hovering in
             withAnimation(AnimationConstants.buttonHover) {
                 isHovering = hovering

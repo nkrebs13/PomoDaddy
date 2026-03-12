@@ -23,10 +23,10 @@ struct StatsView: View {
     // MARK: - Time Period
 
     /// Available time periods for statistics display.
+    /// Note: Month is excluded until monthly stats calculation is implemented.
     enum StatsPeriod: String, CaseIterable, Identifiable {
         case today = "Today"
         case week = "Week"
-        case month = "Month"
 
         var id: String {
             rawValue

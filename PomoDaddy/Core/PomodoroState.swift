@@ -45,13 +45,14 @@ enum IntervalType: String, Codable, CaseIterable, Identifiable {
 
     /// Default duration in seconds for this interval type.
     var defaultDuration: TimeInterval {
+        let defaults = PomodoroSettings.default
         switch self {
         case .work:
-            TimerConfiguration.defaultWorkDuration
+            return defaults.workDuration
         case .shortBreak:
-            TimerConfiguration.defaultShortBreakDuration
+            return defaults.shortBreakDuration
         case .longBreak:
-            TimerConfiguration.defaultLongBreakDuration
+            return defaults.longBreakDuration
         }
     }
 }
@@ -119,6 +120,28 @@ enum TimerState: Equatable {
             .gray
         case .running(let type), .paused(let type):
             type.accentColor
+        }
+    }
+
+    /// SF Symbol name for play/pause button based on current state.
+    var playPauseIcon: String {
+        switch self {
+        case .idle, .paused:
+            "play.fill"
+        case .running:
+            "pause.fill"
+        }
+    }
+
+    /// Accessibility label for play/pause button based on current state.
+    var playPauseLabel: String {
+        switch self {
+        case .idle:
+            "Start focus session"
+        case .running:
+            "Pause timer"
+        case .paused:
+            "Resume timer"
         }
     }
 }

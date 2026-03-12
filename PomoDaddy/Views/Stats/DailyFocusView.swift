@@ -5,6 +5,7 @@
 //  Displays today's focus progress with a prominent progress ring.
 //
 
+import os.log
 import SwiftData
 import SwiftUI
 
@@ -26,11 +27,11 @@ struct DailyFocusView: View {
     @State private var ringProgress: Double = 0
     @State private var hasAppeared = false
 
-    /// Daily goal in minutes (defaults to 2 hours).
-    private let dailyGoalMinutes = 120
+    /// Daily goal in minutes.
+    private let dailyGoalMinutes = AppConstants.DailyFocus.dailyGoalMinutes
 
     /// Maximum tomatoes to display in the row.
-    private let maxTomatoDisplay = 8
+    private let maxTomatoDisplay = AppConstants.DailyFocus.maxTomatoDisplay
 
     // MARK: - Body
 
@@ -112,6 +113,9 @@ struct DailyFocusView: View {
             }
         }
         .frame(width: 180, height: 180)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Daily focus progress: \(formattedFocusTime) of \(dailyGoalMinutes / 60) hour goal, \(Int(ringProgress * 100)) percent complete")
+        .accessibilityAddTraits(.updatesFrequently)
     }
 
     /// Row of tomato icons representing completed sessions.
@@ -128,6 +132,8 @@ struct DailyFocusView: View {
                     .foregroundStyle(Color.tomatoRed)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(completedPomodoros) completed pomodoros today")
         .padding(.vertical, 8)
     }
 
@@ -155,14 +161,7 @@ struct DailyFocusView: View {
 
     /// Formats focus minutes as "Xh Ym" or "Ym".
     private var formattedFocusTime: String {
-        let hours = focusMinutes / 60
-        let minutes = focusMinutes % 60
-
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else {
-            return "\(minutes)m"
-        }
+        TimeFormatting.formatFocusTime(minutes: focusMinutes)
     }
 
     // MARK: - Methods
@@ -174,7 +173,7 @@ struct DailyFocusView: View {
             focusMinutes = try calculator.todayFocusMinutes()
             completedPomodoros = try calculator.todayCompletedPomodoros()
         } catch {
-            // Use defaults if fetching fails
+            Logger.logError(error, context: "Failed to load today's stats", log: Logger.stats)
             focusMinutes = 0
             completedPomodoros = 0
         }

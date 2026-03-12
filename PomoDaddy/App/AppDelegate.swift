@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import UserNotifications
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusBarController: StatusBarController?
@@ -13,6 +14,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let appCoordinator = AppCoordinator()
         coordinator = appCoordinator
 
+        // Set notification delegate to handle interactive actions
+        UNUserNotificationCenter.current().delegate = self
+
         // Initialize status bar controller
         statusBarController = StatusBarController(coordinator: appCoordinator)
     }
@@ -20,5 +24,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification) {
         // Save timer state
         coordinator?.saveState()
+    }
+}
+
+// MARK: - UNUserNotificationCenterDelegate
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        switch response.actionIdentifier {
+        case NotificationScheduler.Identifiers.actionStartNext:
+            Task { @MainActor in
+                coordinator?.start()
+            }
+        default:
+            break
+        }
+        completionHandler()
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        // Show notifications even when app is in foreground
+        completionHandler([.banner, .sound])
     }
 }
