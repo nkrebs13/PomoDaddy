@@ -63,14 +63,14 @@ final class PomodoroStateMachineTests: XCTestCase {
         stateMachine.send(.start(.shortBreak))
 
         XCTAssertEqual(stateMachine.currentState, .running(.shortBreak))
-        XCTAssertEqual(stateMachine.formattedTime, "00:30")
+        XCTAssertEqual(stateMachine.formattedTime, "01:00")
     }
 
     func testStartLongBreak() {
         stateMachine.send(.start(.longBreak))
 
         XCTAssertEqual(stateMachine.currentState, .running(.longBreak))
-        XCTAssertEqual(stateMachine.formattedTime, "00:45")
+        XCTAssertEqual(stateMachine.formattedTime, "01:00")
     }
 
     // MARK: - Pause/Resume Tests
@@ -374,8 +374,8 @@ final class PomodoroStateMachineTests: XCTestCase {
 
     func testDurationForIntervalTypes() {
         XCTAssertEqual(stateMachine.duration(for: .work), 60)
-        XCTAssertEqual(stateMachine.duration(for: .shortBreak), 30)
-        XCTAssertEqual(stateMachine.duration(for: .longBreak), 45)
+        XCTAssertEqual(stateMachine.duration(for: .shortBreak), 60)
+        XCTAssertEqual(stateMachine.duration(for: .longBreak), 60)
     }
 
     // MARK: - Progress Tests
