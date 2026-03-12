@@ -289,7 +289,7 @@ struct ControlButton: View {
         }
         .buttonStyle(.plain)
         .disabled(!isEnabled && !isPrimary)
-        .accessibilityLabel(accessibilityLabel.isEmpty ? icon : accessibilityLabel)
+        .accessibilityLabel(accessibilityLabel)
         .onHover { hovering in
             withAnimation(AnimationConstants.buttonHover) {
                 isHovering = hovering
