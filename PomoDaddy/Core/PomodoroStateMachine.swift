@@ -108,7 +108,7 @@ final class PomodoroStateMachine {
             handleSkip()
         }
 
-        persistState()
+        // Note: persistState() is called from notifyStateChange() to avoid redundant persists
     }
 
     /// Returns the next interval type that will follow the current one.
@@ -298,6 +298,8 @@ final class PomodoroStateMachine {
 
     private func notifyStateChange(from oldState: TimerState, to newState: TimerState) {
         onStateChange?(oldState, newState)
+        // Persist state only when it actually changes
+        persistState()
     }
 
     private func resetDailyCountIfNeeded() {

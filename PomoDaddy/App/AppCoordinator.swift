@@ -50,9 +50,6 @@ final class AppCoordinator {
 
     // MARK: - Sub-Coordinators
 
-    /// Manages UI state preferences.
-    let uiStateCoordinator: UIStateCoordinator
-
     /// Manages floating window lifecycle.
     let floatingWindowCoordinator: FloatingWindowCoordinator
 
@@ -91,7 +88,6 @@ final class AppCoordinator {
         appNapManager = AppNapManager()
 
         // 9. Initialize sub-coordinators
-        uiStateCoordinator = UIStateCoordinator()
         sessionCoordinator = SessionCoordinator(sessionRecorder: sessionRecorder)
         floatingWindowCoordinator = FloatingWindowCoordinator()
 
@@ -175,14 +171,14 @@ final class AppCoordinator {
 
     /// Whether the floating window is visible.
     var isFloatingWindowVisible: Bool {
-        get { uiStateCoordinator.isFloatingWindowVisible }
-        set { uiStateCoordinator.isFloatingWindowVisible = newValue }
+        get { settingsManager.settings.showFloatingWindow }
+        set { settingsManager.setShowFloatingWindow(enabled: newValue) }
     }
 
     /// Whether the menu bar countdown is visible.
     var isMenuBarCountdownVisible: Bool {
-        get { uiStateCoordinator.isMenuBarCountdownVisible }
-        set { uiStateCoordinator.isMenuBarCountdownVisible = newValue }
+        get { settingsManager.settings.showMenuBarCountdown }
+        set { settingsManager.setShowMenuBarCountdown(enabled: newValue) }
     }
 
     // MARK: - Timer Control Methods
@@ -258,18 +254,18 @@ final class AppCoordinator {
     /// Creates and shows the floating window.
     func showFloatingWindow() {
         floatingWindowCoordinator.show()
-        uiStateCoordinator.isFloatingWindowVisible = true
+        settingsManager.setShowFloatingWindow(enabled: true)
     }
 
     /// Hides the floating window.
     func hideFloatingWindow() {
         floatingWindowCoordinator.hide()
-        uiStateCoordinator.isFloatingWindowVisible = false
+        settingsManager.setShowFloatingWindow(enabled: false)
     }
 
     /// Toggles floating window visibility.
     func toggleFloatingWindow() {
-        if uiStateCoordinator.isFloatingWindowVisible {
+        if isFloatingWindowVisible {
             hideFloatingWindow()
         } else {
             showFloatingWindow()
@@ -350,16 +346,16 @@ final class AppCoordinator {
 
     /// Saves the current UI state.
     func saveState() {
-        uiStateCoordinator.saveState()
+        // Settings are auto-saved by SettingsManager via didSet
         floatingWindowCoordinator.savePosition()
     }
 
     /// Restores the UI state from persistence.
     func restoreState() {
-        uiStateCoordinator.restoreState()
+        // Settings are auto-loaded by SettingsManager in init()
 
         // Show floating window if it should be visible
-        if uiStateCoordinator.isFloatingWindowVisible {
+        if isFloatingWindowVisible {
             showFloatingWindow()
         }
     }

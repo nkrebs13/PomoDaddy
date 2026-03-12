@@ -364,9 +364,6 @@ struct MenuPopoverView: View {
                 }
             }
             .toggleStyle(.switch)
-            .onChange(of: coordinator.isFloatingWindowVisible) { _, _ in
-                coordinator.saveState()
-            }
 
             // Menu bar countdown toggle
             Toggle(isOn: $coordinator.isMenuBarCountdownVisible) {
@@ -378,9 +375,6 @@ struct MenuPopoverView: View {
                 }
             }
             .toggleStyle(.switch)
-            .onChange(of: coordinator.isMenuBarCountdownVisible) { _, _ in
-                coordinator.saveState()
-            }
 
             // Expanded settings
             if showingSettings {

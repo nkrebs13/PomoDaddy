@@ -5,6 +5,7 @@
 //  Reusable animation constants for consistent app-wide animations.
 //
 
+import Foundation
 import SwiftUI
 
 // MARK: - Animation Constants
@@ -33,7 +34,7 @@ enum AnimationConstants {
     // MARK: Celebration Animations
 
     /// Duration for confetti celebration animation in seconds
-    static let confettiDuration = 2.5
+    static let confettiDuration: TimeInterval = AppConstants.Confetti.duration
 
     // MARK: Scale Values
 

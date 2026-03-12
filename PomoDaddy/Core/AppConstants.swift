@@ -52,12 +52,6 @@ enum AppConstants {
     // MARK: - UserDefaults Keys
 
     enum UserDefaultsKeys {
-        /// Key for floating window visibility preference.
-        static let isFloatingWindowVisible = "isFloatingWindowVisible"
-
-        /// Key for menu bar countdown visibility preference.
-        static let isMenuBarCountdownVisible = "isMenuBarCountdownVisible"
-
         /// Key for persisted state machine state.
         static let stateMachineState = "com.pomodaddy.stateMachineState"
     }
