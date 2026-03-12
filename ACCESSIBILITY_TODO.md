@@ -74,12 +74,12 @@ Text(timeString)
 - [ ] Verify timer updates are announced
 - [ ] Verify state changes are announced
 
-### Estimated Work
-- Primary controls: 2-3 hours
-- Settings: 2-3 hours  
-- Stats views: 1-2 hours
-- Testing and refinement: 1-2 hours
-**Total: 6-10 hours remaining**
+### Scope
+
+Three areas of work remain:
+1. **Primary controls** — MenuPopoverView, FloatingTimerView (highest impact)
+2. **Settings** — All toggles, steppers, presets, and back button
+3. **Stats views** — Progress rings, charts, and streak cards
 
 ### Notes
 - This is critical for accessibility compliance

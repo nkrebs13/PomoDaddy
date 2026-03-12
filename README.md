@@ -8,7 +8,7 @@
 
 ---
 
-![PomoDaddy Screenshot](docs/screenshot.png)
+<!-- Screenshots coming soon -->
 
 ---
 
@@ -38,7 +38,7 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/PomoDaddy.git
+   git clone https://github.com/nkrebs13/PomoDaddy.git
    cd PomoDaddy
    ```
 
@@ -84,29 +84,27 @@ PomoDaddy follows a clean SwiftUI architecture with SwiftData for persistence.
 
 ---
 
+## 🤝 Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+
+---
+
+## 🔒 Security
+
+See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
+
+---
+
+## 🔐 Privacy
+
+PomoDaddy stores all data locally on your Mac using SwiftData. There are no network requests, no telemetry, no analytics, and no data leaves your device.
+
+---
+
 ## 📄 License
 
-MIT License © 2026
-
-```
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
