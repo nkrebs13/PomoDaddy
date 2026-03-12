@@ -115,6 +115,15 @@ final class PomodoroStateMachine {
     func nextIntervalType() -> IntervalType {
         switch currentState {
         case .idle:
+            // If we've completed pomodoros but haven't taken a break yet,
+            // return the appropriate break type
+            if completedPomodorosInCycle > 0 {
+                if completedPomodorosInCycle >= settings.pomodorosUntilLongBreak {
+                    return .longBreak
+                } else {
+                    return .shortBreak
+                }
+            }
             return .work
 
         case .running(let type), .paused(let type):
