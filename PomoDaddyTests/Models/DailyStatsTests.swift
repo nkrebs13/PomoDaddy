@@ -10,7 +10,8 @@ final class DailyStatsTests: XCTestCase {
 
         XCTAssertEqual(stats.completedPomodoros, 0)
         XCTAssertEqual(stats.totalFocusMinutes, 0)
-        XCTAssertEqual(stats.date, date)
+        // DailyStats.init normalizes date to start of day
+        XCTAssertEqual(stats.date, Calendar.current.startOfDay(for: date))
     }
 
     // MARK: - Record Pomodoro Tests

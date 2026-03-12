@@ -159,6 +159,12 @@ final class StatusBarController {
         } else {
             statusItem.length = 22
         }
+
+        // Update accessibility label
+        if let coordinator {
+            let state = coordinator.stateMachine.currentState
+            statusItem.button?.setAccessibilityLabel("PomoDaddy: \(state.displayName)")
+        }
     }
 
     /// Shows the popover attached to the status item.

@@ -217,6 +217,7 @@ struct SettingsView: View {
                 .foregroundStyle(Color.tomatoRed)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Back to timer")
 
             Spacer()
 
@@ -372,6 +373,19 @@ struct DurationStepper: View {
                     .frame(width: 60, alignment: .leading)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(label): \(value) \(unit)")
+        .accessibilityValue("\(value)")
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment:
+                if value < range.upperBound { value += 1 }
+            case .decrement:
+                if value > range.lowerBound { value -= 1 }
+            @unknown default:
+                break
+            }
+        }
         .padding(.vertical, 4)
     }
 
@@ -461,6 +475,11 @@ struct SettingsToggle: View {
         .onHover { hovering in
             isHovering = hovering
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(title)
+        .accessibilityValue(isOn ? "Enabled" : "Disabled")
+        .accessibilityHint(subtitle)
+        .accessibilityAddTraits(.isButton)
         .onTapGesture {
             withAnimation(.modeTransition) {
                 isOn.toggle()
@@ -556,6 +575,9 @@ struct PresetButton: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(title) preset: \(subtitle)")
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
         .scaleEffect(scaleValue)
         .animation(.buttonHover, value: isHovering)
         .animation(.buttonPress, value: isPressed)

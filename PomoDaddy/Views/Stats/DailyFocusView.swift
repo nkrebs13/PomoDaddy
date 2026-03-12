@@ -113,6 +113,9 @@ struct DailyFocusView: View {
             }
         }
         .frame(width: 180, height: 180)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Daily focus progress: \(formattedFocusTime) of \(dailyGoalMinutes / 60) hour goal, \(Int(ringProgress * 100)) percent complete")
+        .accessibilityAddTraits(.updatesFrequently)
     }
 
     /// Row of tomato icons representing completed sessions.
@@ -129,6 +132,8 @@ struct DailyFocusView: View {
                     .foregroundStyle(Color.tomatoRed)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(completedPomodoros) completed pomodoros today")
         .padding(.vertical, 8)
     }
 

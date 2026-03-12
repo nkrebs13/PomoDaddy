@@ -150,11 +150,18 @@ extension SessionRecorder {
         try modelContext.save()
     }
 
-    /// Deletes a session and adjusts related statistics.
+    /// Deletes a session by its persistent identifier and adjusts related statistics.
     ///
-    /// - Parameter session: The session to delete.
+    /// Uses `PersistentIdentifier` instead of a session object to safely work across
+    /// different ModelContexts (the actor has its own context separate from the caller's).
+    ///
+    /// - Parameter sessionID: The persistent identifier of the session to delete.
     /// - Throws: Any SwiftData errors that occur during the operation.
-    func delete(_ session: PomodoroSession) throws {
+    func delete(_ sessionID: PersistentIdentifier) throws {
+        guard let session = modelContext.model(for: sessionID) as? PomodoroSession else {
+            return
+        }
+
         // Adjust daily stats if the session was completed
         if session.wasCompleted {
             let calendarDay = session.calendarDay

@@ -148,6 +148,7 @@ struct MenuPopoverView: View {
                     .rotationEffect(.degrees(showingSettings ? 90 : 0))
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(showingSettings ? "Close settings" : "Open settings")
             .help("Settings")
         }
     }
@@ -188,6 +189,9 @@ struct MenuPopoverView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(timerState.displayName), \(formattedTime) remaining, \(Int(progress * 100)) percent complete")
+            .accessibilityAddTraits(.updatesFrequently)
             .padding(.vertical, 8)
         }
     }
@@ -209,13 +213,14 @@ struct MenuPopoverView: View {
             .buttonStyle(.animated)
             .disabled(!timerState.isActive)
             .opacity(timerState.isActive ? 1 : 0.5)
+            .accessibilityLabel("Reset timer")
             .help("Reset timer")
 
             // Play/Pause button
             Button {
-                handlePlayPause()
+                coordinator.togglePlayPause()
             } label: {
-                Image(systemName: playPauseIcon)
+                Image(systemName: timerState.playPauseIcon)
                     .font(.system(size: 24, weight: .semibold))
                     .frame(width: 64, height: 64)
                     .foregroundStyle(.white)
@@ -223,7 +228,8 @@ struct MenuPopoverView: View {
                     .clipShape(Circle())
             }
             .buttonStyle(.animated)
-            .help(playPauseHelpText)
+            .accessibilityLabel(timerState.playPauseLabel)
+            .help(timerState.playPauseLabel)
 
             // Skip button
             Button {
@@ -238,40 +244,8 @@ struct MenuPopoverView: View {
             .buttonStyle(.animated)
             .disabled(!timerState.isActive)
             .opacity(timerState.isActive ? 1 : 0.5)
+            .accessibilityLabel("Skip to next interval")
             .help("Skip to next interval")
-        }
-    }
-
-    private var playPauseIcon: String {
-        switch timerState {
-        case .idle:
-            "play.fill"
-        case .running:
-            "pause.fill"
-        case .paused:
-            "play.fill"
-        }
-    }
-
-    private var playPauseHelpText: String {
-        switch timerState {
-        case .idle:
-            "Start focus session"
-        case .running:
-            "Pause timer"
-        case .paused:
-            "Resume timer"
-        }
-    }
-
-    private func handlePlayPause() {
-        switch timerState {
-        case .idle:
-            coordinator.start()
-        case .running:
-            coordinator.pause()
-        case .paused:
-            coordinator.resume()
         }
     }
 
@@ -298,6 +272,8 @@ struct MenuPopoverView: View {
                         .animation(.modeTransition, value: completedPomodoros)
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(completedPomodoros) of \(pomodorosUntilLongBreak) pomodoros completed in current cycle")
         }
     }
 
@@ -332,6 +308,8 @@ struct MenuPopoverView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(totalToday) pomodoros today, \(focusTimeText) focus time")
         .padding(.vertical, 4)
     }
 
@@ -432,6 +410,7 @@ struct MenuPopoverView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("Quit PomoDaddy")
         .help("Quit PomoDaddy")
     }
 }

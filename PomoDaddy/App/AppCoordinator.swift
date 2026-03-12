@@ -222,6 +222,18 @@ final class AppCoordinator {
         stateMachine.send(.skip)
     }
 
+    /// Toggles play/pause based on current state.
+    func togglePlayPause() {
+        switch currentState {
+        case .idle:
+            start()
+        case .running:
+            pause()
+        case .paused:
+            resume()
+        }
+    }
+
     /// Gracefully quits the application after saving state.
     func quit() {
         saveState()

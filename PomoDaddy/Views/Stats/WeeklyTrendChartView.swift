@@ -139,6 +139,8 @@ struct WeeklyTrendChartView: View {
         }
         .chartYScale(domain: 0 ... (maxMinutes > 0 ? Double(maxMinutes) * 1.2 : 60))
         .animation(.spring(response: 0.8, dampingFraction: 0.7), value: hasAppeared)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Weekly focus chart: \(weeklyData.map { "\($0.dayName) \($0.formattedTime)" }.joined(separator: ", "))")
     }
 
     /// Detail view for a selected day.

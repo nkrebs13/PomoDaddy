@@ -120,6 +120,8 @@ struct StreakCard: View {
         .padding(.horizontal, 12)
         .background(cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title): \(value) \(subtitle)")
         .scaleEffect(hasAppeared ? 1 : 0.8)
         .opacity(hasAppeared ? 1 : 0)
         .onAppear {

@@ -122,6 +122,28 @@ enum TimerState: Equatable {
             type.accentColor
         }
     }
+
+    /// SF Symbol name for play/pause button based on current state.
+    var playPauseIcon: String {
+        switch self {
+        case .idle, .paused:
+            "play.fill"
+        case .running:
+            "pause.fill"
+        }
+    }
+
+    /// Accessibility label for play/pause button based on current state.
+    var playPauseLabel: String {
+        switch self {
+        case .idle:
+            "Start focus session"
+        case .running:
+            "Pause timer"
+        case .paused:
+            "Resume timer"
+        }
+    }
 }
 
 // MARK: - Codable Conformance for TimerState

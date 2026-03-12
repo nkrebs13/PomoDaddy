@@ -211,17 +211,19 @@ final class SessionRecorderTests: XCTestCase {
             wasCompleted: true
         )
 
-        // Get the session
-        let context = modelContainer.mainContext
-        var descriptor = FetchDescriptor<PomodoroSession>()
-        let sessions = try context.fetch(descriptor)
+        // Use a fresh context to find the session's ID
+        let freshContext = ModelContext(modelContainer)
+        let descriptor = FetchDescriptor<PomodoroSession>()
+        let sessions = try freshContext.fetch(descriptor)
         let session = try XCTUnwrap(sessions.first)
+        let sessionID = session.persistentModelID
 
-        // Delete it
-        try await sessionRecorder.delete(session)
+        // Delete it via the actor using the persistent identifier
+        try await sessionRecorder.delete(sessionID)
 
-        // Verify it was deleted
-        let remainingSessions = try context.fetch(descriptor)
+        // Use another fresh context to verify deletion
+        let verifyContext = ModelContext(modelContainer)
+        let remainingSessions = try verifyContext.fetch(descriptor)
         XCTAssertEqual(remainingSessions.count, 0)
 
         // Verify stats were adjusted
@@ -230,7 +232,7 @@ final class SessionRecorderTests: XCTestCase {
             predicate: DailyStats.forDate(today)
         )
         statsDescriptor.fetchLimit = 1
-        let stats = try context.fetch(statsDescriptor)
+        let stats = try verifyContext.fetch(statsDescriptor)
 
         // Stats should either be gone or have zero values
         if let stat = stats.first {
@@ -255,21 +257,23 @@ final class SessionRecorderTests: XCTestCase {
             )
         }
 
-        // Delete one session
-        let context = modelContainer.mainContext
-        var descriptor = FetchDescriptor<PomodoroSession>()
-        let sessions = try context.fetch(descriptor)
+        // Delete one session using persistent identifier
+        let freshContext = ModelContext(modelContainer)
+        let descriptor = FetchDescriptor<PomodoroSession>()
+        let sessions = try freshContext.fetch(descriptor)
         let sessionToDelete = try XCTUnwrap(sessions.first)
+        let sessionID = sessionToDelete.persistentModelID
 
-        try await sessionRecorder.delete(sessionToDelete)
+        try await sessionRecorder.delete(sessionID)
 
-        // Verify stats were adjusted correctly
+        // Verify stats were adjusted correctly using fresh context
+        let verifyContext = ModelContext(modelContainer)
         let today = Calendar.current.startOfDay(for: Date())
         var statsDescriptor = FetchDescriptor<DailyStats>(
             predicate: DailyStats.forDate(today)
         )
         statsDescriptor.fetchLimit = 1
-        let stats = try context.fetch(statsDescriptor)
+        let stats = try verifyContext.fetch(statsDescriptor)
 
         XCTAssertEqual(stats.first?.completedPomodoros, 2)
         XCTAssertEqual(stats.first?.totalFocusMinutes, 50)
