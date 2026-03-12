@@ -198,7 +198,7 @@ struct SettingsView: View {
             }
             .padding()
         }
-        .frame(width: 300, height: 450)
+        .frame(width: AppConstants.Settings.width, height: AppConstants.Settings.height)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 

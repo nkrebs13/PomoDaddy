@@ -36,14 +36,7 @@ struct WeeklyTrendChartView: View {
 
         /// Formatted focus time for display.
         var formattedTime: String {
-            let hours = focusMinutes / 60
-            let minutes = focusMinutes % 60
-
-            if hours > 0 {
-                return "\(hours)h \(minutes)m"
-            } else {
-                return "\(minutes)m"
-            }
+            TimeFormatting.formatFocusTime(minutes: focusMinutes)
         }
     }
 
@@ -243,21 +236,12 @@ struct WeeklyTrendChartView: View {
 
     /// Formats minutes as axis labels.
     private func formatAxisLabel(_ minutes: Int) -> String {
-        if minutes >= 60 {
-            return "\(minutes / 60)h"
-        }
-        return "\(minutes)m"
+        TimeFormatting.formatAxisLabel(minutes: minutes)
     }
 
     /// Formats total weekly time.
     private func formatTotalTime(_ minutes: Int) -> String {
-        let hours = minutes / 60
-        let mins = minutes % 60
-
-        if hours > 0 {
-            return "Total: \(hours)h \(mins)m"
-        }
-        return "Total: \(mins)m"
+        "Total: \(TimeFormatting.formatFocusTime(minutes: minutes))"
     }
 }
 

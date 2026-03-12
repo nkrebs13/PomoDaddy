@@ -137,14 +137,7 @@ struct StatsCalculator {
 
         /// Total focus time formatted as hours and minutes.
         var formattedTotalTime: String {
-            let hours = totalFocusMinutes / 60
-            let minutes = totalFocusMinutes % 60
-
-            if hours > 0 {
-                return "\(hours)h \(minutes)m"
-            } else {
-                return "\(minutes)m"
-            }
+            TimeFormatting.formatFocusTime(minutes: totalFocusMinutes)
         }
     }
 

@@ -321,13 +321,7 @@ struct MenuPopoverView: View {
             Logger.logError(error, context: "Failed to load today's focus minutes", log: Logger.stats)
             totalMinutes = 0
         }
-
-        if totalMinutes >= 60 {
-            let hours = totalMinutes / 60
-            let mins = totalMinutes % 60
-            return mins > 0 ? "\(hours)h \(mins)m" : "\(hours)h"
-        }
-        return "\(totalMinutes)m"
+        return TimeFormatting.formatFocusTime(minutes: totalMinutes)
     }
 
     // MARK: - Settings Section

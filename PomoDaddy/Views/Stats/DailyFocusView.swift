@@ -27,11 +27,11 @@ struct DailyFocusView: View {
     @State private var ringProgress: Double = 0
     @State private var hasAppeared = false
 
-    /// Daily goal in minutes (defaults to 2 hours).
-    private let dailyGoalMinutes = 120
+    /// Daily goal in minutes.
+    private let dailyGoalMinutes = AppConstants.DailyFocus.dailyGoalMinutes
 
     /// Maximum tomatoes to display in the row.
-    private let maxTomatoDisplay = 8
+    private let maxTomatoDisplay = AppConstants.DailyFocus.maxTomatoDisplay
 
     // MARK: - Body
 
@@ -161,14 +161,7 @@ struct DailyFocusView: View {
 
     /// Formats focus minutes as "Xh Ym" or "Ym".
     private var formattedFocusTime: String {
-        let hours = focusMinutes / 60
-        let minutes = focusMinutes % 60
-
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else {
-            return "\(minutes)m"
-        }
+        TimeFormatting.formatFocusTime(minutes: focusMinutes)
     }
 
     // MARK: - Methods
