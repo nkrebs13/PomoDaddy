@@ -37,8 +37,8 @@ final class StatusBarController {
     /// Monitor for detecting clicks outside the popover.
     private var eventMonitor: Any?
 
-    /// Cancellables for Combine subscriptions.
-    private var cancellables = Set<AnyCancellable>()
+    /// Cancellable for the icon update polling timer.
+    private var pollCancellable: AnyCancellable?
 
     // MARK: - Initialization
 
@@ -131,17 +131,17 @@ final class StatusBarController {
     /// Starts the icon update polling timer.
     private func startPolling() {
         stopPolling()
-        Timer.publish(every: AppConstants.MenuBar.iconUpdateInterval, on: .main, in: .common)
+        pollCancellable = Timer.publish(every: AppConstants.MenuBar.iconUpdateInterval, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 self?.updateIcon()
             }
-            .store(in: &cancellables)
     }
 
     /// Stops the icon update polling timer.
     private func stopPolling() {
-        cancellables.removeAll()
+        pollCancellable?.cancel()
+        pollCancellable = nil
     }
 
     // MARK: - Public Methods

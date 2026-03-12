@@ -360,7 +360,6 @@ struct MenuPopoverView: View {
                         get: { coordinator.settingsManager.settings.autoStartBreaks },
                         set: {
                             coordinator.settingsManager.setAutoStartBreaks(enabled: $0)
-                            coordinator.updateSettings()
                         }
                     )) {
                         Text("Auto-start Breaks")
@@ -373,7 +372,6 @@ struct MenuPopoverView: View {
                         get: { coordinator.settingsManager.settings.autoStartWork },
                         set: {
                             coordinator.settingsManager.setAutoStartWork(enabled: $0)
-                            coordinator.updateSettings()
                         }
                     )) {
                         Text("Auto-start Work")

@@ -36,7 +36,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         switch response.actionIdentifier {
-        case "START_NEXT":
+        case NotificationScheduler.Identifiers.actionStartNext:
             Task { @MainActor in
                 coordinator?.start()
             }

@@ -27,6 +27,13 @@ import UserNotifications
 final class NotificationScheduler {
     // MARK: - Constants
 
+    /// Notification action and category identifiers shared with AppDelegate.
+    enum Identifiers {
+        static let actionStartNext = "START_NEXT"
+        static let actionDismiss = "DISMISS"
+        static let categoryTimerCompletion = "TIMER_COMPLETION"
+    }
+
     /// Identifier for the pending timer completion notification.
     private let pendingId = "com.pomodaddy.timerCompletion"
 
@@ -88,7 +95,7 @@ final class NotificationScheduler {
         let content = UNMutableNotificationContent()
         content.title = notificationTitle(for: intervalType)
         content.body = notificationBody(for: intervalType)
-        content.categoryIdentifier = "TIMER_COMPLETION"
+        content.categoryIdentifier = Identifiers.categoryTimerCompletion
 
         // Set sound based on user preference
         if !silent {
@@ -165,19 +172,19 @@ extension NotificationScheduler {
     /// Call this once during app initialization to enable notification actions.
     func registerCategories() {
         let startAction = UNNotificationAction(
-            identifier: "START_NEXT",
+            identifier: Identifiers.actionStartNext,
             title: "Start Next",
             options: .foreground
         )
 
         let dismissAction = UNNotificationAction(
-            identifier: "DISMISS",
+            identifier: Identifiers.actionDismiss,
             title: "Dismiss",
             options: .destructive
         )
 
         let category = UNNotificationCategory(
-            identifier: "TIMER_COMPLETION",
+            identifier: Identifiers.categoryTimerCompletion,
             actions: [startAction, dismissAction],
             intentIdentifiers: [],
             options: .customDismissAction

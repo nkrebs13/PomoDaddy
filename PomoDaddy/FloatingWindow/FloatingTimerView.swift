@@ -261,7 +261,7 @@ struct DragHandleView: View {
 /// A styled control button for timer actions.
 struct ControlButton: View {
     let icon: String
-    var accessibilityLabel: String = ""
+    let accessibilityLabel: String
     let action: () -> Void
     var isPrimary = false
     var isEnabled = true
