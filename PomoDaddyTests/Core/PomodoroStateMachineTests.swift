@@ -12,11 +12,16 @@ final class PomodoroStateMachineTests: XCTestCase {
         // Clear any persisted state
         UserDefaults.standard.removeObject(forKey: "com.pomodaddy.stateMachineState")
 
-        let settings = TimerSettings(
-            workDuration: 60, // 1 minute for faster tests
-            shortBreakDuration: 30,
-            longBreakDuration: 45,
-            pomodorosUntilLongBreak: 2
+        let settings = PomodoroSettings(
+            workDurationMinutes: 1, // 1 minute for faster tests
+            shortBreakDurationMinutes: 1, // Round up from 30 seconds
+            longBreakDurationMinutes: 1, // Round up from 45 seconds
+            pomodorosUntilLongBreak: 2,
+            autoStartBreaks: false,
+            autoStartWork: false,
+            showNotifications: true,
+            showFloatingWindow: true,
+            showMenuBarCountdown: true
         )
         stateMachine = PomodoroStateMachine(timerEngine: TimerEngine(), settings: settings)
     }
@@ -116,7 +121,7 @@ final class PomodoroStateMachineTests: XCTestCase {
         stateMachine.send(.start(.work))
 
         // Wait for completion (using short duration)
-        await assertEventually(timeout: 2.0) {
+        await assertEventually(timeout: 70.0) {
             workCompleted
         }
 
@@ -134,7 +139,7 @@ final class PomodoroStateMachineTests: XCTestCase {
 
         stateMachine.send(.start(.shortBreak))
 
-        await assertEventually(timeout: 1.0) {
+        await assertEventually(timeout: 70.0) {
             breakCompleted
         }
 
@@ -157,7 +162,7 @@ final class PomodoroStateMachineTests: XCTestCase {
         stateMachine.send(.start(.longBreak))
         stateMachine.send(.complete)
 
-        await assertEventually(timeout: 0.5) {
+        await assertEventually(timeout: 70.0) {
             cycleCompleted
         }
 
@@ -261,7 +266,7 @@ final class PomodoroStateMachineTests: XCTestCase {
         stateMachine.send(.start(.work))
         stateMachine.send(.complete)
 
-        await assertEventually(timeout: 0.5) {
+        await assertEventually(timeout: 70.0) {
             workCompleted
         }
 
@@ -280,7 +285,7 @@ final class PomodoroStateMachineTests: XCTestCase {
         stateMachine.send(.start(.work))
         stateMachine.send(.complete)
 
-        await assertEventually(timeout: 0.5) {
+        await assertEventually(timeout: 70.0) {
             workCompleted
         }
 
@@ -299,7 +304,7 @@ final class PomodoroStateMachineTests: XCTestCase {
         stateMachine.send(.start(.shortBreak))
         stateMachine.send(.complete)
 
-        await assertEventually(timeout: 0.5) {
+        await assertEventually(timeout: 70.0) {
             breakCompleted
         }
 
@@ -337,11 +342,16 @@ final class PomodoroStateMachineTests: XCTestCase {
         try? await Task.sleep(nanoseconds: 100_000_000)
 
         // Create a new state machine (simulating app restart)
-        let settings = TimerSettings(
-            workDuration: 60,
-            shortBreakDuration: 30,
-            longBreakDuration: 45,
-            pomodorosUntilLongBreak: 2
+        let settings = PomodoroSettings(
+            workDurationMinutes: 1,
+            shortBreakDurationMinutes: 1,
+            longBreakDurationMinutes: 1,
+            pomodorosUntilLongBreak: 2,
+            autoStartBreaks: false,
+            autoStartWork: false,
+            showNotifications: true,
+            showFloatingWindow: true,
+            showMenuBarCountdown: true
         )
         let newStateMachine = PomodoroStateMachine(timerEngine: TimerEngine(), settings: settings)
 

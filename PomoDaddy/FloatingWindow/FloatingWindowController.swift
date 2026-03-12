@@ -33,13 +33,19 @@ final class FloatingWindowController {
     // MARK: - Constants
 
     /// Frame autosave name for position persistence.
-    private static let frameAutosaveName = "com.pomodaddy.floatingWindow"
+    private static let frameAutosaveName = AppConstants.FloatingWindow.frameAutosaveName
 
     /// Default window size.
-    private static let defaultSize = NSSize(width: 280, height: 320)
+    private static let defaultSize = NSSize(
+        width: AppConstants.FloatingWindow.defaultWidth,
+        height: AppConstants.FloatingWindow.defaultHeight
+    )
 
     /// Compact window size.
-    private static let compactSize = NSSize(width: 180, height: 180)
+    private static let compactSize = NSSize(
+        width: AppConstants.FloatingWindow.compactWidth,
+        height: AppConstants.FloatingWindow.compactHeight
+    )
 
     // MARK: - Initialization
 

@@ -5,17 +5,18 @@ import Foundation
 enum TestFixtures {
     // MARK: - Timer Settings
 
-    static let defaultSettings = TimerSettings()
+    static let defaultSettings = PomodoroSettings.default
 
-    static let customSettings = TimerSettings(
-        workDuration: 30 * 60,
-        shortBreakDuration: 10 * 60,
-        longBreakDuration: 20 * 60,
+    static let customSettings = PomodoroSettings(
+        workDurationMinutes: 30,
+        shortBreakDurationMinutes: 10,
+        longBreakDurationMinutes: 20,
         pomodorosUntilLongBreak: 3,
         autoStartBreaks: true,
         autoStartWork: true,
-        soundEnabled: false,
-        notificationsEnabled: false
+        showNotifications: false,
+        showFloatingWindow: true,
+        showMenuBarCountdown: true
     )
 
     // MARK: - Pomodoro Sessions

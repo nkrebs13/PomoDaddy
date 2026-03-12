@@ -42,11 +42,10 @@ final class PomodoroStateMachine {
     let timerEngine: TimerEngine
 
     /// User-configurable timer settings.
-    var settings: TimerSettings {
-        didSet {
-            settings.save()
-        }
-    }
+    var settings: PomodoroSettings
+
+    /// Persistence service for state machine state.
+    private let persistence: StateMachinePersistence
 
     // MARK: - Callbacks
 
@@ -69,9 +68,14 @@ final class PomodoroStateMachine {
 
     // MARK: - Initialization
 
-    init(timerEngine: TimerEngine = TimerEngine(), settings: TimerSettings = .load()) {
+    init(
+        timerEngine: TimerEngine = TimerEngine(),
+        settings: PomodoroSettings = .default,
+        persistence: StateMachinePersistence = .shared
+    ) {
         self.timerEngine = timerEngine
         self.settings = settings
+        self.persistence = persistence
         lastResetDate = Calendar.current.startOfDay(for: Date())
 
         loadPersistedState()
@@ -131,7 +135,14 @@ final class PomodoroStateMachine {
 
     /// Returns the duration for a given interval type.
     func duration(for intervalType: IntervalType) -> TimeInterval {
-        settings.duration(for: intervalType)
+        switch intervalType {
+        case .work:
+            settings.workDuration
+        case .shortBreak:
+            settings.shortBreakDuration
+        case .longBreak:
+            settings.longBreakDuration
+        }
     }
 
     /// Returns the formatted remaining time from the timer engine.
@@ -301,10 +312,8 @@ final class PomodoroStateMachine {
 
     // MARK: - Persistence
 
-    private static let stateKey = "com.pomodaddy.stateMachineState"
-
     private func persistState() {
-        let state = PersistedState(
+        persistence.save(
             timerState: currentState,
             completedPomodorosInCycle: completedPomodorosInCycle,
             totalCompletedToday: totalCompletedToday,
@@ -313,29 +322,10 @@ final class PomodoroStateMachine {
                 ? TimerEngineState(from: timerEngine)
                 : nil
         )
-
-        do {
-            let encoded = try JSONEncoder().encode(state)
-            UserDefaults.standard.set(encoded, forKey: Self.stateKey)
-        } catch {
-            Logger.logError(error, context: "Failed to persist timer state", log: Logger.persistence)
-            // Clear corrupted state
-            UserDefaults.standard.removeObject(forKey: Self.stateKey)
-        }
     }
 
     private func loadPersistedState() {
-        guard let data = UserDefaults.standard.data(forKey: Self.stateKey) else {
-            return
-        }
-
-        let state: PersistedState
-        do {
-            state = try JSONDecoder().decode(PersistedState.self, from: data)
-        } catch {
-            Logger.logError(error, context: "Failed to decode persisted state", log: Logger.persistence)
-            // Clear corrupted data
-            UserDefaults.standard.removeObject(forKey: Self.stateKey)
+        guard let state = persistence.load() else {
             return
         }
 
@@ -370,14 +360,4 @@ final class PomodoroStateMachine {
             }
         }
     }
-}
-
-// MARK: - Persisted State
-
-private struct PersistedState: Codable {
-    let timerState: TimerState
-    let completedPomodorosInCycle: Int
-    let totalCompletedToday: Int
-    let lastResetDate: Date
-    let timerEngineState: TimerEngineState?
 }

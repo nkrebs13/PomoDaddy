@@ -17,7 +17,7 @@ enum TestHelpers {
 
     /// Creates a test state machine with custom settings
     static func createTestStateMachine(
-        settings: TimerSettings = TimerSettings()
+        settings: PomodoroSettings = .default
     ) -> PomodoroStateMachine {
         PomodoroStateMachine(
             timerEngine: TimerEngine(),

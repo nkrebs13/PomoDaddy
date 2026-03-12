@@ -48,33 +48,16 @@ final class AppCoordinator {
     /// Handles app lifecycle events for state persistence.
     private(set) var lifecycleHandler: AppLifecycleHandler?
 
-    /// Floating window controller (created lazily when needed).
-    private var floatingWindowController: FloatingWindowController?
+    // MARK: - Sub-Coordinators
 
-    /// Task for hiding confetti animation (cancelled in deinit to prevent leaks).
-    private var confettiHideTask: Task<Void, Never>?
+    /// Manages UI state preferences.
+    let uiStateCoordinator: UIStateCoordinator
 
-    // MARK: - UI State
+    /// Manages floating window lifecycle.
+    let floatingWindowCoordinator: FloatingWindowCoordinator
 
-    /// Whether the floating window is visible.
-    var isFloatingWindowVisible = true {
-        didSet {
-            if oldValue != isFloatingWindowVisible {
-                handleFloatingWindowVisibilityChange()
-            }
-        }
-    }
-
-    /// Whether the menu bar countdown is visible.
-    var isMenuBarCountdownVisible = true
-
-    /// Whether confetti should be shown (for work session completion).
-    var showConfetti = false
-
-    // MARK: - Session Tracking
-
-    /// The start time of the current work session (for recording).
-    private var currentSessionStartTime: Date?
+    /// Manages session tracking and celebrations.
+    let sessionCoordinator: SessionCoordinator
 
     // MARK: - Initialization
 
@@ -90,10 +73,9 @@ final class AppCoordinator {
         timerEngine = TimerEngine()
 
         // 4. Initialize PomodoroStateMachine with TimerEngine and settings
-        let timerSettings = Self.createTimerSettings(from: settingsManager.settings)
         stateMachine = PomodoroStateMachine(
             timerEngine: timerEngine,
-            settings: timerSettings
+            settings: settingsManager.settings
         )
 
         // 5. Initialize NotificationScheduler
@@ -108,13 +90,18 @@ final class AppCoordinator {
         // 8. Initialize AppNapManager
         appNapManager = AppNapManager()
 
-        // Restore persisted UI state
-        restoreState()
+        // 9. Initialize sub-coordinators
+        uiStateCoordinator = UIStateCoordinator()
+        sessionCoordinator = SessionCoordinator(sessionRecorder: sessionRecorder)
+        floatingWindowCoordinator = FloatingWindowCoordinator()
+
+        // Set the app coordinator reference (needs self, so done after init)
+        floatingWindowCoordinator.setAppCoordinator(self)
 
         // Set up callbacks
         setupCallbacks()
 
-        // 9. Initialize AppLifecycleHandler (needs self, so done after init)
+        // 10. Initialize AppLifecycleHandler (needs self, so done after init)
         lifecycleHandler = AppLifecycleHandler(
             onSave: { [weak self] in
                 self?.saveState()
@@ -181,13 +168,30 @@ final class AppCoordinator {
         stateMachine.settings.pomodorosUntilLongBreak
     }
 
+    /// Whether confetti should be shown (for work session completion).
+    var showConfetti: Bool {
+        sessionCoordinator.showConfetti
+    }
+
+    /// Whether the floating window is visible.
+    var isFloatingWindowVisible: Bool {
+        get { uiStateCoordinator.isFloatingWindowVisible }
+        set { uiStateCoordinator.isFloatingWindowVisible = newValue }
+    }
+
+    /// Whether the menu bar countdown is visible.
+    var isMenuBarCountdownVisible: Bool {
+        get { uiStateCoordinator.isMenuBarCountdownVisible }
+        set { uiStateCoordinator.isMenuBarCountdownVisible = newValue }
+    }
+
     // MARK: - Timer Control Methods
 
     /// Starts the timer with the next appropriate interval type.
     func start() {
         // Track session start time for work intervals
         if stateMachine.nextIntervalType() == .work {
-            currentSessionStartTime = Date()
+            sessionCoordinator.startSession()
         }
         stateMachine.send(.start())
     }
@@ -195,7 +199,7 @@ final class AppCoordinator {
     /// Starts the timer with a specific interval type.
     func start(intervalType: IntervalType) {
         if intervalType == .work {
-            currentSessionStartTime = Date()
+            sessionCoordinator.startSession()
         }
         stateMachine.send(.start(intervalType))
     }
@@ -212,13 +216,13 @@ final class AppCoordinator {
 
     /// Resets the timer.
     func reset() {
-        currentSessionStartTime = nil
+        sessionCoordinator.clearSession()
         stateMachine.send(.reset)
     }
 
     /// Skips the current interval.
     func skip() {
-        currentSessionStartTime = nil
+        sessionCoordinator.clearSession()
         stateMachine.send(.skip)
     }
 
@@ -253,22 +257,19 @@ final class AppCoordinator {
 
     /// Creates and shows the floating window.
     func showFloatingWindow() {
-        if floatingWindowController == nil {
-            floatingWindowController = FloatingWindowController(coordinator: self)
-        }
-        floatingWindowController?.show()
-        isFloatingWindowVisible = true
+        floatingWindowCoordinator.show()
+        uiStateCoordinator.isFloatingWindowVisible = true
     }
 
     /// Hides the floating window.
     func hideFloatingWindow() {
-        floatingWindowController?.hide()
-        isFloatingWindowVisible = false
+        floatingWindowCoordinator.hide()
+        uiStateCoordinator.isFloatingWindowVisible = false
     }
 
     /// Toggles floating window visibility.
     func toggleFloatingWindow() {
-        if isFloatingWindowVisible {
+        if uiStateCoordinator.isFloatingWindowVisible {
             hideFloatingWindow()
         } else {
             showFloatingWindow()
@@ -283,20 +284,10 @@ final class AppCoordinator {
         stateMachine.onWorkSessionComplete = { [weak self] _ in
             guard let self else { return }
 
-            // Record the completed session
+            // Record the completed session and trigger confetti
             Task { @MainActor in
-                await self.recordCompletedSession()
-            }
-
-            // Trigger confetti celebration
-            showConfetti = true
-
-            // Reset confetti after animation
-            confettiHideTask?.cancel()
-            confettiHideTask = Task { @MainActor in
-                try? await Task.sleep(nanoseconds: 3_000_000_000)
-                guard !Task.isCancelled else { return }
-                self.showConfetti = false
+                let durationMinutes = Int(self.stateMachine.settings.workDuration / 60)
+                await self.sessionCoordinator.completeSession(durationMinutes: durationMinutes)
             }
 
             // Show notification if enabled
@@ -339,9 +330,9 @@ final class AppCoordinator {
             case .running:
                 appNapManager.beginTimingActivity()
 
-                // Track session start for work intervals
-                if case .running(.work) = newState, currentSessionStartTime == nil {
-                    currentSessionStartTime = Date()
+                // Track session start for work intervals (in case not already tracked)
+                if case .running(.work) = newState, sessionCoordinator.currentSessionStartTime == nil {
+                    sessionCoordinator.startSession()
                 }
 
             case .idle, .paused:
@@ -355,95 +346,29 @@ final class AppCoordinator {
         }
     }
 
-    /// Records a completed work session to the database.
-    private func recordCompletedSession() async {
-        guard let startTime = currentSessionStartTime else { return }
-
-        let endTime = Date()
-        let durationMinutes = Int(stateMachine.settings.workDuration / 60)
-
-        do {
-            try await sessionRecorder.record(
-                startDate: startTime,
-                endDate: endTime,
-                durationMinutes: durationMinutes,
-                wasCompleted: true
-            )
-        } catch {
-            Logger.logError(error, context: "Failed to record session", log: Logger.stats)
-        }
-
-        // Reset for next session
-        currentSessionStartTime = nil
-    }
-
-    /// Handles floating window visibility changes.
-    private func handleFloatingWindowVisibilityChange() {
-        if isFloatingWindowVisible {
-            showFloatingWindow()
-        } else {
-            hideFloatingWindow()
-        }
-
-        // Persist the preference
-        UserDefaults.standard.set(isFloatingWindowVisible, forKey: "isFloatingWindowVisible")
-    }
-
     // MARK: - State Persistence
-
-    /// Keys for UserDefaults persistence.
-    private enum PersistenceKeys {
-        static let isFloatingWindowVisible = "isFloatingWindowVisible"
-        static let isMenuBarCountdownVisible = "isMenuBarCountdownVisible"
-    }
 
     /// Saves the current UI state.
     func saveState() {
-        UserDefaults.standard.set(isFloatingWindowVisible, forKey: PersistenceKeys.isFloatingWindowVisible)
-        UserDefaults.standard.set(isMenuBarCountdownVisible, forKey: PersistenceKeys.isMenuBarCountdownVisible)
-
-        // Save floating window position
-        floatingWindowController?.savePosition()
+        uiStateCoordinator.saveState()
+        floatingWindowCoordinator.savePosition()
     }
 
     /// Restores the UI state from persistence.
     func restoreState() {
-        // Restore floating window visibility preference
-        if UserDefaults.standard.object(forKey: PersistenceKeys.isFloatingWindowVisible) != nil {
-            isFloatingWindowVisible = UserDefaults.standard.bool(forKey: PersistenceKeys.isFloatingWindowVisible)
-        }
-
-        // Restore menu bar countdown visibility preference
-        if UserDefaults.standard.object(forKey: PersistenceKeys.isMenuBarCountdownVisible) != nil {
-            isMenuBarCountdownVisible = UserDefaults.standard.bool(forKey: PersistenceKeys.isMenuBarCountdownVisible)
-        }
+        uiStateCoordinator.restoreState()
 
         // Show floating window if it should be visible
-        if isFloatingWindowVisible {
+        if uiStateCoordinator.isFloatingWindowVisible {
             showFloatingWindow()
         }
     }
 
     // MARK: - Settings Sync
 
-    /// Creates TimerSettings from PomodoroSettings.
-    private static func createTimerSettings(from pomodoroSettings: PomodoroSettings) -> TimerSettings {
-        TimerSettings(
-            workDuration: pomodoroSettings.workDuration,
-            shortBreakDuration: pomodoroSettings.shortBreakDuration,
-            longBreakDuration: pomodoroSettings.longBreakDuration,
-            pomodorosUntilLongBreak: pomodoroSettings.pomodorosUntilLongBreak,
-            autoStartBreaks: pomodoroSettings.autoStartNextSession,
-            autoStartWork: pomodoroSettings.autoStartNextSession,
-            soundEnabled: true,
-            notificationsEnabled: pomodoroSettings.showNotifications
-        )
-    }
-
     /// Updates the state machine settings when user changes preferences.
     func updateSettings() {
-        let timerSettings = Self.createTimerSettings(from: settingsManager.settings)
-        stateMachine.settings = timerSettings
+        stateMachine.settings = settingsManager.settings
     }
 }
 

@@ -124,7 +124,7 @@ struct MenuPopoverView: View {
             // Quit button
             quitButton
         }
-        .frame(width: 300)
+        .frame(width: AppConstants.MenuPopover.width)
         .padding()
     }
 
@@ -164,7 +164,7 @@ struct MenuPopoverView: View {
                 // Background track
                 Circle()
                     .stroke(accentColor.opacity(0.2), lineWidth: 8)
-                    .frame(width: 120, height: 120)
+                    .frame(width: AppConstants.MenuPopover.timerRingSize, height: AppConstants.MenuPopover.timerRingSize)
 
                 // Progress ring
                 Circle()
@@ -176,7 +176,7 @@ struct MenuPopoverView: View {
                             lineCap: .round
                         )
                     )
-                    .frame(width: 120, height: 120)
+                    .frame(width: AppConstants.MenuPopover.timerRingSize, height: AppConstants.MenuPopover.timerRingSize)
                     .rotationEffect(.degrees(-90))
                     .animation(.timerTick, value: progress)
 
