@@ -26,6 +26,7 @@ enum PomodoroEvent {
 /// Manages the complete Pomodoro workflow including state transitions,
 /// interval tracking, and integration with the timer engine.
 @Observable
+@MainActor
 final class PomodoroStateMachine {
     // MARK: - Public Properties
 

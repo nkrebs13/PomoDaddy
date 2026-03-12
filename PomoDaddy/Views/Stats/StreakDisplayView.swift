@@ -5,6 +5,7 @@
 //  Displays current and longest streak information in card format.
 //
 
+import os.log
 import SwiftData
 import SwiftUI
 
@@ -71,7 +72,7 @@ struct StreakDisplayView: View {
             streakDays = try calculator.currentStreakDays()
             longestStreak = try calculator.longestStreakDays()
         } catch {
-            // Use defaults if fetching fails
+            Logger.logError(error, context: "Failed to load streak data", log: Logger.stats)
             streakDays = 0
             longestStreak = 0
         }

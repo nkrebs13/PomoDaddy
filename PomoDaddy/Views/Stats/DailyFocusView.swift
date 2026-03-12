@@ -5,6 +5,7 @@
 //  Displays today's focus progress with a prominent progress ring.
 //
 
+import os.log
 import SwiftData
 import SwiftUI
 
@@ -174,7 +175,7 @@ struct DailyFocusView: View {
             focusMinutes = try calculator.todayFocusMinutes()
             completedPomodoros = try calculator.todayCompletedPomodoros()
         } catch {
-            // Use defaults if fetching fails
+            Logger.logError(error, context: "Failed to load today's stats", log: Logger.stats)
             focusMinutes = 0
             completedPomodoros = 0
         }

@@ -94,6 +94,11 @@ final class AppCoordinator {
         // Set the app coordinator reference (needs self, so done after init)
         floatingWindowCoordinator.setAppCoordinator(self)
 
+        // Wire settings sync: when SettingsManager changes, update state machine
+        settingsManager.onChange = { [weak self] in
+            self?.updateSettings()
+        }
+
         // Set up callbacks
         setupCallbacks()
 
@@ -164,11 +169,6 @@ final class AppCoordinator {
         stateMachine.settings.pomodorosUntilLongBreak
     }
 
-    /// Whether confetti should be shown (for work session completion).
-    var showConfetti: Bool {
-        sessionCoordinator.showConfetti
-    }
-
     /// Whether the floating window is visible.
     var isFloatingWindowVisible: Bool {
         get { settingsManager.settings.showFloatingWindow }
@@ -220,6 +220,12 @@ final class AppCoordinator {
     func skip() {
         sessionCoordinator.clearSession()
         stateMachine.send(.skip)
+    }
+
+    /// Gracefully quits the application after saving state.
+    func quit() {
+        saveState()
+        NSApplication.shared.terminate(nil)
     }
 
     // MARK: - Stats Methods

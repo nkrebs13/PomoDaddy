@@ -24,9 +24,13 @@ final class SettingsManager {
         didSet {
             if settings != oldValue {
                 save()
+                onChange?()
             }
         }
     }
+
+    /// Called when settings change. Set by AppCoordinator to sync state machine.
+    var onChange: (() -> Void)?
 
     /// The UserDefaults instance to use for persistence.
     private let defaults: UserDefaults
@@ -194,21 +198,6 @@ enum SettingsPreset: String, CaseIterable, Identifiable {
         case .quickSprints:
             "15 min work, 3 min break"
         }
-    }
-}
-
-// MARK: - Environment Key
-
-/// Environment key for accessing the settings manager.
-private struct SettingsManagerKey: EnvironmentKey {
-    static let defaultValue = SettingsManager()
-}
-
-extension EnvironmentValues {
-    /// The app's settings manager.
-    var settingsManager: SettingsManager {
-        get { self[SettingsManagerKey.self] }
-        set { self[SettingsManagerKey.self] = newValue }
     }
 }
 

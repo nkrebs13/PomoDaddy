@@ -5,6 +5,7 @@
 //  SwiftUI popover content for the menu bar status item.
 //
 
+import os.log
 import SwiftUI
 
 // MARK: - Menu Popover View
@@ -85,11 +86,7 @@ struct MenuPopoverView: View {
         case .running(.shortBreak), .paused(.shortBreak):
             .breakGradient
         case .running(.longBreak), .paused(.longBreak):
-            LinearGradient(
-                colors: [.lavender, .skyBlue],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            .longBreakGradient
         }
     }
 
@@ -201,7 +198,7 @@ struct MenuPopoverView: View {
         HStack(spacing: 16) {
             // Reset button
             Button {
-                coordinator.stateMachine.send(.reset)
+                coordinator.reset()
             } label: {
                 Image(systemName: "arrow.counterclockwise")
                     .font(.system(size: 16, weight: .medium))
@@ -230,7 +227,7 @@ struct MenuPopoverView: View {
 
             // Skip button
             Button {
-                coordinator.stateMachine.send(.skip)
+                coordinator.skip()
             } label: {
                 Image(systemName: "forward.fill")
                     .font(.system(size: 16, weight: .medium))
@@ -270,11 +267,11 @@ struct MenuPopoverView: View {
     private func handlePlayPause() {
         switch timerState {
         case .idle:
-            coordinator.stateMachine.send(.start())
+            coordinator.start()
         case .running:
-            coordinator.stateMachine.send(.pause)
+            coordinator.pause()
         case .paused:
-            coordinator.stateMachine.send(.resume)
+            coordinator.resume()
         }
     }
 
@@ -339,8 +336,13 @@ struct MenuPopoverView: View {
     }
 
     private var focusTimeText: String {
-        let workDuration = coordinator.stateMachine.settings.workDuration
-        let totalMinutes = Int(Double(totalToday) * workDuration / 60)
+        let totalMinutes: Int
+        do {
+            totalMinutes = try coordinator.todayFocusMinutes()
+        } catch {
+            Logger.logError(error, context: "Failed to load today's focus minutes", log: Logger.stats)
+            totalMinutes = 0
+        }
 
         if totalMinutes >= 60 {
             let hours = totalMinutes / 60
@@ -383,11 +385,10 @@ struct MenuPopoverView: View {
 
                     // Auto-start breaks
                     Toggle(isOn: Binding(
-                        get: { coordinator.stateMachine.settings.autoStartBreaks },
+                        get: { coordinator.settingsManager.settings.autoStartBreaks },
                         set: {
-                            var settings = coordinator.stateMachine.settings
-                            settings.autoStartBreaks = $0
-                            coordinator.stateMachine.settings = settings
+                            coordinator.settingsManager.setAutoStartBreaks(enabled: $0)
+                            coordinator.updateSettings()
                         }
                     )) {
                         Text("Auto-start Breaks")
@@ -397,11 +398,10 @@ struct MenuPopoverView: View {
 
                     // Auto-start work
                     Toggle(isOn: Binding(
-                        get: { coordinator.stateMachine.settings.autoStartWork },
+                        get: { coordinator.settingsManager.settings.autoStartWork },
                         set: {
-                            var settings = coordinator.stateMachine.settings
-                            settings.autoStartWork = $0
-                            coordinator.stateMachine.settings = settings
+                            coordinator.settingsManager.setAutoStartWork(enabled: $0)
+                            coordinator.updateSettings()
                         }
                     )) {
                         Text("Auto-start Work")
@@ -418,7 +418,7 @@ struct MenuPopoverView: View {
 
     private var quitButton: some View {
         Button {
-            NSApplication.shared.terminate(nil)
+            coordinator.quit()
         } label: {
             HStack {
                 Image(systemName: "power")

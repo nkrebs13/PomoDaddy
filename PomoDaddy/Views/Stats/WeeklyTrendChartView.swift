@@ -6,6 +6,7 @@
 //
 
 import Charts
+import os.log
 import SwiftData
 import SwiftUI
 
@@ -207,6 +208,7 @@ struct WeeklyTrendChartView: View {
                 ))
             }
         } catch {
+            Logger.logError(error, context: "Failed to load weekly trend data", log: Logger.stats)
             // Generate empty data if fetching fails
             for dayOffset in (0 ..< 7).reversed() {
                 guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }

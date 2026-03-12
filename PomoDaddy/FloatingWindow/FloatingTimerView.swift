@@ -123,11 +123,7 @@ struct FloatingTimerView: View {
             case .shortBreak:
                 .breakGradient
             case .longBreak:
-                LinearGradient(
-                    colors: [.lavender, .skyBlue],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                .longBreakGradient
             }
         }
     }
@@ -194,7 +190,7 @@ struct FloatingTimerView: View {
             ControlButton(
                 icon: "arrow.counterclockwise",
                 action: {
-                    coordinator.stateMachine.send(.reset)
+                    coordinator.reset()
                 },
                 isEnabled: coordinator.stateMachine.currentState.isActive
             )
@@ -213,7 +209,7 @@ struct FloatingTimerView: View {
             ControlButton(
                 icon: "forward.fill",
                 action: {
-                    coordinator.stateMachine.send(.skip)
+                    coordinator.skip()
                 },
                 isEnabled: coordinator.stateMachine.currentState.isActive
             )
@@ -236,11 +232,11 @@ struct FloatingTimerView: View {
     private func handlePlayPause() {
         switch coordinator.stateMachine.currentState {
         case .idle:
-            coordinator.stateMachine.send(.start())
+            coordinator.start()
         case .running:
-            coordinator.stateMachine.send(.pause)
+            coordinator.pause()
         case .paused:
-            coordinator.stateMachine.send(.resume)
+            coordinator.resume()
         }
     }
 

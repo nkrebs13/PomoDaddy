@@ -77,10 +77,10 @@ final class SessionCoordinator {
 
         // Reset confetti after animation
         confettiHideTask?.cancel()
-        confettiHideTask = Task { @MainActor in
+        confettiHideTask = Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: AppConstants.Confetti.durationNanoseconds)
             guard !Task.isCancelled else { return }
-            self.showConfetti = false
+            self?.showConfetti = false
         }
     }
 }

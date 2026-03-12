@@ -4,6 +4,7 @@ import XCTest
 @testable import PomoDaddy
 
 /// Test helpers for creating test instances and utilities
+@MainActor
 enum TestHelpers {
     /// Creates an in-memory model container for testing
     static func createTestContainer() -> ModelContainer {

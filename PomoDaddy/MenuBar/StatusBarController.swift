@@ -123,14 +123,25 @@ final class StatusBarController {
 
     /// Sets up observation of coordinator state changes.
     private func setupObservation() {
-        // Update icon when timer state changes
-        // Using a timer to periodically update since @Observable doesn't work directly with NSView
-        Timer.publish(every: 0.1, on: .main, in: .common)
+        // Update icon periodically since @Observable doesn't work directly with NSView.
+        // Use 1s interval — countdown only changes once per second.
+        startPolling()
+    }
+
+    /// Starts the icon update polling timer.
+    private func startPolling() {
+        stopPolling()
+        Timer.publish(every: AppConstants.MenuBar.iconUpdateInterval, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 self?.updateIcon()
             }
             .store(in: &cancellables)
+    }
+
+    /// Stops the icon update polling timer.
+    private func stopPolling() {
+        cancellables.removeAll()
     }
 
     // MARK: - Public Methods
@@ -237,17 +248,17 @@ final class StatusBarController {
 
     @objc
     private func startTimer() {
-        coordinator?.stateMachine.send(.start())
+        coordinator?.start()
     }
 
     @objc
     private func pauseTimer() {
-        coordinator?.stateMachine.send(.pause)
+        coordinator?.pause()
     }
 
     @objc
     private func resumeTimer() {
-        coordinator?.stateMachine.send(.resume)
+        coordinator?.resume()
     }
 
     @objc
@@ -257,6 +268,6 @@ final class StatusBarController {
 
     @objc
     private func quitApp() {
-        NSApplication.shared.terminate(nil)
+        coordinator?.quit()
     }
 }

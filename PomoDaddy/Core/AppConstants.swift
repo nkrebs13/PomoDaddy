@@ -49,6 +49,13 @@ enum AppConstants {
         static let timerRingSize: CGFloat = 120
     }
 
+    // MARK: - Menu Bar
+
+    enum MenuBar {
+        /// Icon update polling interval in seconds.
+        static let iconUpdateInterval: TimeInterval = 1.0
+    }
+
     // MARK: - UserDefaults Keys
 
     enum UserDefaultsKeys {

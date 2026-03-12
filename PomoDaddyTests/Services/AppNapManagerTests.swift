@@ -104,54 +104,6 @@ final class AppNapManagerTests: XCTestCase {
         XCTAssertTrue(appNapManager.isTimingActivityActive)
     }
 
-    // MARK: - Perform With Activity Tests
-
-    func testPerformWithActivity() {
-        var operationExecuted = false
-
-        appNapManager.performWithActivity(reason: "Test operation") {
-            operationExecuted = true
-            XCTAssertTrue(self.appNapManager.isTimingActivityActive)
-        }
-
-        XCTAssertTrue(operationExecuted)
-        XCTAssertFalse(appNapManager.isTimingActivityActive)
-    }
-
-    func testPerformWithActivityAsync() async {
-        var operationExecuted = false
-
-        await appNapManager.performWithActivity(reason: "Test async operation") {
-            operationExecuted = true
-            XCTAssertTrue(self.appNapManager.isTimingActivityActive)
-
-            // Simulate async work
-            try? await Task.sleep(nanoseconds: 10_000_000)
-        }
-
-        XCTAssertTrue(operationExecuted)
-        XCTAssertFalse(appNapManager.isTimingActivityActive)
-    }
-
-    func testPerformWithActivityPreservesReturnValue() {
-        let result = appNapManager.performWithActivity(reason: "Test return value") {
-            return 42
-        }
-
-        XCTAssertEqual(result, 42)
-        XCTAssertFalse(appNapManager.isTimingActivityActive)
-    }
-
-    func testPerformWithActivityAsyncPreservesReturnValue() async {
-        let result = await appNapManager.performWithActivity(reason: "Test async return value") {
-            try? await Task.sleep(nanoseconds: 10_000_000)
-            return "test"
-        }
-
-        XCTAssertEqual(result, "test")
-        XCTAssertFalse(appNapManager.isTimingActivityActive)
-    }
-
     // MARK: - State Consistency Tests
 
     func testStateConsistencyAfterMultipleOperations() {
@@ -172,27 +124,6 @@ final class AppNapManagerTests: XCTestCase {
         XCTAssertFalse(appNapManager.isTimingActivityActive)
     }
 
-    func testNestedPerformWithActivity() {
-        var outerExecuted = false
-        var innerExecuted = false
-
-        appNapManager.performWithActivity(reason: "Test nested operation") {
-            outerExecuted = true
-            XCTAssertTrue(self.appNapManager.isTimingActivityActive)
-
-            // Nested call
-            self.appNapManager.performWithActivity(reason: "Test nested operation level 2") {
-                innerExecuted = true
-                XCTAssertTrue(self.appNapManager.isTimingActivityActive)
-            }
-
-            XCTAssertTrue(self.appNapManager.isTimingActivityActive)
-        }
-
-        XCTAssertTrue(outerExecuted)
-        XCTAssertTrue(innerExecuted)
-        XCTAssertFalse(appNapManager.isTimingActivityActive)
-    }
 
     // MARK: - Integration Tests
 

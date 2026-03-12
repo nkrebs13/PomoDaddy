@@ -18,11 +18,7 @@ extension TimerState {
         case .running(.shortBreak), .paused(.shortBreak):
             return .breakGradient
         case .running(.longBreak), .paused(.longBreak):
-            return LinearGradient(
-                colors: [.lavender, .skyBlue],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            return .longBreakGradient
         }
     }
 }
@@ -38,11 +34,7 @@ extension IntervalType {
         case .shortBreak:
             return .breakGradient
         case .longBreak:
-            return LinearGradient(
-                colors: [.lavender, .skyBlue],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            return .longBreakGradient
         }
     }
 }
