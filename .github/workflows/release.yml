@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., v2026.3.0)'
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  APP_NAME: PomoDaddy
+  SCHEME: PomoDaddy
+  PROJECT: PomoDaddy.xcodeproj
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build Release
+        run: |
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_ALLOWED=YES \
+            DEVELOPMENT_TEAM=""
+
+      - name: Prepare artifact
+        run: |
+          APP_PATH="build/DerivedData/Build/Products/Release/$APP_NAME.app"
+          codesign --force --deep -s "-" "$APP_PATH"
+          cd build/DerivedData/Build/Products/Release
+          ditto -c -k --keepParent "$APP_NAME.app" "$GITHUB_WORKSPACE/build/$APP_NAME.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          files: build/PomoDaddy.zip
+          generate_release_notes: true
+          body: |
+            ## Install
+
+            1. Download **PomoDaddy.zip** below
+            2. Unzip and drag **PomoDaddy.app** to `/Applications`
+            3. On first launch, macOS may block the app. To open it:
+               - **Right-click** the app → **Open** → click **Open** in the dialog
+               - Or run: `xattr -cr /Applications/PomoDaddy.app`
+
+            ---

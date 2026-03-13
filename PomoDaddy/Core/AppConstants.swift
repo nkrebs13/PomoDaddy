@@ -87,5 +87,8 @@ enum AppConstants {
     enum UserDefaultsKeys {
         /// Key for persisted state machine state.
         static let stateMachineState = "com.pomodaddy.stateMachineState"
+
+        /// Key for tracking whether onboarding has been shown.
+        static let hasSeenOnboarding = "com.pomodaddy.hasSeenOnboarding"
     }
 }

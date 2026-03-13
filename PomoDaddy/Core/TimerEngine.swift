@@ -17,7 +17,7 @@ import Observation
 /// the timer remains accurate even if the app is suspended or the device sleeps.
 @Observable
 @MainActor
-final class TimerEngine {
+final class TimerEngine: TimerEngineProtocol {
     // MARK: - Public Properties
 
     /// The number of seconds remaining in the current timer session.
@@ -239,9 +239,9 @@ struct TimerEngineState: Codable {
     let wasRunning: Bool
     let savedAt: Date
 
-    /// Creates a state snapshot from a TimerEngine.
+    /// Creates a state snapshot from a timer engine.
     @MainActor
-    init(from engine: TimerEngine) {
+    init(from engine: any TimerEngineProtocol) {
         remainingSeconds = engine.captureRemainingTime() ?? 0
         totalDuration = engine.totalDuration
         wasRunning = engine.isRunning

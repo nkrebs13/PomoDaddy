@@ -4,13 +4,14 @@
 
 [![macOS](https://img.shields.io/badge/macOS-14.0%2B-blue)](https://www.apple.com/macos/)
 [![Swift](https://img.shields.io/badge/Swift-5.9-orange)](https://swift.org/)
+[![CI](https://github.com/nkrebs13/PomoDaddy/actions/workflows/ci.yml/badge.svg)](https://github.com/nkrebs13/PomoDaddy/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
----
-
-<!-- Screenshots coming soon -->
-
----
+<p align="center">
+  <img src="docs/screenshots/popover.png" width="300" alt="Timer Popover">
+  <img src="docs/screenshots/floating-window.png" width="280" alt="Floating Window">
+  <img src="docs/screenshots/settings.png" width="300" alt="Settings">
+</p>
 
 ## ✨ Features
 
@@ -34,27 +35,33 @@
 
 ---
 
-## 🚀 Installation
+## 🚀 Install
 
-1. **Clone the repository**
+Download the latest release from the [Releases page](https://github.com/nkrebs13/PomoDaddy/releases), unzip, and drag **PomoDaddy.app** to `/Applications`.
+
+On first launch, macOS may block the app. Right-click > **Open** > click **Open**, or run:
+```bash
+xattr -cr /Applications/PomoDaddy.app
+```
+
+### Homebrew
+
+```bash
+brew tap nkrebs13/tap
+brew install --cask pomodaddy
+```
+
+### Build from source
+
+1. **Clone and setup**
    ```bash
    git clone https://github.com/nkrebs13/PomoDaddy.git
    cd PomoDaddy
+   make setup
    ```
 
-2. **Install XcodeGen** (if not already installed)
-   ```bash
-   brew install xcodegen
-   ```
-
-3. **Generate the Xcode project**
-   ```bash
-   xcodegen generate
-   ```
-
-4. **Build and run**
-   - Open `PomoDaddy.xcodeproj` in Xcode
-   - Select your target and click **Run** (⌘R)
+2. **Build and run**
+   - Open `PomoDaddy.xcodeproj` in Xcode and click **Run** (Cmd+R)
 
 ---
 

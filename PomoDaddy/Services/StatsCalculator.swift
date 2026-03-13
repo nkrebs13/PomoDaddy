@@ -20,7 +20,7 @@ import SwiftData
 /// let todayMinutes = try calculator.todayFocusMinutes()
 /// let weekly = try calculator.weeklySummary()
 /// ```
-struct StatsCalculator {
+struct StatsCalculator: StatsCalculating {
     // MARK: - Properties
 
     /// The model context used for queries.

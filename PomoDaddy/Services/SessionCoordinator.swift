@@ -11,7 +11,7 @@ import Observation
 /// Coordinates work session tracking and completion celebrations.
 @Observable
 @MainActor
-final class SessionCoordinator {
+final class SessionCoordinator: SessionCoordinating {
     // MARK: - Properties
 
     /// The session recorder for persisting sessions.
