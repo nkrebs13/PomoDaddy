@@ -1,6 +1,5 @@
 disabled_rules:
   - trailing_whitespace
-  - todo # Allow TODOs for now
 
 opt_in_rules:
   # Code Quality
@@ -103,6 +102,4 @@ excluded:
   - DerivedData
   - .build
   - .swiftpm
-  - PomoDaddyTests
-
 reporter: "xcode"
