@@ -10,7 +10,7 @@ import SwiftUI
 
 /// Manages user settings with persistence to UserDefaults.
 @Observable
-final class SettingsManager {
+final class SettingsManager: SettingsManaging {
     // MARK: - Constants
 
     private enum Keys {

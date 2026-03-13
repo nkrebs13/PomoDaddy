@@ -113,4 +113,18 @@ final class SessionCoordinatorTests: XCTestCase {
         XCTAssertNil(coordinator.currentSessionStartTime)
         XCTAssertFalse(coordinator.showConfetti)
     }
+
+    func testCompleteSessionCalledTwiceRapidly() async {
+        coordinator.startSession()
+
+        // Complete session twice — second should be no-op (startTime is nil)
+        await coordinator.completeSession(durationMinutes: 25)
+        XCTAssertTrue(coordinator.showConfetti)
+        XCTAssertNil(coordinator.currentSessionStartTime)
+
+        // Reset confetti to verify second call doesn't re-trigger
+        coordinator.showConfetti = false
+        await coordinator.completeSession(durationMinutes: 25)
+        XCTAssertFalse(coordinator.showConfetti) // Guard prevents re-trigger
+    }
 }

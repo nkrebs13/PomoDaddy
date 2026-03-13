@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make build)",
+      "Bash(make test)",
+      "Bash(make lint)",
+      "Bash(make format)",
+      "Bash(make format-check)",
+      "Bash(make clean)",
+      "Bash(make test-coverage)",
+      "Bash(make setup)",
+      "Bash(make security-check)",
+      "Bash(xcodegen generate)",
+      "Bash(swiftlint *)",
+      "Bash(swiftformat *)"
+    ]
+  }
+}

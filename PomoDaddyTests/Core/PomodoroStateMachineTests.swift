@@ -9,8 +9,6 @@ final class PomodoroStateMachineTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockDefaults = MockUserDefaults()
-        // Clear any persisted state
-        UserDefaults.standard.removeObject(forKey: "com.pomodaddy.stateMachineState")
 
         let settings = PomodoroSettings(
             workDurationMinutes: 1, // 1 minute for faster tests
@@ -23,13 +21,16 @@ final class PomodoroStateMachineTests: XCTestCase {
             showFloatingWindow: true,
             showMenuBarCountdown: true
         )
-        stateMachine = PomodoroStateMachine(timerEngine: TimerEngine(), settings: settings)
+        // Use isolated UserDefaults per test to prevent cross-test state leakage
+        let persistence = StateMachinePersistence(
+            defaults: UserDefaults(suiteName: "test.statemachine.\(UUID())")!
+        )
+        stateMachine = PomodoroStateMachine(timerEngine: TimerEngine(), settings: settings, persistence: persistence)
     }
 
     override func tearDown() {
         stateMachine = nil
         mockDefaults = nil
-        UserDefaults.standard.removeObject(forKey: "com.pomodaddy.stateMachineState")
         super.tearDown()
     }
 
@@ -336,12 +337,11 @@ final class PomodoroStateMachineTests: XCTestCase {
 
     // MARK: - Persistence Tests
 
-    func testStatePersistence() async {
-        // Start a work session
-        stateMachine.send(.start(.work))
-        try? await Task.sleep(nanoseconds: 100_000_000)
-
-        // Create a new state machine (simulating app restart)
+    func testStatePersistence() {
+        // Use a shared persistence instance to simulate app restart
+        let sharedPersistence = StateMachinePersistence(
+            defaults: UserDefaults(suiteName: "test.persistence.\(UUID())")!
+        )
         let settings = PomodoroSettings(
             workDurationMinutes: 1,
             shortBreakDurationMinutes: 1,
@@ -353,7 +353,13 @@ final class PomodoroStateMachineTests: XCTestCase {
             showFloatingWindow: true,
             showMenuBarCountdown: true
         )
-        let newStateMachine = PomodoroStateMachine(timerEngine: TimerEngine(), settings: settings)
+
+        // Start a work session with the shared persistence
+        let firstMachine = PomodoroStateMachine(timerEngine: MockTimerEngine(), settings: settings, persistence: sharedPersistence)
+        firstMachine.send(.start(.work))
+
+        // Create a new state machine with the same persistence (simulating app restart)
+        let newStateMachine = PomodoroStateMachine(timerEngine: MockTimerEngine(), settings: settings, persistence: sharedPersistence)
 
         // Should restore state
         XCTAssertEqual(newStateMachine.currentState, .running(.work))
@@ -411,6 +417,84 @@ final class PomodoroStateMachineTests: XCTestCase {
         // Complete long break - should reset cycle
         stateMachine.send(.start(.longBreak))
         stateMachine.send(.complete)
+        XCTAssertEqual(stateMachine.completedPomodorosInCycle, 0)
+    }
+
+    // MARK: - Edge Case Tests
+
+    func testCompleteWhenIdleIsNoOp() {
+        XCTAssertEqual(stateMachine.currentState, .idle)
+        stateMachine.send(.complete)
+        XCTAssertEqual(stateMachine.currentState, .idle)
+        XCTAssertEqual(stateMachine.completedPomodorosInCycle, 0)
+        XCTAssertEqual(stateMachine.totalCompletedToday, 0)
+    }
+
+    func testNextIntervalTypeAtExactThreshold() {
+        // Set pomodorosUntilLongBreak to 2
+        // Complete exactly 2 pomodoros
+        stateMachine.send(.start(.work))
+        stateMachine.send(.complete)
+        stateMachine.send(.start(.work))
+        stateMachine.send(.complete)
+
+        // At exact threshold, should return long break
+        let next = stateMachine.nextIntervalType()
+        XCTAssertEqual(next, .longBreak)
+    }
+
+    func testRapidEventSequence() async {
+        stateMachine.send(.start(.work))
+        XCTAssertEqual(stateMachine.currentState, .running(.work))
+
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        stateMachine.send(.pause)
+        XCTAssertEqual(stateMachine.currentState, .paused(.work))
+
+        stateMachine.send(.resume)
+        XCTAssertEqual(stateMachine.currentState, .running(.work))
+
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        stateMachine.send(.pause)
+        XCTAssertEqual(stateMachine.currentState, .paused(.work))
+
+        stateMachine.send(.resume)
+        XCTAssertEqual(stateMachine.currentState, .running(.work))
+    }
+
+    func testTransitionAfterBreakWithAutoStartEnabled() {
+        stateMachine.settings.autoStartWork = true
+        stateMachine.send(.start(.shortBreak))
+        stateMachine.send(.complete)
+
+        // Should auto-start work
+        XCTAssertEqual(stateMachine.currentState, .running(.work))
+    }
+
+    func testTransitionAfterBreakWithAutoStartDisabled() {
+        stateMachine.settings.autoStartWork = false
+        stateMachine.send(.start(.shortBreak))
+        stateMachine.send(.complete)
+
+        // Should go to idle
+        XCTAssertEqual(stateMachine.currentState, .idle)
+    }
+
+    func testTransitionAfterLongBreakWithAutoStartEnabled() {
+        stateMachine.settings.autoStartWork = true
+        stateMachine.send(.start(.longBreak))
+        stateMachine.send(.complete)
+
+        XCTAssertEqual(stateMachine.currentState, .running(.work))
+        XCTAssertEqual(stateMachine.completedPomodorosInCycle, 0)
+    }
+
+    func testTransitionAfterLongBreakWithAutoStartDisabled() {
+        stateMachine.settings.autoStartWork = false
+        stateMachine.send(.start(.longBreak))
+        stateMachine.send(.complete)
+
+        XCTAssertEqual(stateMachine.currentState, .idle)
         XCTAssertEqual(stateMachine.completedPomodorosInCycle, 0)
     }
 }
