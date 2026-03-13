@@ -24,7 +24,7 @@ import UserNotifications
 ///     scheduler.scheduleCompletion(intervalType: .work, inSeconds: 1500)
 /// }
 /// ```
-final class NotificationScheduler {
+final class NotificationScheduler: NotificationScheduling {
     // MARK: - Constants
 
     /// Notification action and category identifiers shared with AppDelegate.

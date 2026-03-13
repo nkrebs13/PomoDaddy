@@ -20,7 +20,7 @@ import SwiftData
 /// await recorder.record(session)
 /// ```
 @ModelActor
-actor SessionRecorder {
+actor SessionRecorder: SessionRecording {
     // MARK: - Public Methods
 
     /// Records a completed pomodoro session and updates all related statistics.
