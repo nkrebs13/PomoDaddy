@@ -40,7 +40,7 @@ final class PomodoroStateMachine {
     private(set) var totalCompletedToday = 0
 
     /// The underlying timer engine.
-    let timerEngine: TimerEngine
+    let timerEngine: any TimerEngineProtocol
 
     /// User-configurable timer settings.
     var settings: PomodoroSettings
@@ -70,7 +70,7 @@ final class PomodoroStateMachine {
     // MARK: - Initialization
 
     init(
-        timerEngine: TimerEngine = TimerEngine(),
+        timerEngine: any TimerEngineProtocol = TimerEngine(),
         settings: PomodoroSettings = .default,
         persistence: StateMachinePersistence = .shared
     ) {

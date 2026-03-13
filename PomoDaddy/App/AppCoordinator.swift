@@ -25,25 +25,25 @@ final class AppCoordinator {
     let modelContainer: ModelContainer
 
     /// Manages user settings with persistence.
-    let settingsManager: SettingsManager
+    let settingsManager: any SettingsManaging
 
     /// The core timer engine.
-    let timerEngine: TimerEngine
+    let timerEngine: any TimerEngineProtocol
 
     /// The Pomodoro state machine managing timer logic and transitions.
     let stateMachine: PomodoroStateMachine
 
     /// Handles local notification scheduling.
-    let notificationScheduler: NotificationScheduler
+    let notificationScheduler: any NotificationScheduling
 
     /// Thread-safe session recorder (actor).
-    let sessionRecorder: SessionRecorder
+    let sessionRecorder: any SessionRecording
 
     /// Statistics calculator for querying aggregated data.
     let statsCalculator: StatsCalculator
 
     /// Manages App Nap prevention during timing.
-    let appNapManager: AppNapManager
+    let appNapManager: any AppNapManaging
 
     /// Handles app lifecycle events for state persistence.
     private(set) var lifecycleHandler: AppLifecycleHandler?
@@ -51,45 +51,60 @@ final class AppCoordinator {
     // MARK: - Sub-Coordinators
 
     /// Manages floating window lifecycle.
-    let floatingWindowCoordinator: FloatingWindowCoordinator
+    let floatingWindowCoordinator: any FloatingWindowCoordinating
 
     /// Manages session tracking and celebrations.
-    let sessionCoordinator: SessionCoordinator
+    let sessionCoordinator: any SessionCoordinating
 
     // MARK: - Initialization
 
     /// Creates a new AppCoordinator, initializing all dependencies.
-    init() {
-        // 1. Initialize ModelContainer first (data layer)
-        modelContainer = PomodoroDataContainer.create()
+    convenience init() {
+        let modelContainer = PomodoroDataContainer.create()
+        let settingsManager = SettingsManager()
+        let timerEngine = TimerEngine()
+        let sessionRecorder = SessionRecorder(modelContainer: modelContainer)
 
-        // 2. Initialize SettingsManager
-        settingsManager = SettingsManager()
+        self.init(
+            modelContainer: modelContainer,
+            settingsManager: settingsManager,
+            timerEngine: timerEngine,
+            notificationScheduler: NotificationScheduler(),
+            sessionRecorder: sessionRecorder,
+            appNapManager: AppNapManager(),
+            sessionCoordinator: SessionCoordinator(sessionRecorder: sessionRecorder),
+            floatingWindowCoordinator: FloatingWindowCoordinator()
+        )
+    }
 
-        // 3. Initialize TimerEngine
-        timerEngine = TimerEngine()
+    /// Creates an AppCoordinator with injectable dependencies for testing.
+    init(
+        modelContainer: ModelContainer,
+        settingsManager: any SettingsManaging,
+        timerEngine: any TimerEngineProtocol,
+        notificationScheduler: any NotificationScheduling,
+        sessionRecorder: any SessionRecording,
+        appNapManager: any AppNapManaging,
+        sessionCoordinator: any SessionCoordinating,
+        floatingWindowCoordinator: any FloatingWindowCoordinating
+    ) {
+        self.modelContainer = modelContainer
+        self.settingsManager = settingsManager
+        self.timerEngine = timerEngine
+        self.notificationScheduler = notificationScheduler
+        self.sessionRecorder = sessionRecorder
+        self.appNapManager = appNapManager
+        self.sessionCoordinator = sessionCoordinator
+        self.floatingWindowCoordinator = floatingWindowCoordinator
 
-        // 4. Initialize PomodoroStateMachine with TimerEngine and settings
+        // Initialize StatsCalculator from model container
+        statsCalculator = StatsCalculator(modelContext: modelContainer.mainContext)
+
+        // Initialize PomodoroStateMachine with timer engine and settings
         stateMachine = PomodoroStateMachine(
             timerEngine: timerEngine,
             settings: settingsManager.settings
         )
-
-        // 5. Initialize NotificationScheduler
-        notificationScheduler = NotificationScheduler()
-
-        // 6. Initialize SessionRecorder with ModelContainer
-        sessionRecorder = SessionRecorder(modelContainer: modelContainer)
-
-        // 7. Initialize StatsCalculator with ModelContext
-        statsCalculator = StatsCalculator(modelContext: modelContainer.mainContext)
-
-        // 8. Initialize AppNapManager
-        appNapManager = AppNapManager()
-
-        // 9. Initialize sub-coordinators
-        sessionCoordinator = SessionCoordinator(sessionRecorder: sessionRecorder)
-        floatingWindowCoordinator = FloatingWindowCoordinator()
 
         // Set the app coordinator reference (needs self, so done after init)
         floatingWindowCoordinator.setAppCoordinator(self)
@@ -102,7 +117,7 @@ final class AppCoordinator {
         // Set up callbacks
         setupCallbacks()
 
-        // 10. Initialize AppLifecycleHandler (needs self, so done after init)
+        // Initialize AppLifecycleHandler (needs self, so done after init)
         lifecycleHandler = AppLifecycleHandler(
             onSave: { [weak self] in
                 self?.saveState()
