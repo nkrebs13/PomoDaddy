@@ -15,13 +15,22 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green" alt="License"></a>
 </p>
 
-<p align="center">
-  <img src="docs/screenshots/popover.png" width="280" alt="Timer Popover">
-  &nbsp;&nbsp;
-  <img src="docs/screenshots/floating-window.png" width="240" alt="Floating Window">
-  &nbsp;&nbsp;
-  <img src="docs/screenshots/settings.png" width="280" alt="Settings">
-</p>
+<table align="center">
+  <tr>
+    <td align="center"><strong>Menu Bar Popover</strong></td>
+    <td align="center"><strong>Floating Window</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/popover.png" width="300" alt="Timer Popover"></td>
+    <td><img src="docs/screenshots/floating-window.png" width="300" alt="Floating Window"></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><strong>Settings</strong></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><img src="docs/screenshots/settings.png" width="300" alt="Settings"></td>
+  </tr>
+</table>
 
 ---
 
