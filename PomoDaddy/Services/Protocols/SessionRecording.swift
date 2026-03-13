@@ -26,6 +26,6 @@ protocol SessionRecording: Actor {
     ) throws
 
     /// Records multiple sessions in a single transaction.
-    /// - Parameter sessions: The sessions to record.
-    func recordBatch(_ sessions: [PomodoroSession]) throws
+    /// - Parameter entries: The session data to record (start, end, duration, completed).
+    func recordBatch(_ entries: [(startDate: Date, endDate: Date, durationMinutes: Int, wasCompleted: Bool)]) throws
 }

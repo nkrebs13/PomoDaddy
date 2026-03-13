@@ -136,14 +136,44 @@ extension SessionRecorder {
     ///
     /// - Parameter sessions: The sessions to record.
     /// - Throws: Any SwiftData errors that occur during the save operation.
-    func recordBatch(_ sessions: [PomodoroSession]) throws {
-        for session in sessions {
+    func recordBatch(_ entries: [(startDate: Date, endDate: Date, durationMinutes: Int, wasCompleted: Bool)]) throws {
+        // Cache DailyStats per calendar day to avoid re-fetching unsaved objects
+        var dailyStatsCache: [Date: DailyStats] = [:]
+
+        for entry in entries {
+            let session = PomodoroSession(
+                startDate: entry.startDate,
+                endDate: entry.endDate,
+                durationMinutes: entry.durationMinutes,
+                wasCompleted: entry.wasCompleted
+            )
             modelContext.insert(session)
-            try updateDailyStats(for: session)
+
+            guard session.wasCompleted else { continue }
+
+            let calendarDay = session.calendarDay
+            let stats: DailyStats
+            if let cached = dailyStatsCache[calendarDay] {
+                stats = cached
+            } else {
+                var descriptor = FetchDescriptor<DailyStats>(
+                    predicate: DailyStats.forDate(calendarDay)
+                )
+                descriptor.fetchLimit = 1
+
+                if let existing = try modelContext.fetch(descriptor).first {
+                    stats = existing
+                } else {
+                    stats = DailyStats(date: calendarDay)
+                    modelContext.insert(stats)
+                }
+                dailyStatsCache[calendarDay] = stats
+            }
+            stats.recordPomodoro(durationMinutes: session.durationMinutes)
         }
 
-        // Update streak once based on the most recent session
-        if let mostRecent = sessions.max(by: { $0.startDate < $1.startDate }) {
+        // Update streak once based on the most recent entry
+        if let mostRecent = entries.max(by: { $0.startDate < $1.startDate }) {
             try updateStreak(for: mostRecent.startDate)
         }
 

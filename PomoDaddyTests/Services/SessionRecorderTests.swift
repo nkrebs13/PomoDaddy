@@ -97,7 +97,9 @@ final class SessionRecorderTests: XCTestCase {
     }
 
     func testRecordMultipleSessions() async throws {
-        let startDate = Date()
+        // Use noon to avoid midnight boundary issues
+        let calendar = Calendar.current
+        let startDate = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
 
         // Record 3 sessions
         for i in 0 ..< 3 {
@@ -120,9 +122,9 @@ final class SessionRecorderTests: XCTestCase {
         XCTAssertEqual(sessions.count, 3)
 
         // Verify daily stats reflect all sessions
-        let today = Calendar.current.startOfDay(for: Date())
+        let sessionDay = calendar.startOfDay(for: startDate)
         var statsDescriptor = FetchDescriptor<DailyStats>(
-            predicate: DailyStats.forDate(today)
+            predicate: DailyStats.forDate(sessionDay)
         )
         statsDescriptor.fetchLimit = 1
         let stats = try context.fetch(statsDescriptor)
@@ -164,31 +166,28 @@ final class SessionRecorderTests: XCTestCase {
     // MARK: - Batch Operations Tests
 
     func testRecordBatch() async throws {
-        let startDate = Date()
-        let sessions = (0 ..< 5).map { i in
-            let sessionStart = startDate.addingTimeInterval(TimeInterval(i * 30 * 60))
+        // Use a fixed date at noon to avoid midnight boundary issues
+        let calendar = Calendar.current
+        let noon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+        let entries: [(startDate: Date, endDate: Date, durationMinutes: Int, wasCompleted: Bool)] = (0 ..< 5).map { i in
+            let sessionStart = noon.addingTimeInterval(TimeInterval(i * 30 * 60))
             let sessionEnd = sessionStart.addingTimeInterval(25 * 60)
-            return PomodoroSession(
-                startDate: sessionStart,
-                endDate: sessionEnd,
-                durationMinutes: 25,
-                wasCompleted: true
-            )
+            return (startDate: sessionStart, endDate: sessionEnd, durationMinutes: 25, wasCompleted: true)
         }
 
-        try await sessionRecorder.recordBatch(sessions)
+        try await sessionRecorder.recordBatch(entries)
 
-        // Verify all sessions were recorded
-        let context = modelContainer.mainContext
+        // Use a fresh context to see the actor's committed changes
+        let context = ModelContext(modelContainer)
         let descriptor = FetchDescriptor<PomodoroSession>()
         let recordedSessions = try context.fetch(descriptor)
 
         XCTAssertEqual(recordedSessions.count, 5)
 
         // Verify stats updated correctly
-        let today = Calendar.current.startOfDay(for: Date())
+        let batchDay = calendar.startOfDay(for: noon)
         var statsDescriptor = FetchDescriptor<DailyStats>(
-            predicate: DailyStats.forDate(today)
+            predicate: DailyStats.forDate(batchDay)
         )
         statsDescriptor.fetchLimit = 1
         let stats = try context.fetch(statsDescriptor)
@@ -242,8 +241,9 @@ final class SessionRecorderTests: XCTestCase {
     }
 
     func testDeleteSessionAdjustsStats() async throws {
-        // Record multiple sessions
-        let startDate = Date()
+        // Use noon to avoid midnight boundary issues
+        let calendar = Calendar.current
+        let startDate = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
 
         for i in 0 ..< 3 {
             let sessionStart = startDate.addingTimeInterval(TimeInterval(i * 30 * 60))
@@ -268,9 +268,9 @@ final class SessionRecorderTests: XCTestCase {
 
         // Verify stats were adjusted correctly using fresh context
         let verifyContext = ModelContext(modelContainer)
-        let today = Calendar.current.startOfDay(for: Date())
+        let sessionDay = calendar.startOfDay(for: startDate)
         var statsDescriptor = FetchDescriptor<DailyStats>(
-            predicate: DailyStats.forDate(today)
+            predicate: DailyStats.forDate(sessionDay)
         )
         statsDescriptor.fetchLimit = 1
         let stats = try verifyContext.fetch(statsDescriptor)

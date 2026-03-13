@@ -43,11 +43,11 @@ actor MockSessionRecorder: SessionRecording {
         lastRecordedWasCompleted = wasCompleted
     }
 
-    func recordBatch(_ sessions: [PomodoroSession]) throws {
+    func recordBatch(_ entries: [(startDate: Date, endDate: Date, durationMinutes: Int, wasCompleted: Bool)]) throws {
         if shouldThrow {
             throw MockError.simulatedFailure
         }
         recordBatchCallCount += 1
-        lastBatchCount = sessions.count
+        lastBatchCount = entries.count
     }
 }
