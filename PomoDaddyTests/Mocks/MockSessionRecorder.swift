@@ -51,8 +51,3 @@ actor MockSessionRecorder: SessionRecording {
         lastBatchCount = sessions.count
     }
 }
-
-/// Shared error type for mock failures.
-enum MockError: Error {
-    case simulatedFailure
-}

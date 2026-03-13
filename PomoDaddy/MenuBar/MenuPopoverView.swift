@@ -32,6 +32,9 @@ struct MenuPopoverView: View {
     /// Whether the settings section is expanded.
     @State private var showingSettings = false
 
+    /// Cached focus time text to avoid per-render SwiftData queries.
+    @State private var cachedFocusTimeText = "0m"
+
     // MARK: - Computed Properties
 
     /// The current timer state.
@@ -126,6 +129,8 @@ struct MenuPopoverView: View {
         }
         .frame(width: AppConstants.MenuPopover.width)
         .padding()
+        .onAppear { refreshFocusTime() }
+        .onChange(of: coordinator.stateMachine.totalCompletedToday) { _, _ in refreshFocusTime() }
     }
 
     // MARK: - Header Section
@@ -301,7 +306,7 @@ struct MenuPopoverView: View {
 
             // Estimated focus time
             VStack(spacing: 4) {
-                Text(focusTimeText)
+                Text(cachedFocusTimeText)
                     .font(.title2)
                     .fontWeight(.semibold)
                     .foregroundStyle(Color.forestGreen)
@@ -312,11 +317,11 @@ struct MenuPopoverView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(totalToday) pomodoros today, \(focusTimeText) focus time")
+        .accessibilityLabel("\(totalToday) pomodoros today, \(cachedFocusTimeText) focus time")
         .padding(.vertical, 4)
     }
 
-    private var focusTimeText: String {
+    private func refreshFocusTime() {
         let calculator = StatsCalculator(modelContext: modelContext)
         let totalMinutes: Int
         do {
@@ -325,7 +330,7 @@ struct MenuPopoverView: View {
             Logger.logError(error, context: "Failed to load today's focus minutes", log: Logger.stats)
             totalMinutes = 0
         }
-        return TimeFormatting.formatFocusTime(minutes: totalMinutes)
+        cachedFocusTimeText = TimeFormatting.formatFocusTime(minutes: totalMinutes)
     }
 
     // MARK: - Settings Section

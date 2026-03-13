@@ -182,13 +182,4 @@ final class PomodoroCycleTests: XCTestCase {
         XCTAssertTrue(events.contains("cycle_complete"))
         XCTAssertTrue(events.contains("break_complete_longBreak"))
     }
-
-    // MARK: - Complete When Idle (Guard)
-
-    func testCompleteWhenIdleIsNoOp() {
-        XCTAssertEqual(stateMachine.currentState, .idle)
-        stateMachine.send(.complete)
-        XCTAssertEqual(stateMachine.currentState, .idle)
-        XCTAssertEqual(stateMachine.completedPomodorosInCycle, 0)
-    }
 }

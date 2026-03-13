@@ -337,7 +337,7 @@ final class PomodoroStateMachineTests: XCTestCase {
 
     // MARK: - Persistence Tests
 
-    func testStatePersistence() async {
+    func testStatePersistence() {
         // Use a shared persistence instance to simulate app restart
         let sharedPersistence = StateMachinePersistence(
             defaults: UserDefaults(suiteName: "test.persistence.\(UUID())")!
@@ -355,12 +355,11 @@ final class PomodoroStateMachineTests: XCTestCase {
         )
 
         // Start a work session with the shared persistence
-        let firstMachine = PomodoroStateMachine(timerEngine: TimerEngine(), settings: settings, persistence: sharedPersistence)
+        let firstMachine = PomodoroStateMachine(timerEngine: MockTimerEngine(), settings: settings, persistence: sharedPersistence)
         firstMachine.send(.start(.work))
-        try? await Task.sleep(nanoseconds: 100_000_000)
 
         // Create a new state machine with the same persistence (simulating app restart)
-        let newStateMachine = PomodoroStateMachine(timerEngine: TimerEngine(), settings: settings, persistence: sharedPersistence)
+        let newStateMachine = PomodoroStateMachine(timerEngine: MockTimerEngine(), settings: settings, persistence: sharedPersistence)
 
         // Should restore state
         XCTAssertEqual(newStateMachine.currentState, .running(.work))

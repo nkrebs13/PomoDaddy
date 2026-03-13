@@ -5,7 +5,6 @@
 //  Tests for FloatingWindowCoordinator using mock protocol verification.
 //
 
-import SwiftData
 import XCTest
 @testable import PomoDaddy
 
@@ -49,15 +48,11 @@ final class FloatingWindowCoordinatorTests: XCTestCase {
     }
 
     func testSetAppCoordinatorIncrementsCallCount() {
-        let container = try! ModelContainer(
-            for: PomodoroSession.self, DailyStats.self, UserStreak.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-        )
         let persistence = StateMachinePersistence(
             defaults: UserDefaults(suiteName: "test.fwc.\(UUID())")!
         )
         let coordinator = AppCoordinator(
-            modelContainer: container,
+            modelContainer: TestHelpers.createTestContainer(),
             settingsManager: MockSettingsManager(),
             timerEngine: MockTimerEngine(),
             notificationScheduler: MockNotificationScheduler(),

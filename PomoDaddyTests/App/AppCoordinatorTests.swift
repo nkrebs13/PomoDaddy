@@ -5,7 +5,6 @@
 //  Tests for AppCoordinator control methods and settings sync using protocol-based mocks.
 //
 
-import SwiftData
 import XCTest
 @testable import PomoDaddy
 
@@ -31,18 +30,13 @@ final class AppCoordinatorTests: XCTestCase {
         mockFloatingWindowCoordinator = MockFloatingWindowCoordinator()
         mockSettingsManager = MockSettingsManager()
 
-        let container = try! ModelContainer(
-            for: PomodoroSession.self, DailyStats.self, UserStreak.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-        )
-
         // Use isolated UserDefaults per test to prevent cross-test state leakage
         let isolatedPersistence = StateMachinePersistence(
             defaults: UserDefaults(suiteName: "test.coordinator.\(UUID())")!
         )
 
         coordinator = AppCoordinator(
-            modelContainer: container,
+            modelContainer: TestHelpers.createTestContainer(),
             settingsManager: mockSettingsManager,
             timerEngine: mockTimerEngine,
             notificationScheduler: mockNotificationScheduler,
