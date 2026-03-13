@@ -26,6 +26,9 @@ struct MenuPopoverView: View {
     /// The app coordinator for accessing timer state.
     @Bindable var coordinator: AppCoordinator
 
+    /// The model context for creating StatsCalculator.
+    @Environment(\.modelContext) private var modelContext
+
     /// Whether the settings section is expanded.
     @State private var showingSettings = false
 
@@ -314,9 +317,10 @@ struct MenuPopoverView: View {
     }
 
     private var focusTimeText: String {
+        let calculator = StatsCalculator(modelContext: modelContext)
         let totalMinutes: Int
         do {
-            totalMinutes = try coordinator.todayFocusMinutes()
+            totalMinutes = try calculator.todayFocusMinutes()
         } catch {
             Logger.logError(error, context: "Failed to load today's focus minutes", log: Logger.stats)
             totalMinutes = 0

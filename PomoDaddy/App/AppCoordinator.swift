@@ -39,9 +39,6 @@ final class AppCoordinator {
     /// Thread-safe session recorder (actor).
     let sessionRecorder: any SessionRecording
 
-    /// Statistics calculator for querying aggregated data.
-    let statsCalculator: StatsCalculator
-
     /// Manages App Nap prevention during timing.
     let appNapManager: any AppNapManaging
 
@@ -96,9 +93,6 @@ final class AppCoordinator {
         self.appNapManager = appNapManager
         self.sessionCoordinator = sessionCoordinator
         self.floatingWindowCoordinator = floatingWindowCoordinator
-
-        // Initialize StatsCalculator from model container
-        statsCalculator = StatsCalculator(modelContext: modelContainer.mainContext)
 
         // Initialize PomodoroStateMachine with timer engine and settings
         stateMachine = PomodoroStateMachine(
@@ -253,33 +247,6 @@ final class AppCoordinator {
     func quit() {
         saveState()
         NSApplication.shared.terminate(nil)
-    }
-
-    // MARK: - Stats Methods
-
-    /// Returns today's statistics.
-    func todayStats() throws -> DailyStats? {
-        try statsCalculator.todayStats()
-    }
-
-    /// Returns the weekly trend data.
-    func weeklyTrend() throws -> [DailyStats] {
-        try statsCalculator.weeklyTrend()
-    }
-
-    /// Returns the current user streak.
-    func currentStreak() throws -> UserStreak? {
-        try statsCalculator.currentStreak()
-    }
-
-    /// Returns today's total focus minutes.
-    func todayFocusMinutes() throws -> Int {
-        try statsCalculator.todayFocusMinutes()
-    }
-
-    /// Returns the weekly summary.
-    func weeklySummary() throws -> StatsCalculator.WeeklySummary {
-        try statsCalculator.weeklySummary()
     }
 
     // MARK: - Floating Window Management
