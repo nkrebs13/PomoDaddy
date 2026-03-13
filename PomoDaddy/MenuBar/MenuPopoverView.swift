@@ -350,31 +350,31 @@ struct MenuPopoverView: View {
 
     private var settingsSection: some View {
         VStack(spacing: 12) {
-            // Floating window toggle
-            Toggle(isOn: $coordinator.isFloatingWindowVisible) {
-                HStack {
-                    Image(systemName: "macwindow")
-                        .foregroundStyle(.secondary)
-                    Text("Show Floating Window")
-                        .font(.subheadline)
-                }
-            }
-            .toggleStyle(.switch)
-
-            // Menu bar countdown toggle
-            Toggle(isOn: $coordinator.isMenuBarCountdownVisible) {
-                HStack {
-                    Image(systemName: "clock")
-                        .foregroundStyle(.secondary)
-                    Text("Show Time in Menu Bar")
-                        .font(.subheadline)
-                }
-            }
-            .toggleStyle(.switch)
-
-            // Expanded settings
+            // All settings hidden behind gear icon
             if showingSettings {
                 VStack(spacing: 8) {
+                    // Floating window toggle
+                    Toggle(isOn: $coordinator.isFloatingWindowVisible) {
+                        HStack {
+                            Image(systemName: "macwindow")
+                                .foregroundStyle(.secondary)
+                            Text("Show Floating Window")
+                                .font(.subheadline)
+                        }
+                    }
+                    .toggleStyle(.switch)
+
+                    // Menu bar countdown toggle
+                    Toggle(isOn: $coordinator.isMenuBarCountdownVisible) {
+                        HStack {
+                            Image(systemName: "clock")
+                                .foregroundStyle(.secondary)
+                            Text("Show Time in Menu Bar")
+                                .font(.subheadline)
+                        }
+                    }
+                    .toggleStyle(.switch)
+
                     Divider()
 
                     // Auto-start breaks

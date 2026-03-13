@@ -69,28 +69,32 @@ struct FloatingTimerView: View {
             // Confetti overlay for celebrations
             ConfettiOverlayView(trigger: $confettiTrigger)
 
-            // Close button (visible on hover)
-            if isHovering {
-                Button {
-                    coordinator.hideFloatingWindow()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
-                        .symbolRenderingMode(.hierarchical)
-                }
-                .buttonStyle(.plain)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                .padding(12)
-                .transition(.opacity)
-                .accessibilityLabel("Close floating window")
-            }
         }
         .frame(
             width: isCompact ? compactSize.width : expandedSize.width,
             height: isCompact ? compactSize.height : expandedSize.height
         )
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(alignment: .topTrailing) {
+            // Close button — always in view hierarchy for VoiceOver,
+            // visually hidden when not hovering. Overlay constrains
+            // hit-test area to the button itself.
+            Button {
+                coordinator.hideFloatingWindow()
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.secondary)
+                    .symbolRenderingMode(.hierarchical)
+            }
+            .buttonStyle(.plain)
+            .padding(16)
+            .opacity(isHovering ? 1 : 0)
+            .animation(AnimationConstants.buttonHover, value: isHovering)
+            .allowsHitTesting(isHovering)
+            .accessibilityLabel("Close floating window")
+            .accessibilityHidden(!isHovering)
+        }
         .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 8)
         .accessibilityHint("Double-tap to toggle compact mode")
         .onTapGesture(count: 2) {
