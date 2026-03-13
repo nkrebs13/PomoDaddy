@@ -170,7 +170,18 @@ final class StatusBarController {
     /// Shows the popover attached to the status item.
     func showPopover() {
         guard let button = statusItem.button else { return }
-        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+
+        // Anchor to the rightmost portion of the button. macOS status items
+        // grow leftward — the right edge is screen-stable regardless of
+        // width changes from the timer countdown text.
+        let anchorWidth: CGFloat = min(button.bounds.width, 22)
+        let anchorRect = NSRect(
+            x: button.bounds.width - anchorWidth,
+            y: button.bounds.origin.y,
+            width: anchorWidth,
+            height: button.bounds.height
+        )
+        popover.show(relativeTo: anchorRect, of: button, preferredEdge: .minY)
 
         // Make the popover's window key to receive keyboard events
         popover.contentViewController?.view.window?.makeKey()
