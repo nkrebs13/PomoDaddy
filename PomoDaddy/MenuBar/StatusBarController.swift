@@ -157,7 +157,7 @@ final class StatusBarController {
         {
             statusItem.length = NSStatusItem.variableLength
         } else {
-            statusItem.length = 22
+            statusItem.length = AppConstants.MenuBar.iconWidth
         }
 
         // Update accessibility label
@@ -174,7 +174,7 @@ final class StatusBarController {
         // Anchor to the rightmost portion of the button. macOS status items
         // grow leftward — the right edge is screen-stable regardless of
         // width changes from the timer countdown text.
-        let anchorWidth: CGFloat = min(button.bounds.width, 22)
+        let anchorWidth: CGFloat = min(button.bounds.width, AppConstants.MenuBar.iconWidth)
         let anchorRect = NSRect(
             x: button.bounds.width - anchorWidth,
             y: button.bounds.origin.y,

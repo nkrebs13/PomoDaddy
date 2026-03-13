@@ -57,6 +57,9 @@ enum AppConstants {
     enum MenuBar {
         /// Icon update polling interval in seconds.
         static let iconUpdateInterval: TimeInterval = 1.0
+
+        /// Fixed width of the status bar icon (without timer text).
+        static let iconWidth: CGFloat = 22
     }
 
     // MARK: - Settings

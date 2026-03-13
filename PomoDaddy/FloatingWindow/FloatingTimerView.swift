@@ -69,34 +69,30 @@ struct FloatingTimerView: View {
             // Confetti overlay for celebrations
             ConfettiOverlayView(trigger: $confettiTrigger)
 
-            // Close button (visible on hover, positioned in top-trailing corner)
-            if isHovering {
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button {
-                            coordinator.hideFloatingWindow()
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.system(size: 14))
-                                .foregroundStyle(.secondary)
-                                .symbolRenderingMode(.hierarchical)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Close floating window")
-                    }
-                    Spacer()
-                }
-                .padding(16)
-                .transition(.opacity)
-                .allowsHitTesting(true)
-            }
         }
         .frame(
             width: isCompact ? compactSize.width : expandedSize.width,
             height: isCompact ? compactSize.height : expandedSize.height
         )
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(alignment: .topTrailing) {
+            // Close button (visible on hover) — overlay keeps hit-test
+            // area constrained to the button itself, not the full window.
+            if isHovering {
+                Button {
+                    coordinator.hideFloatingWindow()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.secondary)
+                        .symbolRenderingMode(.hierarchical)
+                }
+                .buttonStyle(.plain)
+                .padding(16)
+                .transition(.opacity)
+                .accessibilityLabel("Close floating window")
+            }
+        }
         .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 8)
         .accessibilityHint("Double-tap to toggle compact mode")
         .onTapGesture(count: 2) {
