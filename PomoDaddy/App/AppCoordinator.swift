@@ -83,7 +83,8 @@ final class AppCoordinator {
         sessionRecorder: any SessionRecording,
         appNapManager: any AppNapManaging,
         sessionCoordinator: any SessionCoordinating,
-        floatingWindowCoordinator: any FloatingWindowCoordinating
+        floatingWindowCoordinator: any FloatingWindowCoordinating,
+        persistence: StateMachinePersistence = .shared
     ) {
         self.modelContainer = modelContainer
         self.settingsManager = settingsManager
@@ -97,7 +98,8 @@ final class AppCoordinator {
         // Initialize PomodoroStateMachine with timer engine and settings
         stateMachine = PomodoroStateMachine(
             timerEngine: timerEngine,
-            settings: settingsManager.settings
+            settings: settingsManager.settings,
+            persistence: persistence
         )
 
         // Set the app coordinator reference (needs self, so done after init)
