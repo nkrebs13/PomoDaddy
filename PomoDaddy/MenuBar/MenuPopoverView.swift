@@ -32,6 +32,9 @@ struct MenuPopoverView: View {
     /// Whether the settings section is expanded.
     @State private var showingSettings = false
 
+    /// Whether the user has seen the onboarding tooltip.
+    @AppStorage(AppConstants.UserDefaultsKeys.hasSeenOnboarding) private var hasSeenOnboarding = false
+
     /// Cached focus time text to avoid per-render SwiftData queries.
     @State private var cachedFocusTimeText = "0m"
 
@@ -100,6 +103,16 @@ struct MenuPopoverView: View {
 
     var body: some View {
         VStack(spacing: 16) {
+            // Onboarding tooltip (first launch only)
+            if !hasSeenOnboarding {
+                OnboardingTooltipView {
+                    withAnimation(AnimationConstants.modeTransition) {
+                        hasSeenOnboarding = true
+                    }
+                }
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
             // Header
             headerSection
 
