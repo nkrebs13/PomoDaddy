@@ -240,32 +240,14 @@ final class PomodoroStateMachine {
 
         case .shortBreak:
             onBreakComplete?(intervalType)
-
-            // Auto-start work if enabled
-            if settings.autoStartWork {
-                currentState = .running(.work)
-                startTimer(for: .work)
-            } else {
-                currentState = .idle
-                timerEngine.stop()
-            }
+            transitionAfterBreak()
 
         case .longBreak:
             let completedCycles = totalCompletedToday / settings.pomodorosUntilLongBreak
             onCycleComplete?(completedCycles)
             onBreakComplete?(intervalType)
-
-            // Reset cycle counter after long break
             completedPomodorosInCycle = 0
-
-            // Auto-start work if enabled
-            if settings.autoStartWork {
-                currentState = .running(.work)
-                startTimer(for: .work)
-            } else {
-                currentState = .idle
-                timerEngine.stop()
-            }
+            transitionAfterBreak()
         }
 
         notifyStateChange(from: oldState, to: currentState)
@@ -294,6 +276,17 @@ final class PomodoroStateMachine {
     }
 
     // MARK: - Private Methods - Helpers
+
+    /// Transitions to work or idle after a break completes, based on auto-start setting.
+    private func transitionAfterBreak() {
+        if settings.autoStartWork {
+            currentState = .running(.work)
+            startTimer(for: .work)
+        } else {
+            currentState = .idle
+            timerEngine.stop()
+        }
+    }
 
     private func startTimer(for intervalType: IntervalType) {
         let duration = duration(for: intervalType)
