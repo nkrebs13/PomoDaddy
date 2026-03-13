@@ -16,9 +16,11 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/popover.png" width="300" alt="Timer Popover">
+  <img src="docs/screenshots/popover.png" width="280" alt="Timer Popover">
   &nbsp;&nbsp;
-  <img src="docs/screenshots/floating-window.png" width="280" alt="Floating Window">
+  <img src="docs/screenshots/floating-window.png" width="240" alt="Floating Window">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/settings.png" width="280" alt="Settings">
 </p>
 
 ---
@@ -79,5 +81,5 @@ MIT — see [LICENSE](LICENSE).
 ---
 
 <p align="center">
-  <sub>Built with SwiftUI, SwiftData, and an mass quantities of coffee by <a href="https://github.com/nkrebs13">Nathan Krebs</a></sub>
+  <sub>Built with SwiftUI, SwiftData, and mass quantities of coffee by <a href="https://github.com/nkrebs13">Nathan Krebs</a></sub>
 </p>
