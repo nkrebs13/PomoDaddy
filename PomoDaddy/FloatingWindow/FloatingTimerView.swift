@@ -76,22 +76,24 @@ struct FloatingTimerView: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay(alignment: .topTrailing) {
-            // Close button (visible on hover) — overlay keeps hit-test
-            // area constrained to the button itself, not the full window.
-            if isHovering {
-                Button {
-                    coordinator.hideFloatingWindow()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
-                        .symbolRenderingMode(.hierarchical)
-                }
-                .buttonStyle(.plain)
-                .padding(16)
-                .transition(.opacity)
-                .accessibilityLabel("Close floating window")
+            // Close button — always in view hierarchy for VoiceOver,
+            // visually hidden when not hovering. Overlay constrains
+            // hit-test area to the button itself.
+            Button {
+                coordinator.hideFloatingWindow()
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.secondary)
+                    .symbolRenderingMode(.hierarchical)
             }
+            .buttonStyle(.plain)
+            .padding(16)
+            .opacity(isHovering ? 1 : 0)
+            .animation(AnimationConstants.buttonHover, value: isHovering)
+            .allowsHitTesting(isHovering)
+            .accessibilityLabel("Close floating window")
+            .accessibilityHidden(!isHovering)
         }
         .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 8)
         .accessibilityHint("Double-tap to toggle compact mode")
