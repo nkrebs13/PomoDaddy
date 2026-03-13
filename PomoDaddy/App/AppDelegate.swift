@@ -19,6 +19,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Initialize status bar controller
         statusBarController = StatusBarController(coordinator: appCoordinator)
+
+        // Restore UI state (e.g., show floating window if enabled in settings)
+        appCoordinator.restoreState()
     }
 
     func applicationWillTerminate(_ notification: Notification) {

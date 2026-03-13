@@ -183,7 +183,13 @@ final class AppCoordinator {
     /// Whether the floating window is visible.
     var isFloatingWindowVisible: Bool {
         get { settingsManager.settings.showFloatingWindow }
-        set { settingsManager.setShowFloatingWindow(enabled: newValue) }
+        set {
+            if newValue {
+                showFloatingWindow()
+            } else {
+                hideFloatingWindow()
+            }
+        }
     }
 
     /// Whether the menu bar countdown is visible.
