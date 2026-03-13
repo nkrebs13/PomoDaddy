@@ -69,21 +69,27 @@ struct FloatingTimerView: View {
             // Confetti overlay for celebrations
             ConfettiOverlayView(trigger: $confettiTrigger)
 
-            // Close button (visible on hover)
+            // Close button (visible on hover, positioned in top-trailing corner)
             if isHovering {
-                Button {
-                    coordinator.hideFloatingWindow()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
-                        .symbolRenderingMode(.hierarchical)
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button {
+                            coordinator.hideFloatingWindow()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.secondary)
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Close floating window")
+                    }
+                    Spacer()
                 }
-                .buttonStyle(.plain)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 .padding(16)
                 .transition(.opacity)
-                .accessibilityLabel("Close floating window")
+                .allowsHitTesting(true)
             }
         }
         .frame(
