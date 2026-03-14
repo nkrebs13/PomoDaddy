@@ -11,7 +11,7 @@ import SwiftUI
 // MARK: - Animation Constants
 
 /// Centralized animation constants for consistent, playful animations throughout the app.
-internal enum AnimationConstants {
+enum AnimationConstants {
     // MARK: Button Animations
 
     /// Spring animation for button hover states - bouncy and responsive
@@ -53,7 +53,7 @@ internal enum AnimationConstants {
     static let hoverShadowRadius: CGFloat = 8
 
     /// Shadow opacity for hover state
-    static let hoverShadowOpacity: Double = 0.15
+    static let hoverShadowOpacity = 0.15
 }
 
 // MARK: - Animation Extensions

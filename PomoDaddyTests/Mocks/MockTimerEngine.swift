@@ -99,7 +99,7 @@ final class MockTimerEngine: TimerEngineProtocol {
         restoreCallCount += 1
         self.remainingSeconds = remainingSeconds
         self.totalDuration = totalDuration
-        self.isRunning = wasRunning
+        isRunning = wasRunning
         storedOnTick = onTick
         storedOnComplete = onComplete
     }

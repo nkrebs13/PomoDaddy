@@ -16,16 +16,16 @@ import SwiftUI
 /// - Total focus time in the center
 /// - Completed pomodoro count
 /// - Row of tomato icons for visual session tracking
-internal struct DailyFocusView: View {
+struct DailyFocusView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
     @Environment(\.modelContext) private var modelContext: ModelContext
 
-    @State private var focusMinutes: Int = 0
-    @State private var completedPomodoros: Int = 0
+    @State private var focusMinutes = 0
+    @State private var completedPomodoros = 0
     @State private var ringProgress: Double = 0
-    @State private var hasAppeared: Bool = false
+    @State private var hasAppeared = false
 
     /// Daily goal in minutes.
     private let dailyGoalMinutes: Int = AppConstants.DailyFocus.dailyGoalMinutes
@@ -114,7 +114,9 @@ internal struct DailyFocusView: View {
         }
         .frame(width: 180, height: 180)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Daily focus progress: \(formattedFocusTime) of \(dailyGoalMinutes / 60) hour goal, \(Int(ringProgress * 100)) percent complete")
+        .accessibilityLabel(
+            "Daily focus progress: \(formattedFocusTime) of \(dailyGoalMinutes / 60) hour goal, \(Int(ringProgress * 100)) percent complete"
+        )
         .accessibilityAddTraits(.updatesFrequently)
     }
 
@@ -169,7 +171,7 @@ internal struct DailyFocusView: View {
     /// Loads today's statistics from the data store.
     private func loadTodayStats() {
         do {
-            let calculator: StatsCalculator = StatsCalculator(modelContext: modelContext)
+            let calculator = StatsCalculator(modelContext: modelContext)
             focusMinutes = try calculator.todayFocusMinutes()
             completedPomodoros = try calculator.todayCompletedPomodoros()
         } catch {

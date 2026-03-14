@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Persisted State
 
 /// Represents the complete persisted state of the Pomodoro state machine.
-internal struct PersistedStateMachineState: Codable {
+struct PersistedStateMachineState: Codable {
     let timerState: TimerState
     let completedPomodorosInCycle: Int
     let totalCompletedToday: Int
@@ -21,17 +21,17 @@ internal struct PersistedStateMachineState: Codable {
 // MARK: - State Machine Persistence Service
 
 /// Handles persistence of PomodoroStateMachine state to UserDefaults.
-internal final class StateMachinePersistence {
+final class StateMachinePersistence {
     // MARK: - Properties
 
     private let defaults: UserDefaults
-    private let encoder: JSONEncoder = JSONEncoder()
-    private let decoder: JSONDecoder = JSONDecoder()
+    private let encoder = JSONEncoder()
+    private let decoder = JSONDecoder()
     private let stateKey: String
 
     // MARK: - Singleton
 
-    static let shared: StateMachinePersistence = StateMachinePersistence()
+    static let shared = StateMachinePersistence()
 
     // MARK: - Initialization
 
@@ -50,7 +50,7 @@ internal final class StateMachinePersistence {
         lastResetDate: Date,
         timerEngineState: TimerEngineState?
     ) {
-        let state: PersistedStateMachineState = PersistedStateMachineState(
+        let state = PersistedStateMachineState(
             timerState: timerState,
             completedPomodorosInCycle: completedPomodorosInCycle,
             totalCompletedToday: totalCompletedToday,

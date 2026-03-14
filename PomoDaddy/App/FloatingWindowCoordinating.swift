@@ -12,7 +12,7 @@ import Foundation
 /// Note: `setAppCoordinator(_:)` takes concrete `AppCoordinator` (not a protocol) because
 /// the floating window creates views that require `@Bindable AppCoordinator` for SwiftUI observation.
 @MainActor
-internal protocol FloatingWindowCoordinating: AnyObject {
+protocol FloatingWindowCoordinating: AnyObject {
     /// Creates and shows the floating window.
     func show()
 

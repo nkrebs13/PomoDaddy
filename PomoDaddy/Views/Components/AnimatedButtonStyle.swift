@@ -23,10 +23,10 @@ import SwiftUI
 /// }
 /// .buttonStyle(AnimatedButtonStyle())
 /// ```
-internal struct AnimatedButtonStyle: ButtonStyle {
+struct AnimatedButtonStyle: ButtonStyle {
     // MARK: - State
 
-    @State private var isHovering: Bool = false
+    @State private var isHovering = false
 
     // MARK: - Configuration
 

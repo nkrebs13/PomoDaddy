@@ -14,21 +14,21 @@ import SwiftUI
 ///
 /// `WeeklyTrendChartView` shows a bar chart of the past 7 days' focus minutes,
 /// with today's bar highlighted in a distinct color.
-internal struct WeeklyTrendChartView: View {
+struct WeeklyTrendChartView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
     @Environment(\.modelContext) private var modelContext: ModelContext
 
     @State private var weeklyData: [DayData] = []
-    @State private var hasAppeared: Bool = false
+    @State private var hasAppeared = false
     @State private var selectedDay: DayData?
 
     // MARK: - Data Model
 
     /// Represents a single day's data for the chart.
     struct DayData: Identifiable {
-        let id: UUID = UUID()
+        let id = UUID()
         let date: Date
         let dayName: String
         let focusMinutes: Int
@@ -133,7 +133,9 @@ internal struct WeeklyTrendChartView: View {
         .chartYScale(domain: 0 ... (maxMinutes > 0 ? Double(maxMinutes) * 1.2 : 60))
         .animation(.spring(response: 0.8, dampingFraction: 0.7), value: hasAppeared)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Weekly focus chart: \(weeklyData.map { "\($0.dayName) \($0.formattedTime)" }.joined(separator: ", "))")
+        .accessibilityLabel(
+            "Weekly focus chart: \(weeklyData.map { "\($0.dayName) \($0.formattedTime)" }.joined(separator: ", "))"
+        )
     }
 
     /// Detail view for a selected day.
@@ -174,14 +176,14 @@ internal struct WeeklyTrendChartView: View {
 
     /// Loads the weekly trend data from the data store.
     private func loadWeeklyData() {
-        let calendar: Calendar = Calendar.current
+        let calendar = Calendar.current
         let today: Date = calendar.startOfDay(for: Date())
 
         // Generate array for past 7 days
         var data: [DayData] = []
 
         do {
-            let calculator: StatsCalculator = StatsCalculator(modelContext: modelContext)
+            let calculator = StatsCalculator(modelContext: modelContext)
             let stats: [DailyStats] = try calculator.weeklyTrend()
 
             for dayOffset in (0 ..< 7).reversed() {
@@ -222,14 +224,14 @@ internal struct WeeklyTrendChartView: View {
 
     /// Returns the abbreviated day name for a date.
     private func dayAbbreviation(for date: Date) -> String {
-        let formatter: DateFormatter = DateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
         return formatter.string(from: date)
     }
 
     /// Returns the full day name for a date.
     private func fullDayName(_ date: Date) -> String {
-        let formatter: DateFormatter = DateFormatter()
+        let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d"
         return formatter.string(from: date)
     }

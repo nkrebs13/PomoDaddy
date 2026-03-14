@@ -13,7 +13,7 @@ struct MockStatsCalculator: StatsCalculating {
     // MARK: - Configurable Returns
 
     var stubbedTodayStats: DailyStats?
-    var stubbedTodayFocusMinutes: Int = 0
+    var stubbedTodayFocusMinutes = 0
     var stubbedWeeklyTrend: [DailyStats] = []
     var stubbedWeeklySummary = StatsCalculator.WeeklySummary(
         totalFocusMinutes: 0,

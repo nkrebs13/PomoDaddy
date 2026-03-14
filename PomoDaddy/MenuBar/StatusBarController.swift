@@ -19,7 +19,7 @@ import SwiftUI
 /// - Shows/hides a popover with timer controls on click
 /// - Closes popover when clicking outside
 @MainActor
-internal final class StatusBarController {
+final class StatusBarController {
     // MARK: - Properties
 
     /// The status item displayed in the menu bar.
@@ -73,7 +73,7 @@ internal final class StatusBarController {
         guard let coordinator else { return }
 
         // Create custom icon view
-        let iconView: DynamicMenuBarIconView = DynamicMenuBarIconView(coordinator: coordinator)
+        let iconView = DynamicMenuBarIconView(coordinator: coordinator)
         self.iconView = iconView
 
         // Configure the status item button
@@ -107,7 +107,7 @@ internal final class StatusBarController {
         popover.animates = true
 
         // Create SwiftUI content view
-        let contentView: MenuPopoverView = MenuPopoverView(coordinator: coordinator)
+        let contentView = MenuPopoverView(coordinator: coordinator)
         popover.contentViewController = NSHostingController(rootView: contentView)
     }
 
@@ -153,7 +153,8 @@ internal final class StatusBarController {
         // Update status item length based on whether time is shown
         if let coordinator,
            coordinator.isMenuBarCountdownVisible,
-           coordinator.stateMachine.currentState.isActive {
+           coordinator.stateMachine.currentState.isActive
+        {
             statusItem.length = NSStatusItem.variableLength
         } else {
             statusItem.length = AppConstants.MenuBar.iconWidth
@@ -174,7 +175,7 @@ internal final class StatusBarController {
         // grow leftward — the right edge is screen-stable regardless of
         // width changes from the timer countdown text.
         let anchorWidth: CGFloat = min(button.bounds.width, AppConstants.MenuBar.iconWidth)
-        let anchorRect: NSRect = NSRect(
+        let anchorRect = NSRect(
             x: button.bounds.width - anchorWidth,
             y: button.bounds.origin.y,
             width: anchorWidth,
@@ -221,7 +222,7 @@ internal final class StatusBarController {
 
     /// Shows a context menu on right-click.
     private func showContextMenu() {
-        let menu: NSMenu = NSMenu()
+        let menu = NSMenu()
 
         // Quick actions
         if let coordinator {
@@ -239,7 +240,7 @@ internal final class StatusBarController {
         }
 
         // Toggle floating window
-        let windowItem: NSMenuItem = NSMenuItem(
+        let windowItem = NSMenuItem(
             title: "Show Floating Window",
             action: #selector(toggleFloatingWindow),
             keyEquivalent: ""

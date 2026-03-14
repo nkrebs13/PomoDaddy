@@ -10,7 +10,7 @@ import SwiftData
 
 /// Tracks the user's daily activity streak for gamification.
 @Model
-internal final class UserStreak {
+final class UserStreak {
     // MARK: - Properties
 
     /// The current consecutive days streak.
@@ -33,7 +33,7 @@ internal final class UserStreak {
     /// Whether the streak is still valid (active today or yesterday).
     var isStreakActive: Bool {
         guard let lastActive = lastActiveDate else { return false }
-        let calendar: Calendar = Calendar.current
+        let calendar = Calendar.current
 
         if calendar.isDateInToday(lastActive) {
             return true
@@ -49,7 +49,7 @@ internal final class UserStreak {
     /// Days since last activity (0 if active today).
     var daysSinceLastActivity: Int {
         guard let lastActive = lastActiveDate else { return -1 }
-        let calendar: Calendar = Calendar.current
+        let calendar = Calendar.current
         let today: Date = calendar.startOfDay(for: Date())
         let lastDay: Date = calendar.startOfDay(for: lastActive)
 
@@ -79,7 +79,7 @@ internal final class UserStreak {
     /// Records activity on a given date and updates the streak accordingly.
     /// - Parameter date: The date of the activity (defaults to now).
     func recordActivity(on date: Date = Date()) {
-        let calendar: Calendar = Calendar.current
+        let calendar = Calendar.current
         let activityDay: Date = calendar.startOfDay(for: date)
 
         // If no previous activity, start the streak
@@ -121,7 +121,7 @@ internal final class UserStreak {
     func validateStreak() {
         guard let lastActive = lastActiveDate else { return }
 
-        let calendar: Calendar = Calendar.current
+        let calendar = Calendar.current
         let today: Date = calendar.startOfDay(for: Date())
         let lastActiveDay: Date = calendar.startOfDay(for: lastActive)
 
@@ -149,7 +149,7 @@ extension UserStreak {
     /// - Returns: The user's streak record.
     @MainActor
     static func current(in context: ModelContext) throws -> UserStreak {
-        let descriptor: FetchDescriptor<UserStreak> = FetchDescriptor<UserStreak>()
+        let descriptor = FetchDescriptor<UserStreak>()
         let existing: [UserStreak] = try context.fetch(descriptor)
 
         if let streak = existing.first {
@@ -158,7 +158,7 @@ extension UserStreak {
             return streak
         }
 
-        let newStreak: UserStreak = UserStreak()
+        let newStreak = UserStreak()
         context.insert(newStreak)
         return newStreak
     }

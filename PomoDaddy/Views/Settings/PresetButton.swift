@@ -10,16 +10,16 @@ import SwiftUI
 // MARK: - Preset Button
 
 /// A button for applying preset configurations.
-internal struct PresetButton: View {
+struct PresetButton: View {
     // MARK: - Properties
 
     let title: String
     let subtitle: String
-    var isSelected: Bool = false
+    var isSelected = false
     let action: () -> Void
 
-    @State private var isHovering: Bool = false
-    @State private var isPressed: Bool = false
+    @State private var isHovering = false
+    @State private var isPressed = false
 
     // MARK: - Body
 

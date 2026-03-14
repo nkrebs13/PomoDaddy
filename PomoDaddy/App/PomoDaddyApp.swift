@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-internal struct PomoDaddyApp: App {
+struct PomoDaddyApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate: AppDelegate
 
     var body: some Scene {

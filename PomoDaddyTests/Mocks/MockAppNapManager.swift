@@ -19,7 +19,9 @@ final class MockAppNapManager: AppNapManaging {
 
     // MARK: - Protocol Properties
 
-    var isTimingActivityActive: Bool { beginCallCount > endCallCount }
+    var isTimingActivityActive: Bool {
+        beginCallCount > endCallCount
+    }
 
     // MARK: - Protocol Methods
 

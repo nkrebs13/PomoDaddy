@@ -18,7 +18,7 @@ import SwiftUI
 /// - Different colors for work (tomatoRed) vs break (mint/lavender)
 /// - Optional countdown time text
 /// - Smooth animations
-internal final class DynamicMenuBarIconView: NSView {
+final class DynamicMenuBarIconView: NSView {
     // MARK: - Properties
 
     /// Reference to the app coordinator for state access.
@@ -52,7 +52,8 @@ internal final class DynamicMenuBarIconView: NSView {
         // Calculate width based on whether time text is shown
         if let coordinator,
            coordinator.isMenuBarCountdownVisible,
-           coordinator.stateMachine.currentState.isActive {
+           coordinator.stateMachine.currentState.isActive
+        {
             // Icon + spacing + time text (approximately)
             return NSSize(width: 70, height: Self.iconSize)
         }
@@ -70,7 +71,7 @@ internal final class DynamicMenuBarIconView: NSView {
     private func setupHostingView() {
         guard let coordinator else { return }
 
-        let content: MenuBarIconContent = MenuBarIconContent(coordinator: coordinator)
+        let content = MenuBarIconContent(coordinator: coordinator)
         let hosting: NSHostingView<MenuBarIconContent> = NSHostingView(rootView: content)
         hosting.frame = bounds
         hosting.autoresizingMask = [.width, .height]
@@ -95,7 +96,7 @@ internal final class DynamicMenuBarIconView: NSView {
 // MARK: - Menu Bar Icon Content
 
 /// SwiftUI view rendering the menu bar icon content.
-internal struct MenuBarIconContent: View {
+struct MenuBarIconContent: View {
     // MARK: - Properties
 
     /// The app coordinator for accessing timer state.
@@ -249,14 +250,14 @@ internal struct MenuBarIconContent: View {
 // MARK: - Preview
 
 #Preview("Menu Bar Icon - Idle") {
-    let coordinator: AppCoordinator = AppCoordinator()
+    let coordinator = AppCoordinator()
     return MenuBarIconContent(coordinator: coordinator)
         .padding()
         .background(Color(NSColor.windowBackgroundColor))
 }
 
 #Preview("Menu Bar Icon - Running") {
-    let coordinator: AppCoordinator = AppCoordinator()
+    let coordinator = AppCoordinator()
     // Note: Preview would show idle state since we can't easily mock the state machine
     return MenuBarIconContent(coordinator: coordinator)
         .padding()

@@ -9,7 +9,7 @@ import Foundation
 
 /// Coordinates the floating window controller lifecycle.
 @MainActor
-internal final class FloatingWindowCoordinator: FloatingWindowCoordinating {
+final class FloatingWindowCoordinator: FloatingWindowCoordinating {
     // MARK: - Properties
 
     /// The floating window controller instance.
@@ -26,7 +26,7 @@ internal final class FloatingWindowCoordinator: FloatingWindowCoordinating {
 
     /// Sets the app coordinator reference.
     func setAppCoordinator(_ coordinator: AppCoordinator) {
-        self.appCoordinator = coordinator
+        appCoordinator = coordinator
     }
 
     // MARK: - Window Management

@@ -10,11 +10,11 @@ import SwiftUI
 
 /// Manages user settings with persistence to UserDefaults.
 @Observable
-internal final class SettingsManager: SettingsManaging {
+final class SettingsManager: SettingsManaging {
     // MARK: - Constants
 
     private enum Keys {
-        static let settings: String = "com.pomodaddy.settings"
+        static let settings = "com.pomodaddy.settings"
     }
 
     // MARK: - Properties
@@ -36,10 +36,10 @@ internal final class SettingsManager: SettingsManaging {
     private let defaults: UserDefaults
 
     /// JSON encoder for serialization.
-    private let encoder: JSONEncoder = JSONEncoder()
+    private let encoder = JSONEncoder()
 
     /// JSON decoder for deserialization.
-    private let decoder: JSONDecoder = JSONDecoder()
+    private let decoder = JSONDecoder()
 
     // MARK: - Initialization
 
@@ -180,7 +180,7 @@ internal final class SettingsManager: SettingsManaging {
 // MARK: - Settings Presets
 
 /// Available preset configurations.
-internal enum SettingsPreset: String, CaseIterable, Identifiable {
+enum SettingsPreset: String, CaseIterable, Identifiable {
     case classic = "Classic"
     case extendedFocus = "Extended Focus"
     case quickSprints = "Quick Sprints"

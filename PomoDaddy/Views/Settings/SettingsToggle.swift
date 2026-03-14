@@ -10,16 +10,16 @@ import SwiftUI
 // MARK: - Settings Toggle
 
 /// A styled toggle switch with title and subtitle.
-internal struct SettingsToggle: View {
+struct SettingsToggle: View {
     // MARK: - Properties
 
     let title: String
     let subtitle: String
     @Binding var isOn: Bool
-    var iconName: String = "circle"
+    var iconName = "circle"
     var iconColor: Color = .tomatoRed
 
-    @State private var isHovering: Bool = false
+    @State private var isHovering = false
 
     // MARK: - Body
 
@@ -74,7 +74,7 @@ internal struct SettingsToggle: View {
 // MARK: - Settings Toggle Switch
 
 /// A custom toggle switch with smooth animations.
-internal struct SettingsToggleSwitch: View {
+struct SettingsToggleSwitch: View {
     // MARK: - Properties
 
     @Binding var isOn: Bool

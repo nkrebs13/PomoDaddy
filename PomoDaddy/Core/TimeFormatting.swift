@@ -8,7 +8,7 @@
 import Foundation
 
 /// Shared formatting for focus time durations.
-internal enum TimeFormatting {
+enum TimeFormatting {
     /// Formats minutes as a human-readable string (e.g., "1h 25m", "45m", "0m").
     static func formatFocusTime(minutes: Int) -> String {
         let hours: Int = minutes / 60

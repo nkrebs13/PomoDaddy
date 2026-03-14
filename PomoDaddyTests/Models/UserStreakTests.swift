@@ -78,7 +78,7 @@ final class UserStreakTests: XCTestCase {
         XCTAssertEqual(streak.longestStreakDays, 1)
     }
 
-    func testLongestStreakTracking() throws {
+    func testLongestStreakTracking() {
         let streak = UserStreak()
         let calendar = Calendar.current
 
@@ -104,8 +104,8 @@ final class UserStreakTests: XCTestCase {
         guard let fiveDaysAgo = calendar.date(byAdding: .day, value: -5, to: today),
               let fourDaysAgo = calendar.date(byAdding: .day, value: -4, to: today),
               let threeDaysAgo = calendar.date(byAdding: .day, value: -3, to: today),
-              let yesterday = calendar.date(byAdding: .day, value: -1, to: today)
-        else {
+              let yesterday = calendar.date(byAdding: .day, value: -1, to: today) else
+        {
             XCTFail("Could not create test dates")
             return
         }

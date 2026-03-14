@@ -13,12 +13,12 @@ import SwiftUI
 /// `StatsView` serves as the container for all statistics-related components,
 /// organized by time period (Today, Week, Month). It provides a comprehensive
 /// overview of the user's Pomodoro activity.
-internal struct StatsView: View {
+struct StatsView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
     @State private var selectedPeriod: StatsPeriod = .week
-    @State private var appearAnimation: Bool = false
+    @State private var appearAnimation = false
 
     // MARK: - Time Period
 

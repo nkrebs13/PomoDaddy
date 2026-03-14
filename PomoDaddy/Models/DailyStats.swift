@@ -10,7 +10,7 @@ import SwiftData
 
 /// Aggregated statistics for a single calendar day.
 @Model
-internal final class DailyStats {
+final class DailyStats {
     // MARK: - Properties
 
     /// The calendar day these stats represent (start of day, midnight).
@@ -111,7 +111,7 @@ extension DailyStats {
     static func forToday(in context: ModelContext) throws -> DailyStats {
         let today: Date = Calendar.current.startOfDay(for: Date())
 
-        var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
+        var descriptor = FetchDescriptor<DailyStats>(
             predicate: forDate(today)
         )
         descriptor.fetchLimit = 1
@@ -122,7 +122,7 @@ extension DailyStats {
             return stats
         }
 
-        let newStats: DailyStats = DailyStats(date: today)
+        let newStats = DailyStats(date: today)
         context.insert(newStats)
         return newStats
     }

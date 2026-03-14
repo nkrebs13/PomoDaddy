@@ -21,7 +21,7 @@ import SwiftUI
 /// - Quick stats preview (focus time, streak)
 /// - Toggle for floating window visibility
 /// - Quit button
-internal struct MenuPopoverView: View {
+struct MenuPopoverView: View {
     // MARK: - Properties
 
     /// The app coordinator for accessing timer state.
@@ -31,13 +31,13 @@ internal struct MenuPopoverView: View {
     @Environment(\.modelContext) private var modelContext: ModelContext
 
     /// Whether the settings section is expanded.
-    @State private var showingSettings: Bool = false
+    @State private var showingSettings = false
 
     /// Whether the user has seen the onboarding tooltip.
-    @AppStorage(AppConstants.UserDefaultsKeys.hasSeenOnboarding) private var hasSeenOnboarding: Bool = false
+    @AppStorage(AppConstants.UserDefaultsKeys.hasSeenOnboarding) private var hasSeenOnboarding = false
 
     /// Cached focus time text to avoid per-render SwiftData queries.
-    @State private var cachedFocusTimeText: String = "0m"
+    @State private var cachedFocusTimeText = "0m"
 
     // MARK: - Computed Properties
 
@@ -218,7 +218,9 @@ internal struct MenuPopoverView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(timerState.displayName), \(formattedTime) remaining, \(Int(progress * 100)) percent complete")
+            .accessibilityLabel(
+                "\(timerState.displayName), \(formattedTime) remaining, \(Int(progress * 100)) percent complete"
+            )
             .accessibilityAddTraits(.updatesFrequently)
             .padding(.vertical, 8)
         }
@@ -301,7 +303,9 @@ internal struct MenuPopoverView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(completedPomodoros) of \(pomodorosUntilLongBreak) pomodoros completed in current cycle")
+            .accessibilityLabel(
+                "\(completedPomodoros) of \(pomodorosUntilLongBreak) pomodoros completed in current cycle"
+            )
         }
     }
 
@@ -342,7 +346,7 @@ internal struct MenuPopoverView: View {
     }
 
     private func refreshFocusTime() {
-        let calculator: StatsCalculator = StatsCalculator(modelContext: modelContext)
+        let calculator = StatsCalculator(modelContext: modelContext)
         let totalMinutes: Int
         do {
             totalMinutes = try calculator.todayFocusMinutes()

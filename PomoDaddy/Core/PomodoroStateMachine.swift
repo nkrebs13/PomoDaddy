@@ -12,7 +12,7 @@ import os.log
 // MARK: - Pomodoro Events
 
 /// Events that can trigger state transitions in the Pomodoro state machine.
-internal enum PomodoroEvent {
+enum PomodoroEvent {
     case start(IntervalType? = nil)
     case pause
     case resume
@@ -27,17 +27,17 @@ internal enum PomodoroEvent {
 /// interval tracking, and integration with the timer engine.
 @Observable
 @MainActor
-internal final class PomodoroStateMachine {
+final class PomodoroStateMachine {
     // MARK: - Public Properties
 
     /// The current state of the Pomodoro timer.
     private(set) var currentState: TimerState = .idle
 
     /// Number of completed pomodoros in the current cycle (resets after long break).
-    private(set) var completedPomodorosInCycle: Int = 0
+    private(set) var completedPomodorosInCycle = 0
 
     /// Total number of pomodoros completed today.
-    private(set) var totalCompletedToday: Int = 0
+    private(set) var totalCompletedToday = 0
 
     /// The underlying timer engine.
     let timerEngine: any TimerEngineProtocol

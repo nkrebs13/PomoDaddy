@@ -9,7 +9,7 @@ import Foundation
 
 /// Protocol defining the session coordination interface for dependency injection and testing.
 @MainActor
-internal protocol SessionCoordinating: AnyObject {
+protocol SessionCoordinating: AnyObject {
     /// The current work session start time (if in a work session).
     var currentSessionStartTime: Date? { get }
 

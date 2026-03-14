@@ -20,7 +20,7 @@ import SwiftData
 /// await recorder.record(session)
 /// ```
 @ModelActor
-internal actor SessionRecorder: SessionRecording {
+actor SessionRecorder: SessionRecording {
     // MARK: - Public Methods
 
     /// Records a completed pomodoro session and updates all related statistics.
@@ -61,7 +61,7 @@ internal actor SessionRecorder: SessionRecording {
         durationMinutes: Int,
         wasCompleted: Bool
     ) throws {
-        let session: PomodoroSession = PomodoroSession(
+        let session = PomodoroSession(
             startDate: startDate,
             endDate: endDate,
             durationMinutes: durationMinutes,
@@ -83,7 +83,7 @@ internal actor SessionRecorder: SessionRecording {
         let calendarDay: Date = session.calendarDay
 
         // Try to find existing stats for this day
-        var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
+        var descriptor = FetchDescriptor<DailyStats>(
             predicate: DailyStats.forDate(calendarDay)
         )
         descriptor.fetchLimit = 1
@@ -109,7 +109,7 @@ internal actor SessionRecorder: SessionRecording {
     /// - Throws: Any SwiftData errors during fetch or insert.
     private func updateStreak(for date: Date) throws {
         // Get or create the user streak
-        let descriptor: FetchDescriptor<UserStreak> = FetchDescriptor<UserStreak>()
+        let descriptor = FetchDescriptor<UserStreak>()
         let existingStreaks: [UserStreak] = try modelContext.fetch(descriptor)
 
         let streak: UserStreak
@@ -141,7 +141,7 @@ extension SessionRecorder {
         var dailyStatsCache: [Date: DailyStats] = [:]
 
         for entry in entries {
-            let session: PomodoroSession = PomodoroSession(
+            let session = PomodoroSession(
                 startDate: entry.startDate,
                 endDate: entry.endDate,
                 durationMinutes: entry.durationMinutes,
@@ -156,7 +156,7 @@ extension SessionRecorder {
             if let cached = dailyStatsCache[calendarDay] {
                 stats = cached
             } else {
-                var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
+                var descriptor = FetchDescriptor<DailyStats>(
                     predicate: DailyStats.forDate(calendarDay)
                 )
                 descriptor.fetchLimit = 1
@@ -196,7 +196,7 @@ extension SessionRecorder {
         if session.wasCompleted {
             let calendarDay: Date = session.calendarDay
 
-            var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
+            var descriptor = FetchDescriptor<DailyStats>(
                 predicate: DailyStats.forDate(calendarDay)
             )
             descriptor.fetchLimit = 1

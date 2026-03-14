@@ -9,7 +9,7 @@ import Foundation
 
 /// Protocol defining the timer engine interface for dependency injection and testing.
 @MainActor
-internal protocol TimerEngineProtocol: AnyObject {
+protocol TimerEngineProtocol: AnyObject {
     /// The number of seconds remaining in the current timer session.
     var remainingSeconds: TimeInterval { get }
 

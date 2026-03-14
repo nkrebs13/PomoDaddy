@@ -10,7 +10,7 @@ import SwiftData
 
 /// Represents a single pomodoro focus session.
 @Model
-internal final class PomodoroSession {
+final class PomodoroSession {
     // MARK: - Properties
 
     /// Unique identifier for this session.
@@ -83,7 +83,7 @@ internal final class PomodoroSession {
 extension PomodoroSession {
     /// Predicate for sessions on a specific calendar day.
     static func onDay(_ date: Date) -> Predicate<PomodoroSession> {
-        let calendar: Calendar = Calendar.current
+        let calendar = Calendar.current
         let startOfDay: Date = calendar.startOfDay(for: date)
         guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
             // Calendar arithmetic should never fail, but handle defensively

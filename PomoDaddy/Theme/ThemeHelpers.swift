@@ -14,11 +14,11 @@ extension TimerState {
     var gradient: LinearGradient {
         switch self {
         case .idle, .running(.work), .paused(.work):
-            return .focusGradient
+            .focusGradient
         case .running(.shortBreak), .paused(.shortBreak):
-            return .breakGradient
+            .breakGradient
         case .running(.longBreak), .paused(.longBreak):
-            return .longBreakGradient
+            .longBreakGradient
         }
     }
 }
@@ -30,11 +30,11 @@ extension IntervalType {
     var gradient: LinearGradient {
         switch self {
         case .work:
-            return .focusGradient
+            .focusGradient
         case .shortBreak:
-            return .breakGradient
+            .breakGradient
         case .longBreak:
-            return .longBreakGradient
+            .longBreakGradient
         }
     }
 }

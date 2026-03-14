@@ -17,14 +17,14 @@ import Observation
 /// the timer remains accurate even if the app is suspended or the device sleeps.
 @Observable
 @MainActor
-internal final class TimerEngine: TimerEngineProtocol {
+final class TimerEngine: TimerEngineProtocol {
     // MARK: - Public Properties
 
     /// The number of seconds remaining in the current timer session.
     private(set) var remainingSeconds: TimeInterval = 0
 
     /// Whether the timer is currently running.
-    private(set) var isRunning: Bool = false
+    private(set) var isRunning = false
 
     /// The total duration of the current timer session in seconds.
     private(set) var totalDuration: TimeInterval = 0
@@ -38,8 +38,8 @@ internal final class TimerEngine: TimerEngineProtocol {
 
     /// Formatted string representation of remaining time (MM:SS).
     var formattedTime: String {
-        let minutes: Int = Int(remainingSeconds) / 60
-        let seconds: Int = Int(remainingSeconds) % 60
+        let minutes = Int(remainingSeconds) / 60
+        let seconds = Int(remainingSeconds) % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
 
@@ -233,7 +233,7 @@ internal final class TimerEngine: TimerEngineProtocol {
 // MARK: - Timer Engine State
 
 /// Represents the persistable state of a TimerEngine.
-internal struct TimerEngineState: Codable {
+struct TimerEngineState: Codable {
     let remainingSeconds: TimeInterval
     let totalDuration: TimeInterval
     let wasRunning: Bool

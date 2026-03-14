@@ -8,7 +8,7 @@
 import Foundation
 
 /// Data for a single session to be batch-recorded.
-internal struct SessionEntry {
+struct SessionEntry {
     let startDate: Date
     let endDate: Date
     let durationMinutes: Int
@@ -19,7 +19,7 @@ internal struct SessionEntry {
 ///
 /// Note: This protocol works with actor isolation — `SessionRecorder` is a `@ModelActor actor`,
 /// so callers use `await` when calling these methods.
-internal protocol SessionRecording: Actor {
+protocol SessionRecording: Actor {
     /// Records a completed pomodoro session with the given parameters.
     /// - Parameters:
     ///   - startDate: When the session started.

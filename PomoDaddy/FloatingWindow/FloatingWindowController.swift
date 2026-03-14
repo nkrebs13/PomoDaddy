@@ -18,7 +18,7 @@ import SwiftUI
 /// - Draggable by background
 /// - Persists position across launches
 /// - Visible on all Spaces
-internal final class FloatingWindowController {
+final class FloatingWindowController {
     // MARK: - Properties
 
     /// The floating panel instance.
@@ -36,13 +36,13 @@ internal final class FloatingWindowController {
     private static let frameAutosaveName: String = AppConstants.FloatingWindow.frameAutosaveName
 
     /// Default window size.
-    private static let defaultSize: NSSize = NSSize(
+    private static let defaultSize = NSSize(
         width: AppConstants.FloatingWindow.defaultWidth,
         height: AppConstants.FloatingWindow.defaultHeight
     )
 
     /// Compact window size.
-    private static let compactSize: NSSize = NSSize(
+    private static let compactSize = NSSize(
         width: AppConstants.FloatingWindow.compactWidth,
         height: AppConstants.FloatingWindow.compactHeight
     )
@@ -68,7 +68,7 @@ internal final class FloatingWindowController {
         guard let coordinator else { return }
 
         // Calculate initial frame
-        let contentRect: NSRect = NSRect(
+        let contentRect = NSRect(
             x: 0,
             y: 0,
             width: Self.defaultSize.width,
@@ -81,7 +81,7 @@ internal final class FloatingWindowController {
             .nonactivatingPanel
         ]
 
-        let panel: NSPanel = NSPanel(
+        let panel = NSPanel(
             contentRect: contentRect,
             styleMask: styleMask,
             backing: .buffered,
@@ -92,7 +92,7 @@ internal final class FloatingWindowController {
         configurePanel(panel)
 
         // Create and set the content view
-        let floatingView: FloatingTimerView = FloatingTimerView(coordinator: coordinator)
+        let floatingView = FloatingTimerView(coordinator: coordinator)
         let hostingView: NSHostingView<FloatingTimerView> = NSHostingView(rootView: floatingView)
         hostingView.frame = contentRect
 

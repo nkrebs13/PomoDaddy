@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Interval Type
 
 /// Represents the type of interval in a Pomodoro session.
-internal enum IntervalType: String, Codable, CaseIterable, Identifiable {
+enum IntervalType: String, Codable, CaseIterable, Identifiable {
     case work
     case shortBreak
     case longBreak
@@ -45,7 +45,7 @@ internal enum IntervalType: String, Codable, CaseIterable, Identifiable {
 
     /// Default duration in seconds for this interval type.
     var defaultDuration: TimeInterval {
-        let defaults: PomodoroSettings = PomodoroSettings.default
+        let defaults = PomodoroSettings.default
         switch self {
         case .work:
             return defaults.workDuration
@@ -60,7 +60,7 @@ internal enum IntervalType: String, Codable, CaseIterable, Identifiable {
 // MARK: - Timer State
 
 /// Represents the current state of the Pomodoro timer.
-internal enum TimerState: Equatable {
+enum TimerState: Equatable {
     case idle
     case running(IntervalType)
     case paused(IntervalType)

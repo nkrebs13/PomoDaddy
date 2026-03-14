@@ -9,7 +9,7 @@ import Foundation
 
 extension Calendar {
     /// Shared calendar instance used throughout the app.
-    static let shared: Calendar = Calendar.current
+    static let shared = Calendar.current
 
     /// Returns the start of the day for the given date.
     /// - Parameter date: The date to find the start of day for.

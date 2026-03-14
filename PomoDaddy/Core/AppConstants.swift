@@ -9,7 +9,7 @@ import CoreGraphics
 import Foundation
 
 /// Centralized application constants to avoid magic numbers and hardcoded strings.
-internal enum AppConstants {
+enum AppConstants {
     // MARK: - Confetti Animation
 
     enum Confetti {
@@ -36,7 +36,7 @@ internal enum AppConstants {
         static let compactHeight: CGFloat = 180
 
         /// Frame autosave name for position persistence.
-        static let frameAutosaveName: String = "com.pomodaddy.floatingWindow"
+        static let frameAutosaveName = "com.pomodaddy.floatingWindow"
     }
 
     // MARK: - Menu Popover
@@ -76,19 +76,19 @@ internal enum AppConstants {
 
     enum DailyFocus {
         /// Daily goal in minutes (2 hours).
-        static let dailyGoalMinutes: Int = 120
+        static let dailyGoalMinutes = 120
 
         /// Maximum tomato icons to display.
-        static let maxTomatoDisplay: Int = 8
+        static let maxTomatoDisplay = 8
     }
 
     // MARK: - UserDefaults Keys
 
     enum UserDefaultsKeys {
         /// Key for persisted state machine state.
-        static let stateMachineState: String = "com.pomodaddy.stateMachineState"
+        static let stateMachineState = "com.pomodaddy.stateMachineState"
 
         /// Key for tracking whether onboarding has been shown.
-        static let hasSeenOnboarding: String = "com.pomodaddy.hasSeenOnboarding"
+        static let hasSeenOnboarding = "com.pomodaddy.hasSeenOnboarding"
     }
 }

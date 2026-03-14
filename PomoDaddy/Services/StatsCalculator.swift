@@ -20,7 +20,7 @@ import SwiftData
 /// let todayMinutes = try calculator.todayFocusMinutes()
 /// let weekly = try calculator.weeklySummary()
 /// ```
-internal struct StatsCalculator: StatsCalculating {
+struct StatsCalculator: StatsCalculating {
     // MARK: - Properties
 
     /// The model context used for queries.
@@ -35,7 +35,7 @@ internal struct StatsCalculator: StatsCalculating {
     func todayStats() throws -> DailyStats? {
         let today: Date = Calendar.current.startOfDay(for: Date())
 
-        var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
+        var descriptor = FetchDescriptor<DailyStats>(
             predicate: DailyStats.forDate(today)
         )
         descriptor.fetchLimit = 1
@@ -67,7 +67,7 @@ internal struct StatsCalculator: StatsCalculating {
     func stats(for date: Date) throws -> DailyStats? {
         let targetDay: Date = Calendar.current.startOfDay(for: date)
 
-        var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
+        var descriptor = FetchDescriptor<DailyStats>(
             predicate: DailyStats.forDate(targetDay)
         )
         descriptor.fetchLimit = 1
@@ -85,14 +85,14 @@ internal struct StatsCalculator: StatsCalculating {
     /// - Returns: An array of `DailyStats` for the past week.
     /// - Throws: Any SwiftData fetch errors.
     func weeklyTrend() throws -> [DailyStats] {
-        let calendar: Calendar = Calendar.current
+        let calendar = Calendar.current
         let today: Date = calendar.startOfDay(for: Date())
 
         guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: today) else {
             return []
         }
 
-        let descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
+        let descriptor = FetchDescriptor<DailyStats>(
             predicate: DailyStats.inRange(from: weekAgo, to: today),
             sortBy: [DailyStats.chronologicalSort]
         )
@@ -161,7 +161,7 @@ internal struct StatsCalculator: StatsCalculating {
     /// - Returns: The current `UserStreak`, or `nil` if none exists.
     /// - Throws: Any SwiftData fetch errors.
     func currentStreak() throws -> UserStreak? {
-        var descriptor: FetchDescriptor<UserStreak> = FetchDescriptor<UserStreak>()
+        var descriptor = FetchDescriptor<UserStreak>()
         descriptor.fetchLimit = 1
 
         guard let streak = try modelContext.fetch(descriptor).first else {
@@ -196,9 +196,9 @@ internal struct StatsCalculator: StatsCalculating {
     /// - Returns: An array of today's sessions, sorted by start time.
     /// - Throws: Any SwiftData fetch errors.
     func todaySessions() throws -> [PomodoroSession] {
-        let today: Date = Date()
+        let today = Date()
 
-        let descriptor: FetchDescriptor<PomodoroSession> = FetchDescriptor<PomodoroSession>(
+        let descriptor = FetchDescriptor<PomodoroSession>(
             predicate: PomodoroSession.onDay(today),
             sortBy: [SortDescriptor(\.startDate, order: .forward)]
         )
@@ -214,7 +214,7 @@ internal struct StatsCalculator: StatsCalculating {
     /// - Returns: An array of sessions within the range, sorted by start time.
     /// - Throws: Any SwiftData fetch errors.
     func sessions(from startDate: Date, to endDate: Date) throws -> [PomodoroSession] {
-        let descriptor: FetchDescriptor<PomodoroSession> = FetchDescriptor<PomodoroSession>(
+        let descriptor = FetchDescriptor<PomodoroSession>(
             predicate: PomodoroSession.inRange(from: startDate, to: endDate),
             sortBy: [SortDescriptor(\.startDate, order: .forward)]
         )
@@ -227,7 +227,7 @@ internal struct StatsCalculator: StatsCalculating {
     /// - Returns: The total number of completed pomodoro sessions.
     /// - Throws: Any SwiftData fetch errors.
     func totalCompletedSessions() throws -> Int {
-        let descriptor: FetchDescriptor<PomodoroSession> = FetchDescriptor<PomodoroSession>(
+        let descriptor = FetchDescriptor<PomodoroSession>(
             predicate: PomodoroSession.completed
         )
 
@@ -261,11 +261,12 @@ extension StatsCalculator {
     /// - Returns: A `MonthlySummary` for the current month.
     /// - Throws: Any SwiftData fetch errors.
     func currentMonthSummary() throws -> MonthlySummary {
-        let calendar: Calendar = Calendar.current
-        let now: Date = Date()
+        let calendar = Calendar.current
+        let now = Date()
 
         guard let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: now)),
-              let monthEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: monthStart) else {
+              let monthEnd = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: monthStart) else
+        {
             return MonthlySummary(
                 month: now,
                 totalFocusMinutes: 0,
@@ -275,7 +276,7 @@ extension StatsCalculator {
             )
         }
 
-        let descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
+        let descriptor = FetchDescriptor<DailyStats>(
             predicate: DailyStats.inRange(from: monthStart, to: monthEnd),
             sortBy: [DailyStats.chronologicalSort]
         )

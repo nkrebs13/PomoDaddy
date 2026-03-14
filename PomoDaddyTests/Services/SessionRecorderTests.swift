@@ -99,7 +99,7 @@ final class SessionRecorderTests: XCTestCase {
     func testRecordMultipleSessions() async throws {
         // Use noon to avoid midnight boundary issues
         let calendar = Calendar.current
-        let startDate = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+        let startDate = try XCTUnwrap(calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()))
 
         // Record 3 sessions
         for index in 0 ..< 3 {
@@ -168,7 +168,7 @@ final class SessionRecorderTests: XCTestCase {
     func testRecordBatch() async throws {
         // Use a fixed date at noon to avoid midnight boundary issues
         let calendar = Calendar.current
-        let noon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+        let noon = try XCTUnwrap(calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()))
         let entries: [SessionEntry] = (0 ..< 5).map { index in
             let sessionStart = noon.addingTimeInterval(TimeInterval(index * 30 * 60))
             let sessionEnd = sessionStart.addingTimeInterval(25 * 60)
@@ -243,7 +243,7 @@ final class SessionRecorderTests: XCTestCase {
     func testDeleteSessionAdjustsStats() async throws {
         // Use noon to avoid midnight boundary issues
         let calendar = Calendar.current
-        let startDate = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+        let startDate = try XCTUnwrap(calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()))
 
         for index in 0 ..< 3 {
             let sessionStart = startDate.addingTimeInterval(TimeInterval(index * 30 * 60))

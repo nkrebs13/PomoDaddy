@@ -11,7 +11,7 @@ import SwiftUI
 
 /// A full settings view that appears within the menu popover.
 /// Provides controls for timer durations, behavior toggles, display options, and quick presets.
-internal struct SettingsView: View {
+struct SettingsView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
@@ -172,13 +172,13 @@ internal struct SettingsView: View {
                         },
                         label: {
                             HStack {
-                            Image(systemName: "arrow.counterclockwise")
-                                .foregroundStyle(.secondary)
-                            Text("Reset to Defaults")
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                        }
-                        .padding(.vertical, 8)
+                                Image(systemName: "arrow.counterclockwise")
+                                    .foregroundStyle(.secondary)
+                                Text("Reset to Defaults")
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                            }
+                            .padding(.vertical, 8)
                         }
                     )
                     .buttonStyle(.plain)
@@ -192,9 +192,11 @@ internal struct SettingsView: View {
                         Text("PomoDaddy")
                             .fontWeight(.medium)
                         Spacer()
-                        Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")")
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
+                        Text(
+                            "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")"
+                        )
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
                     }
                     .padding(.vertical, 4)
                 }

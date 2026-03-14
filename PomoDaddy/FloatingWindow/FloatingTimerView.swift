@@ -18,25 +18,25 @@ import SwiftUI
 /// - Session progress indicator
 /// - Double-tap to toggle compact mode
 /// - Confetti celebration on pomodoro completion
-internal struct FloatingTimerView: View {
+struct FloatingTimerView: View {
     // MARK: - Properties
 
     /// The app coordinator containing timer state.
     @Bindable var coordinator: AppCoordinator
 
     /// Trigger for confetti animation.
-    @State private var confettiTrigger: Int = 0
+    @State private var confettiTrigger = 0
 
     /// Whether the view is in compact mode.
-    @State private var isCompact: Bool = false
+    @State private var isCompact = false
 
     /// Track hover state for interactive feedback.
-    @State private var isHovering: Bool = false
+    @State private var isHovering = false
 
     // MARK: - Constants
 
-    private let expandedSize: CGSize = CGSize(width: 280, height: 320)
-    private let compactSize: CGSize = CGSize(width: 180, height: 180)
+    private let expandedSize = CGSize(width: 280, height: 320)
+    private let compactSize = CGSize(width: 180, height: 180)
     private let timerRingSize: CGFloat = 160
     private let compactTimerRingSize: CGFloat = 120
 
@@ -173,7 +173,9 @@ internal struct FloatingTimerView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(coordinator.stateMachine.currentState.displayName), \(coordinator.stateMachine.formattedTime) remaining, \(Int(coordinator.stateMachine.progress * 100)) percent complete")
+            .accessibilityLabel(
+                "\(coordinator.stateMachine.currentState.displayName), \(coordinator.stateMachine.formattedTime) remaining, \(Int(coordinator.stateMachine.progress * 100)) percent complete"
+            )
             .accessibilityAddTraits(.updatesFrequently)
 
             // Mode label
@@ -260,7 +262,9 @@ internal struct FloatingTimerView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(coordinator.stateMachine.completedPomodorosInCycle) of \(coordinator.stateMachine.settings.pomodorosUntilLongBreak) pomodoros completed in current cycle")
+        .accessibilityLabel(
+            "\(coordinator.stateMachine.completedPomodorosInCycle) of \(coordinator.stateMachine.settings.pomodorosUntilLongBreak) pomodoros completed in current cycle"
+        )
         .padding(.top, 4)
     }
 }
@@ -268,7 +272,7 @@ internal struct FloatingTimerView: View {
 // MARK: - Drag Handle View
 
 /// A minimal drag handle indicator at the top of the window.
-internal struct DragHandleView: View {
+struct DragHandleView: View {
     var body: some View {
         Capsule()
             .fill(Color.primary.opacity(0.2))
@@ -279,16 +283,16 @@ internal struct DragHandleView: View {
 // MARK: - Control Button
 
 /// A styled control button for timer actions.
-internal struct ControlButton: View {
+struct ControlButton: View {
     let icon: String
     let accessibilityLabel: String
     let action: () -> Void
-    var isPrimary: Bool = false
-    var isEnabled: Bool = true
+    var isPrimary = false
+    var isEnabled = true
     var accentColor: Color = .primary
 
-    @State private var isHovering: Bool = false
-    @State private var isPressed: Bool = false
+    @State private var isHovering = false
+    @State private var isPressed = false
 
     var body: some View {
         Button(action: action) {

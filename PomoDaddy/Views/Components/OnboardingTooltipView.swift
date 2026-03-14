@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// Displays two tips about right-click context menu and floating window,
 /// then dismisses permanently when the user taps "Got it".
-internal struct OnboardingTooltipView: View {
+struct OnboardingTooltipView: View {
     // MARK: - Properties
 
     /// Action called when the user dismisses the tooltip.
