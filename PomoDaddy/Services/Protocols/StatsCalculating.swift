@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol defining the statistics calculation interface for dependency injection and testing.
-protocol StatsCalculating {
+internal protocol StatsCalculating {
     /// Returns the daily statistics for today, if any exist.
     func todayStats() throws -> DailyStats?
 

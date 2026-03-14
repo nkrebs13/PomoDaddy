@@ -20,7 +20,7 @@ import SwiftData
 /// await recorder.record(session)
 /// ```
 @ModelActor
-actor SessionRecorder: SessionRecording {
+internal actor SessionRecorder: SessionRecording {
     // MARK: - Public Methods
 
     /// Records a completed pomodoro session and updates all related statistics.
@@ -61,7 +61,7 @@ actor SessionRecorder: SessionRecording {
         durationMinutes: Int,
         wasCompleted: Bool
     ) throws {
-        let session = PomodoroSession(
+        let session: PomodoroSession = PomodoroSession(
             startDate: startDate,
             endDate: endDate,
             durationMinutes: durationMinutes,
@@ -80,15 +80,15 @@ actor SessionRecorder: SessionRecording {
         // Only count completed sessions in stats
         guard session.wasCompleted else { return }
 
-        let calendarDay = session.calendarDay
+        let calendarDay: Date = session.calendarDay
 
         // Try to find existing stats for this day
-        var descriptor = FetchDescriptor<DailyStats>(
+        var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
             predicate: DailyStats.forDate(calendarDay)
         )
         descriptor.fetchLimit = 1
 
-        let existingStats = try modelContext.fetch(descriptor)
+        let existingStats: [DailyStats] = try modelContext.fetch(descriptor)
 
         let stats: DailyStats
         if let existing = existingStats.first {
@@ -109,8 +109,8 @@ actor SessionRecorder: SessionRecording {
     /// - Throws: Any SwiftData errors during fetch or insert.
     private func updateStreak(for date: Date) throws {
         // Get or create the user streak
-        let descriptor = FetchDescriptor<UserStreak>()
-        let existingStreaks = try modelContext.fetch(descriptor)
+        let descriptor: FetchDescriptor<UserStreak> = FetchDescriptor<UserStreak>()
+        let existingStreaks: [UserStreak] = try modelContext.fetch(descriptor)
 
         let streak: UserStreak
         if let existing = existingStreaks.first {
@@ -136,12 +136,12 @@ extension SessionRecorder {
     ///
     /// - Parameter sessions: The sessions to record.
     /// - Throws: Any SwiftData errors that occur during the save operation.
-    func recordBatch(_ entries: [(startDate: Date, endDate: Date, durationMinutes: Int, wasCompleted: Bool)]) throws {
+    func recordBatch(_ entries: [SessionEntry]) throws {
         // Cache DailyStats per calendar day to avoid re-fetching unsaved objects
         var dailyStatsCache: [Date: DailyStats] = [:]
 
         for entry in entries {
-            let session = PomodoroSession(
+            let session: PomodoroSession = PomodoroSession(
                 startDate: entry.startDate,
                 endDate: entry.endDate,
                 durationMinutes: entry.durationMinutes,
@@ -151,12 +151,12 @@ extension SessionRecorder {
 
             guard session.wasCompleted else { continue }
 
-            let calendarDay = session.calendarDay
+            let calendarDay: Date = session.calendarDay
             let stats: DailyStats
             if let cached = dailyStatsCache[calendarDay] {
                 stats = cached
             } else {
-                var descriptor = FetchDescriptor<DailyStats>(
+                var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
                     predicate: DailyStats.forDate(calendarDay)
                 )
                 descriptor.fetchLimit = 1
@@ -194,9 +194,9 @@ extension SessionRecorder {
 
         // Adjust daily stats if the session was completed
         if session.wasCompleted {
-            let calendarDay = session.calendarDay
+            let calendarDay: Date = session.calendarDay
 
-            var descriptor = FetchDescriptor<DailyStats>(
+            var descriptor: FetchDescriptor<DailyStats> = FetchDescriptor<DailyStats>(
                 predicate: DailyStats.forDate(calendarDay)
             )
             descriptor.fetchLimit = 1

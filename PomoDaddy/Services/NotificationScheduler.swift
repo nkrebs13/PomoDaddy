@@ -24,23 +24,23 @@ import UserNotifications
 ///     scheduler.scheduleCompletion(intervalType: .work, inSeconds: 1500)
 /// }
 /// ```
-final class NotificationScheduler: NotificationScheduling {
+internal final class NotificationScheduler: NotificationScheduling {
     // MARK: - Constants
 
     /// Notification action and category identifiers shared with AppDelegate.
     enum Identifiers {
-        static let actionStartNext = "START_NEXT"
-        static let actionDismiss = "DISMISS"
-        static let categoryTimerCompletion = "TIMER_COMPLETION"
+        static let actionStartNext: String = "START_NEXT"
+        static let actionDismiss: String = "DISMISS"
+        static let categoryTimerCompletion: String = "TIMER_COMPLETION"
     }
 
     /// Identifier for the pending timer completion notification.
-    private let pendingId = "com.pomodaddy.timerCompletion"
+    private let pendingId: String = "com.pomodaddy.timerCompletion"
 
     // MARK: - Properties
 
     /// The user notification center instance.
-    private let center = UNUserNotificationCenter.current()
+    private let center: UNUserNotificationCenter = UNUserNotificationCenter.current()
 
     // MARK: - Initialization
 
@@ -69,7 +69,7 @@ final class NotificationScheduler: NotificationScheduling {
     ///
     /// - Returns: `true` if notifications are currently authorized.
     func checkAuthorizationStatus() async -> Bool {
-        let settings = await center.notificationSettings()
+        let settings: UNNotificationSettings = await center.notificationSettings()
         return settings.authorizationStatus == .authorized
     }
 
@@ -92,7 +92,7 @@ final class NotificationScheduler: NotificationScheduling {
         guard inSeconds > 0 else { return }
 
         // Create the notification content
-        let content = UNMutableNotificationContent()
+        let content: UNMutableNotificationContent = UNMutableNotificationContent()
         content.title = notificationTitle(for: intervalType)
         content.body = notificationBody(for: intervalType)
         content.categoryIdentifier = Identifiers.categoryTimerCompletion
@@ -103,13 +103,13 @@ final class NotificationScheduler: NotificationScheduling {
         }
 
         // Create the trigger
-        let trigger = UNTimeIntervalNotificationTrigger(
+        let trigger: UNTimeIntervalNotificationTrigger = UNTimeIntervalNotificationTrigger(
             timeInterval: TimeInterval(inSeconds),
             repeats: false
         )
 
         // Create and add the request
-        let request = UNNotificationRequest(
+        let request: UNNotificationRequest = UNNotificationRequest(
             identifier: pendingId,
             content: content,
             trigger: trigger
@@ -171,19 +171,19 @@ extension NotificationScheduler {
     ///
     /// Call this once during app initialization to enable notification actions.
     func registerCategories() {
-        let startAction = UNNotificationAction(
+        let startAction: UNNotificationAction = UNNotificationAction(
             identifier: Identifiers.actionStartNext,
             title: "Start Next",
             options: .foreground
         )
 
-        let dismissAction = UNNotificationAction(
+        let dismissAction: UNNotificationAction = UNNotificationAction(
             identifier: Identifiers.actionDismiss,
             title: "Dismiss",
             options: .destructive
         )
 
-        let category = UNNotificationCategory(
+        let category: UNNotificationCategory = UNNotificationCategory(
             identifier: Identifiers.categoryTimerCompletion,
             actions: [startAction, dismissAction],
             intentIdentifiers: [],

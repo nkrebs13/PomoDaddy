@@ -2,17 +2,17 @@ import Foundation
 import os.log
 
 /// Centralized logging for PomoDaddy using os.log for structured logging
-enum Logger {
+internal enum Logger {
     // MARK: - Subsystems
 
-    static let timer = OSLog(subsystem: subsystem, category: "Timer")
-    static let persistence = OSLog(subsystem: subsystem, category: "Persistence")
-    static let notifications = OSLog(subsystem: subsystem, category: "Notifications")
-    static let lifecycle = OSLog(subsystem: subsystem, category: "Lifecycle")
-    static let stats = OSLog(subsystem: subsystem, category: "Stats")
-    static let ui = OSLog(subsystem: subsystem, category: "UI")
+    static let timer: OSLog = OSLog(subsystem: subsystem, category: "Timer")
+    static let persistence: OSLog = OSLog(subsystem: subsystem, category: "Persistence")
+    static let notifications: OSLog = OSLog(subsystem: subsystem, category: "Notifications")
+    static let lifecycle: OSLog = OSLog(subsystem: subsystem, category: "Lifecycle")
+    static let stats: OSLog = OSLog(subsystem: subsystem, category: "Stats")
+    static let ui: OSLog = OSLog(subsystem: subsystem, category: "UI")
 
-    private static let subsystem = "com.nathankrebs.pomodaddy"
+    private static let subsystem: String = "com.nathankrebs.pomodaddy"
 
     // MARK: - Convenience Methods
 

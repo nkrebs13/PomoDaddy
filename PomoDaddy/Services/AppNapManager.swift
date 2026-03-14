@@ -31,7 +31,7 @@ import Foundation
 ///
 /// - Important: Always call `endTimingActivity()` when the timer stops to allow
 ///   power-saving features to resume. Failing to do so will impact battery life.
-final class AppNapManager: AppNapManaging {
+internal final class AppNapManager: AppNapManaging {
     // MARK: - Properties
 
     /// The current activity assertion token, if any.
@@ -120,4 +120,3 @@ final class AppNapManager: AppNapManaging {
         }
     }
 }
-

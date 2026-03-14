@@ -1,8 +1,8 @@
 import SwiftUI
 
 @main
-struct PomoDaddyApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+internal struct PomoDaddyApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate: AppDelegate
 
     var body: some Scene {
         // Menu bar apps don't need WindowGroup

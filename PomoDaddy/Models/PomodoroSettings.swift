@@ -8,7 +8,7 @@
 import Foundation
 
 /// User-configurable settings for the pomodoro timer.
-struct PomodoroSettings: Codable, Equatable {
+internal struct PomodoroSettings: Codable, Equatable {
     // MARK: - Timer Duration Settings
 
     /// Duration of a focus/work session in minutes.
@@ -45,7 +45,7 @@ struct PomodoroSettings: Codable, Equatable {
     // MARK: - Default Values
 
     /// Default settings following the classic Pomodoro Technique.
-    static let `default` = PomodoroSettings(
+    static let `default`: PomodoroSettings = PomodoroSettings(
         workDurationMinutes: 25,
         shortBreakDurationMinutes: 5,
         longBreakDurationMinutes: 15,
@@ -89,7 +89,7 @@ struct PomodoroSettings: Codable, Equatable {
 
     /// Validates the settings and returns corrected values if needed.
     var validated: PomodoroSettings {
-        var corrected = self
+        var corrected: PomodoroSettings = self
 
         // Ensure positive durations
         corrected.workDurationMinutes = max(1, workDurationMinutes)
@@ -117,10 +117,10 @@ struct PomodoroSettings: Codable, Equatable {
 
 extension PomodoroSettings {
     /// Classic 25/5/15 Pomodoro Technique settings.
-    static let classic = PomodoroSettings.default
+    static let classic: PomodoroSettings = PomodoroSettings.default
 
     /// Extended focus: 50 minute work sessions.
-    static let extendedFocus = PomodoroSettings(
+    static let extendedFocus: PomodoroSettings = PomodoroSettings(
         workDurationMinutes: 50,
         shortBreakDurationMinutes: 10,
         longBreakDurationMinutes: 30,
@@ -133,7 +133,7 @@ extension PomodoroSettings {
     )
 
     /// Quick sprints: 15 minute work sessions.
-    static let quickSprints = PomodoroSettings(
+    static let quickSprints: PomodoroSettings = PomodoroSettings(
         workDurationMinutes: 15,
         shortBreakDurationMinutes: 3,
         longBreakDurationMinutes: 10,

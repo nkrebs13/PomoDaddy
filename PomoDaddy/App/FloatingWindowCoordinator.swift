@@ -9,7 +9,7 @@ import Foundation
 
 /// Coordinates the floating window controller lifecycle.
 @MainActor
-final class FloatingWindowCoordinator: FloatingWindowCoordinating {
+internal final class FloatingWindowCoordinator: FloatingWindowCoordinating {
     // MARK: - Properties
 
     /// The floating window controller instance.

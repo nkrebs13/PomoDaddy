@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Settings Section
 
 /// A reusable section container with a title and content.
-struct SettingsSection<Content: View>: View {
+internal struct SettingsSection<Content: View>: View {
     // MARK: - Properties
 
     let title: String

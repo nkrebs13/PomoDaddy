@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Confetti Overlay View
 
 /// A celebration overlay that displays confetti particles falling from the top of the screen.
-struct ConfettiOverlayView: View {
+internal struct ConfettiOverlayView: View {
     /// Trigger binding - increment to fire confetti
     @Binding var trigger: Int
 
@@ -33,7 +33,7 @@ struct ConfettiOverlayView: View {
     }
 
     @State private var particles: [ConfettiParticle] = []
-    @State private var isAnimating = false
+    @State private var isAnimating: Bool = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -85,7 +85,7 @@ struct ConfettiOverlayView: View {
 // MARK: - Confetti Particle Model
 
 /// Represents a single confetti particle
-struct ConfettiParticle: Identifiable {
+internal struct ConfettiParticle: Identifiable {
     let id: UUID
     let color: Color
     let shape: ConfettiShape
@@ -97,7 +97,7 @@ struct ConfettiParticle: Identifiable {
 }
 
 /// Shapes for confetti pieces
-enum ConfettiShape: CaseIterable {
+internal enum ConfettiShape: CaseIterable {
     case rectangle
     case circle
     case triangle
@@ -106,13 +106,13 @@ enum ConfettiShape: CaseIterable {
 // MARK: - Confetti Piece View
 
 /// Individual animated confetti piece
-struct ConfettiPiece: View {
+internal struct ConfettiPiece: View {
     let particle: ConfettiParticle
     let geometry: GeometryProxy
 
     @State private var yOffset: CGFloat = -20
     @State private var rotation: Double = 0
-    @State private var opacity = 1.0
+    @State private var opacity: Double = 1.0
     @State private var xOffset: CGFloat = 0
 
     var body: some View {
@@ -161,9 +161,9 @@ struct ConfettiPiece: View {
 }
 
 /// Triangle shape for confetti
-struct Triangle: Shape {
+internal struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
-        var path = Path()
+        var path: Path = Path()
         path.move(to: CGPoint(x: rect.midX, y: rect.minY))
         path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
         path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
@@ -175,7 +175,7 @@ struct Triangle: Shape {
 // MARK: - Preview
 
 #Preview {
-    @Previewable @State var trigger = 0
+    @Previewable @State var trigger: Int = 0
     @Previewable @State var intensity: ConfettiOverlayView.CelebrationIntensity = .normal
 
     ZStack {

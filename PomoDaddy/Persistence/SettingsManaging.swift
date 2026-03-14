@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol defining the settings management interface for dependency injection and testing.
-protocol SettingsManaging: AnyObject {
+internal protocol SettingsManaging: AnyObject {
     /// The current user settings.
     var settings: PomodoroSettings { get }
 

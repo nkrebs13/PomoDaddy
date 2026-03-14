@@ -231,7 +231,7 @@ final class SettingsManagerTests: XCTestCase {
 
     func testLoadingCorruptedData() {
         // Write invalid data
-        let invalidData = "invalid json".data(using: .utf8)!
+        let invalidData = Data("invalid json".utf8)
         mockDefaults.set(invalidData, forKey: "com.pomodaddy.settings")
 
         // Should fall back to defaults without crashing

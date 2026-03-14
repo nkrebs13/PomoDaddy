@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 import UserNotifications
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
+internal final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusBarController: StatusBarController?
     private var coordinator: AppCoordinator?
 
@@ -11,7 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
 
         // Initialize coordinator (owns all state)
-        let appCoordinator = AppCoordinator()
+        let appCoordinator: AppCoordinator = AppCoordinator()
         coordinator = appCoordinator
 
         // Set notification delegate to handle interactive actions

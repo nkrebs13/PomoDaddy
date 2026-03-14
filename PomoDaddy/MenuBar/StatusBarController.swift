@@ -19,7 +19,7 @@ import SwiftUI
 /// - Shows/hides a popover with timer controls on click
 /// - Closes popover when clicking outside
 @MainActor
-final class StatusBarController {
+internal final class StatusBarController {
     // MARK: - Properties
 
     /// The status item displayed in the menu bar.
@@ -73,7 +73,7 @@ final class StatusBarController {
         guard let coordinator else { return }
 
         // Create custom icon view
-        let iconView = DynamicMenuBarIconView(coordinator: coordinator)
+        let iconView: DynamicMenuBarIconView = DynamicMenuBarIconView(coordinator: coordinator)
         self.iconView = iconView
 
         // Configure the status item button
@@ -107,7 +107,7 @@ final class StatusBarController {
         popover.animates = true
 
         // Create SwiftUI content view
-        let contentView = MenuPopoverView(coordinator: coordinator)
+        let contentView: MenuPopoverView = MenuPopoverView(coordinator: coordinator)
         popover.contentViewController = NSHostingController(rootView: contentView)
     }
 
@@ -153,8 +153,7 @@ final class StatusBarController {
         // Update status item length based on whether time is shown
         if let coordinator,
            coordinator.isMenuBarCountdownVisible,
-           coordinator.stateMachine.currentState.isActive
-        {
+           coordinator.stateMachine.currentState.isActive {
             statusItem.length = NSStatusItem.variableLength
         } else {
             statusItem.length = AppConstants.MenuBar.iconWidth
@@ -162,7 +161,7 @@ final class StatusBarController {
 
         // Update accessibility label
         if let coordinator {
-            let state = coordinator.stateMachine.currentState
+            let state: TimerState = coordinator.stateMachine.currentState
             statusItem.button?.setAccessibilityLabel("PomoDaddy: \(state.displayName)")
         }
     }
@@ -175,7 +174,7 @@ final class StatusBarController {
         // grow leftward — the right edge is screen-stable regardless of
         // width changes from the timer countdown text.
         let anchorWidth: CGFloat = min(button.bounds.width, AppConstants.MenuBar.iconWidth)
-        let anchorRect = NSRect(
+        let anchorRect: NSRect = NSRect(
             x: button.bounds.width - anchorWidth,
             y: button.bounds.origin.y,
             width: anchorWidth,
@@ -222,11 +221,11 @@ final class StatusBarController {
 
     /// Shows a context menu on right-click.
     private func showContextMenu() {
-        let menu = NSMenu()
+        let menu: NSMenu = NSMenu()
 
         // Quick actions
         if let coordinator {
-            let state = coordinator.stateMachine.currentState
+            let state: TimerState = coordinator.stateMachine.currentState
 
             if state.isRunning {
                 menu.addItem(NSMenuItem(title: "Pause", action: #selector(pauseTimer), keyEquivalent: ""))
@@ -240,7 +239,7 @@ final class StatusBarController {
         }
 
         // Toggle floating window
-        let windowItem = NSMenuItem(
+        let windowItem: NSMenuItem = NSMenuItem(
             title: "Show Floating Window",
             action: #selector(toggleFloatingWindow),
             keyEquivalent: ""

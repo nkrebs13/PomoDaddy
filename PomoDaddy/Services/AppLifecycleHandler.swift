@@ -28,11 +28,11 @@ import Observation
 /// )
 /// ```
 @Observable
-final class AppLifecycleHandler {
+internal final class AppLifecycleHandler {
     // MARK: - Properties
 
     /// Set of Combine cancellables for notification subscriptions.
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellables: Set<AnyCancellable> = Set<AnyCancellable>()
 
     /// Callback invoked when state should be saved.
     private let onSave: () -> Void
@@ -44,7 +44,7 @@ final class AppLifecycleHandler {
     private var onActivate: (() -> Void)?
 
     /// Tracks whether the system was sleeping.
-    private var wasAsleep = false
+    private var wasAsleep: Bool = false
 
     // MARK: - Initialization
 

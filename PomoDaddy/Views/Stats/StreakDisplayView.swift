@@ -14,15 +14,15 @@ import SwiftUI
 /// `StreakDisplayView` shows:
 /// - Current streak with animated flame icon
 /// - Longest streak ever achieved with trophy icon
-struct StreakDisplayView: View {
+internal struct StreakDisplayView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext: ModelContext
 
-    @State private var streakDays = 0
-    @State private var longestStreak = 0
-    @State private var hasAppeared = false
+    @State private var streakDays: Int = 0
+    @State private var longestStreak: Int = 0
+    @State private var hasAppeared: Bool = false
 
     // MARK: - Body
 
@@ -68,7 +68,7 @@ struct StreakDisplayView: View {
     /// Loads streak data from the data store.
     private func loadStreakData() {
         do {
-            let calculator = StatsCalculator(modelContext: modelContext)
+            let calculator: StatsCalculator = StatsCalculator(modelContext: modelContext)
             streakDays = try calculator.currentStreakDays()
             longestStreak = try calculator.longestStreakDays()
         } catch {
@@ -82,7 +82,7 @@ struct StreakDisplayView: View {
 // MARK: - Streak Card
 
 /// A styled card displaying streak information with icon animation.
-struct StreakCard: View {
+internal struct StreakCard: View {
     let icon: String
     let iconColor: Color
     let title: String

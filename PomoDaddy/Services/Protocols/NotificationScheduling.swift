@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol defining the notification scheduling interface for dependency injection and testing.
-protocol NotificationScheduling: AnyObject {
+internal protocol NotificationScheduling: AnyObject {
     /// Requests authorization to display notifications.
     /// - Returns: `true` if notifications are authorized, `false` otherwise.
     func requestAuthorization() async -> Bool

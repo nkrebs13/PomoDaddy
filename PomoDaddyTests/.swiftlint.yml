@@ -4,3 +4,4 @@ disabled_rules:
   - explicit_type_interface # Tests don't need explicit type annotations
   - explicit_init          # Tests can use .init() freely
   - file_header            # Test files don't need standardized headers
+  - implicitly_unwrapped_optional # var sut: Type! pattern is standard in XCTest

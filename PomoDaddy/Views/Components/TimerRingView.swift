@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct TimerRingView: View {
+internal struct TimerRingView: View {
     let progress: Double // 0.0 to 1.0
     let remainingSeconds: Int?
     let intervalType: IntervalType?
     let ringColor: Color?
     var size: CGFloat = 160
     var lineWidth: CGFloat = 8
-    var showTime = true
-    var showLabel = true
+    var showTime: Bool = true
+    var showLabel: Bool = true
 
     /// Full initializer with interval type for automatic styling.
     init(
@@ -132,8 +132,8 @@ struct TimerRingView: View {
 
     /// Formats remaining seconds as MM:SS.
     private func formatTime(_ seconds: Int) -> String {
-        let minutes = seconds / 60
-        let secs = seconds % 60
+        let minutes: Int = seconds / 60
+        let secs: Int = seconds % 60
         return String(format: "%02d:%02d", minutes, secs)
     }
 }

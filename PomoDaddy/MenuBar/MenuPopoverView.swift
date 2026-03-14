@@ -6,6 +6,7 @@
 //
 
 import os.log
+import SwiftData
 import SwiftUI
 
 // MARK: - Menu Popover View
@@ -20,23 +21,23 @@ import SwiftUI
 /// - Quick stats preview (focus time, streak)
 /// - Toggle for floating window visibility
 /// - Quit button
-struct MenuPopoverView: View {
+internal struct MenuPopoverView: View {
     // MARK: - Properties
 
     /// The app coordinator for accessing timer state.
     @Bindable var coordinator: AppCoordinator
 
     /// The model context for creating StatsCalculator.
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext: ModelContext
 
     /// Whether the settings section is expanded.
-    @State private var showingSettings = false
+    @State private var showingSettings: Bool = false
 
     /// Whether the user has seen the onboarding tooltip.
-    @AppStorage(AppConstants.UserDefaultsKeys.hasSeenOnboarding) private var hasSeenOnboarding = false
+    @AppStorage(AppConstants.UserDefaultsKeys.hasSeenOnboarding) private var hasSeenOnboarding: Bool = false
 
     /// Cached focus time text to avoid per-render SwiftData queries.
-    @State private var cachedFocusTimeText = "0m"
+    @State private var cachedFocusTimeText: String = "0m"
 
     // MARK: - Computed Properties
 
@@ -183,7 +184,10 @@ struct MenuPopoverView: View {
                 // Background track
                 Circle()
                     .stroke(accentColor.opacity(0.2), lineWidth: 8)
-                    .frame(width: AppConstants.MenuPopover.timerRingSize, height: AppConstants.MenuPopover.timerRingSize)
+                    .frame(
+                        width: AppConstants.MenuPopover.timerRingSize,
+                        height: AppConstants.MenuPopover.timerRingSize
+                    )
 
                 // Progress ring
                 Circle()
@@ -195,7 +199,10 @@ struct MenuPopoverView: View {
                             lineCap: .round
                         )
                     )
-                    .frame(width: AppConstants.MenuPopover.timerRingSize, height: AppConstants.MenuPopover.timerRingSize)
+                    .frame(
+                        width: AppConstants.MenuPopover.timerRingSize,
+                        height: AppConstants.MenuPopover.timerRingSize
+                    )
                     .rotationEffect(.degrees(-90))
                     .animation(.timerTick, value: progress)
 
@@ -335,7 +342,7 @@ struct MenuPopoverView: View {
     }
 
     private func refreshFocusTime() {
-        let calculator = StatsCalculator(modelContext: modelContext)
+        let calculator: StatsCalculator = StatsCalculator(modelContext: modelContext)
         let totalMinutes: Int
         do {
             totalMinutes = try calculator.todayFocusMinutes()

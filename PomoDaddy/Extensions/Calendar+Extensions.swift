@@ -9,7 +9,7 @@ import Foundation
 
 extension Calendar {
     /// Shared calendar instance used throughout the app.
-    static let shared = Calendar.current
+    static let shared: Calendar = Calendar.current
 
     /// Returns the start of the day for the given date.
     /// - Parameter date: The date to find the start of day for.
@@ -34,7 +34,7 @@ extension Calendar {
     /// - Returns: An array of dates in chronological order, or empty array if days <= 0.
     static func dateRange(days: Int, ending endDate: Date = Date()) -> [Date] {
         guard days > 0 else { return [] }
-        let startOfToday = startOfDay(for: endDate)
+        let startOfToday: Date = startOfDay(for: endDate)
         return (0 ..< days).compactMap { offset in
             shared.date(byAdding: .day, value: -offset, to: startOfToday)
         }.reversed()
@@ -44,7 +44,7 @@ extension Calendar {
     /// - Parameter date: The date to get the day boundaries for.
     /// - Returns: A tuple containing the start and end of the day, or nil if calculation fails.
     static func dayBoundaries(for date: Date) -> (start: Date, end: Date)? {
-        let start = startOfDay(for: date)
+        let start: Date = startOfDay(for: date)
         guard let end = shared.date(byAdding: .day, value: 1, to: start) else {
             return nil
         }

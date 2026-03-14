@@ -18,7 +18,7 @@ import SwiftUI
 /// - Managing state persistence across app lifecycle
 @Observable
 @MainActor
-final class AppCoordinator {
+internal final class AppCoordinator {
     // MARK: - Dependencies
 
     /// The SwiftData model container for persistence.
@@ -57,10 +57,10 @@ final class AppCoordinator {
 
     /// Creates a new AppCoordinator, initializing all dependencies.
     convenience init() {
-        let modelContainer = PomodoroDataContainer.create()
-        let settingsManager = SettingsManager()
-        let timerEngine = TimerEngine()
-        let sessionRecorder = SessionRecorder(modelContainer: modelContainer)
+        let modelContainer: ModelContainer = PomodoroDataContainer.create()
+        let settingsManager: SettingsManager = SettingsManager()
+        let timerEngine: TimerEngine = TimerEngine()
+        let sessionRecorder: SessionRecorder = SessionRecorder(modelContainer: modelContainer)
 
         self.init(
             modelContainer: modelContainer,
@@ -290,7 +290,7 @@ final class AppCoordinator {
 
             // Record the completed session and trigger confetti
             Task { @MainActor in
-                let durationMinutes = Int(self.stateMachine.settings.workDuration / 60)
+                let durationMinutes: Int = Int(self.stateMachine.settings.workDuration / 60)
                 await self.sessionCoordinator.completeSession(durationMinutes: durationMinutes)
             }
 

@@ -11,7 +11,7 @@ import Observation
 /// Coordinates work session tracking and completion celebrations.
 @Observable
 @MainActor
-final class SessionCoordinator: SessionCoordinating {
+internal final class SessionCoordinator: SessionCoordinating {
     // MARK: - Properties
 
     /// The session recorder for persisting sessions.
@@ -21,7 +21,7 @@ final class SessionCoordinator: SessionCoordinating {
     private(set) var currentSessionStartTime: Date?
 
     /// Whether to show confetti celebration.
-    var showConfetti = false
+    var showConfetti: Bool = false
 
     /// Task for hiding confetti after animation.
     private var confettiHideTask: Task<Void, Never>?
@@ -31,7 +31,6 @@ final class SessionCoordinator: SessionCoordinating {
     init(sessionRecorder: SessionRecorder) {
         self.sessionRecorder = sessionRecorder
     }
-
 
     // MARK: - Session Management
 
@@ -50,7 +49,7 @@ final class SessionCoordinator: SessionCoordinating {
     func completeSession(durationMinutes: Int) async {
         guard let startTime = currentSessionStartTime else { return }
 
-        let endTime = Date()
+        let endTime: Date = Date()
 
         // Record the session
         do {

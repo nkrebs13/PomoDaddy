@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol defining the App Nap management interface for dependency injection and testing.
-protocol AppNapManaging: AnyObject {
+internal protocol AppNapManaging: AnyObject {
     /// Whether an activity assertion is currently active.
     var isTimingActivityActive: Bool { get }
 

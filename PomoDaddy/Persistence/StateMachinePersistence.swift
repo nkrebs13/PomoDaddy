@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Persisted State
 
 /// Represents the complete persisted state of the Pomodoro state machine.
-struct PersistedStateMachineState: Codable {
+internal struct PersistedStateMachineState: Codable {
     let timerState: TimerState
     let completedPomodorosInCycle: Int
     let totalCompletedToday: Int
@@ -21,17 +21,17 @@ struct PersistedStateMachineState: Codable {
 // MARK: - State Machine Persistence Service
 
 /// Handles persistence of PomodoroStateMachine state to UserDefaults.
-final class StateMachinePersistence {
+internal final class StateMachinePersistence {
     // MARK: - Properties
 
     private let defaults: UserDefaults
-    private let encoder = JSONEncoder()
-    private let decoder = JSONDecoder()
+    private let encoder: JSONEncoder = JSONEncoder()
+    private let decoder: JSONDecoder = JSONDecoder()
     private let stateKey: String
 
     // MARK: - Singleton
 
-    static let shared = StateMachinePersistence()
+    static let shared: StateMachinePersistence = StateMachinePersistence()
 
     // MARK: - Initialization
 
@@ -50,7 +50,7 @@ final class StateMachinePersistence {
         lastResetDate: Date,
         timerEngineState: TimerEngineState?
     ) {
-        let state = PersistedStateMachineState(
+        let state: PersistedStateMachineState = PersistedStateMachineState(
             timerState: timerState,
             completedPomodorosInCycle: completedPomodorosInCycle,
             totalCompletedToday: totalCompletedToday,
@@ -59,7 +59,7 @@ final class StateMachinePersistence {
         )
 
         do {
-            let encoded = try encoder.encode(state)
+            let encoded: Data = try encoder.encode(state)
             defaults.set(encoded, forKey: stateKey)
         } catch {
             Logger.logError(error, context: "Failed to persist state machine state", log: Logger.persistence)

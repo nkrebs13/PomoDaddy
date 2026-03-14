@@ -18,25 +18,25 @@ import SwiftUI
 /// - Session progress indicator
 /// - Double-tap to toggle compact mode
 /// - Confetti celebration on pomodoro completion
-struct FloatingTimerView: View {
+internal struct FloatingTimerView: View {
     // MARK: - Properties
 
     /// The app coordinator containing timer state.
     @Bindable var coordinator: AppCoordinator
 
     /// Trigger for confetti animation.
-    @State private var confettiTrigger = 0
+    @State private var confettiTrigger: Int = 0
 
     /// Whether the view is in compact mode.
-    @State private var isCompact = false
+    @State private var isCompact: Bool = false
 
     /// Track hover state for interactive feedback.
-    @State private var isHovering = false
+    @State private var isHovering: Bool = false
 
     // MARK: - Constants
 
-    private let expandedSize = CGSize(width: 280, height: 320)
-    private let compactSize = CGSize(width: 180, height: 180)
+    private let expandedSize: CGSize = CGSize(width: 280, height: 320)
+    private let compactSize: CGSize = CGSize(width: 180, height: 180)
     private let timerRingSize: CGFloat = 160
     private let compactTimerRingSize: CGFloat = 120
 
@@ -68,7 +68,6 @@ struct FloatingTimerView: View {
 
             // Confetti overlay for celebrations
             ConfettiOverlayView(trigger: $confettiTrigger)
-
         }
         .frame(
             width: isCompact ? compactSize.width : expandedSize.width,
@@ -269,7 +268,7 @@ struct FloatingTimerView: View {
 // MARK: - Drag Handle View
 
 /// A minimal drag handle indicator at the top of the window.
-struct DragHandleView: View {
+internal struct DragHandleView: View {
     var body: some View {
         Capsule()
             .fill(Color.primary.opacity(0.2))
@@ -280,16 +279,16 @@ struct DragHandleView: View {
 // MARK: - Control Button
 
 /// A styled control button for timer actions.
-struct ControlButton: View {
+internal struct ControlButton: View {
     let icon: String
     let accessibilityLabel: String
     let action: () -> Void
-    var isPrimary = false
-    var isEnabled = true
+    var isPrimary: Bool = false
+    var isEnabled: Bool = true
     var accentColor: Color = .primary
 
-    @State private var isHovering = false
-    @State private var isPressed = false
+    @State private var isHovering: Bool = false
+    @State private var isPressed: Bool = false
 
     var body: some View {
         Button(action: action) {

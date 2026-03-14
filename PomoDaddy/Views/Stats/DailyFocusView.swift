@@ -16,22 +16,22 @@ import SwiftUI
 /// - Total focus time in the center
 /// - Completed pomodoro count
 /// - Row of tomato icons for visual session tracking
-struct DailyFocusView: View {
+internal struct DailyFocusView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext: ModelContext
 
-    @State private var focusMinutes = 0
-    @State private var completedPomodoros = 0
+    @State private var focusMinutes: Int = 0
+    @State private var completedPomodoros: Int = 0
     @State private var ringProgress: Double = 0
-    @State private var hasAppeared = false
+    @State private var hasAppeared: Bool = false
 
     /// Daily goal in minutes.
-    private let dailyGoalMinutes = AppConstants.DailyFocus.dailyGoalMinutes
+    private let dailyGoalMinutes: Int = AppConstants.DailyFocus.dailyGoalMinutes
 
     /// Maximum tomatoes to display in the row.
-    private let maxTomatoDisplay = AppConstants.DailyFocus.maxTomatoDisplay
+    private let maxTomatoDisplay: Int = AppConstants.DailyFocus.maxTomatoDisplay
 
     // MARK: - Body
 
@@ -169,7 +169,7 @@ struct DailyFocusView: View {
     /// Loads today's statistics from the data store.
     private func loadTodayStats() {
         do {
-            let calculator = StatsCalculator(modelContext: modelContext)
+            let calculator: StatsCalculator = StatsCalculator(modelContext: modelContext)
             focusMinutes = try calculator.todayFocusMinutes()
             completedPomodoros = try calculator.todayCompletedPomodoros()
         } catch {
@@ -182,7 +182,7 @@ struct DailyFocusView: View {
     /// Animates the ring and icons on appear.
     private func animateOnAppear() {
         // Calculate target progress (capped at 100%)
-        let targetProgress = min(Double(focusMinutes) / Double(dailyGoalMinutes), 1.0)
+        let targetProgress: Double = min(Double(focusMinutes) / Double(dailyGoalMinutes), 1.0)
 
         // Delay the animation slightly for visual impact
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

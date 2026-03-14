@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Interval Type
 
 /// Represents the type of interval in a Pomodoro session.
-enum IntervalType: String, Codable, CaseIterable, Identifiable {
+internal enum IntervalType: String, Codable, CaseIterable, Identifiable {
     case work
     case shortBreak
     case longBreak
@@ -45,7 +45,7 @@ enum IntervalType: String, Codable, CaseIterable, Identifiable {
 
     /// Default duration in seconds for this interval type.
     var defaultDuration: TimeInterval {
-        let defaults = PomodoroSettings.default
+        let defaults: PomodoroSettings = PomodoroSettings.default
         switch self {
         case .work:
             return defaults.workDuration
@@ -60,7 +60,7 @@ enum IntervalType: String, Codable, CaseIterable, Identifiable {
 // MARK: - Timer State
 
 /// Represents the current state of the Pomodoro timer.
-enum TimerState: Equatable {
+internal enum TimerState: Equatable {
     case idle
     case running(IntervalType)
     case paused(IntervalType)
@@ -161,23 +161,23 @@ extension TimerState: Codable {
     }
 
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let type = try container.decode(StateType.self, forKey: .type)
+        let container: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
+        let type: StateType = try container.decode(StateType.self, forKey: .type)
 
         switch type {
         case .idle:
             self = .idle
         case .running:
-            let intervalType = try container.decode(IntervalType.self, forKey: .intervalType)
+            let intervalType: IntervalType = try container.decode(IntervalType.self, forKey: .intervalType)
             self = .running(intervalType)
         case .paused:
-            let intervalType = try container.decode(IntervalType.self, forKey: .intervalType)
+            let intervalType: IntervalType = try container.decode(IntervalType.self, forKey: .intervalType)
             self = .paused(intervalType)
         }
     }
 
     func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container: KeyedEncodingContainer<CodingKeys> = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
         case .idle:

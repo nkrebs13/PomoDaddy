@@ -10,18 +10,18 @@ import SwiftUI
 // MARK: - Duration Stepper
 
 /// A stepper control for adjusting duration values with +/- buttons.
-struct DurationStepper: View {
+internal struct DurationStepper: View {
     // MARK: - Properties
 
     let label: String
     @Binding var value: Int
     let range: ClosedRange<Int>
     let unit: String
-    var iconName = "clock"
+    var iconName: String = "clock"
     var iconColor: Color = .tomatoRed
 
-    @State private var isHoveringMinus = false
-    @State private var isHoveringPlus = false
+    @State private var isHoveringMinus: Bool = false
+    @State private var isHoveringPlus: Bool = false
 
     // MARK: - Body
 

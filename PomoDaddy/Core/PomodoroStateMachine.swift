@@ -12,7 +12,7 @@ import os.log
 // MARK: - Pomodoro Events
 
 /// Events that can trigger state transitions in the Pomodoro state machine.
-enum PomodoroEvent {
+internal enum PomodoroEvent {
     case start(IntervalType? = nil)
     case pause
     case resume
@@ -27,17 +27,17 @@ enum PomodoroEvent {
 /// interval tracking, and integration with the timer engine.
 @Observable
 @MainActor
-final class PomodoroStateMachine {
+internal final class PomodoroStateMachine {
     // MARK: - Public Properties
 
     /// The current state of the Pomodoro timer.
     private(set) var currentState: TimerState = .idle
 
     /// Number of completed pomodoros in the current cycle (resets after long break).
-    private(set) var completedPomodorosInCycle = 0
+    private(set) var completedPomodorosInCycle: Int = 0
 
     /// Total number of pomodoros completed today.
-    private(set) var totalCompletedToday = 0
+    private(set) var totalCompletedToday: Int = 0
 
     /// The underlying timer engine.
     let timerEngine: any TimerEngineProtocol
@@ -131,7 +131,7 @@ final class PomodoroStateMachine {
             switch type {
             case .work:
                 // After work, determine break type
-                let nextPomodoroCount = completedPomodorosInCycle + 1
+                let nextPomodoroCount: Int = completedPomodorosInCycle + 1
                 if nextPomodoroCount >= settings.pomodorosUntilLongBreak {
                     return .longBreak
                 }
@@ -173,10 +173,10 @@ final class PomodoroStateMachine {
     // MARK: - Private Methods - Event Handlers
 
     private func handleStart(intervalType: IntervalType?) {
-        let type = intervalType ?? nextIntervalType()
-        let duration = duration(for: type)
+        let type: IntervalType = intervalType ?? nextIntervalType()
+        let duration: TimeInterval = duration(for: type)
 
-        let oldState = currentState
+        let oldState: TimerState = currentState
         currentState = .running(type)
 
         timerEngine.start(
@@ -193,7 +193,7 @@ final class PomodoroStateMachine {
     private func handlePause() {
         guard case .running(let type) = currentState else { return }
 
-        let oldState = currentState
+        let oldState: TimerState = currentState
         timerEngine.pause()
         currentState = .paused(type)
 
@@ -203,7 +203,7 @@ final class PomodoroStateMachine {
     private func handleResume() {
         guard case .paused(let type) = currentState else { return }
 
-        let oldState = currentState
+        let oldState: TimerState = currentState
         timerEngine.resume()
         currentState = .running(type)
 
@@ -211,9 +211,9 @@ final class PomodoroStateMachine {
     }
 
     private func handleComplete() {
-        guard let intervalType = currentState.intervalType else { return }
+        guard let intervalType: IntervalType = currentState.intervalType else { return }
 
-        let oldState = currentState
+        let oldState: TimerState = currentState
 
         switch intervalType {
         case .work:
@@ -243,7 +243,7 @@ final class PomodoroStateMachine {
             transitionAfterBreak()
 
         case .longBreak:
-            let completedCycles = totalCompletedToday / settings.pomodorosUntilLongBreak
+            let completedCycles: Int = totalCompletedToday / settings.pomodorosUntilLongBreak
             onCycleComplete?(completedCycles)
             onBreakComplete?(intervalType)
             completedPomodorosInCycle = 0
@@ -254,7 +254,7 @@ final class PomodoroStateMachine {
     }
 
     private func handleReset() {
-        let oldState = currentState
+        let oldState: TimerState = currentState
 
         timerEngine.stop()
         currentState = .idle
@@ -268,7 +268,7 @@ final class PomodoroStateMachine {
         guard currentState.isActive else { return }
 
         // Skip current interval without counting it as complete
-        let oldState = currentState
+        let oldState: TimerState = currentState
         timerEngine.stop()
         currentState = .idle
 
@@ -289,7 +289,7 @@ final class PomodoroStateMachine {
     }
 
     private func startTimer(for intervalType: IntervalType) {
-        let duration = duration(for: intervalType)
+        let duration: TimeInterval = duration(for: intervalType)
         timerEngine.start(
             seconds: duration,
             onTick: nil,
@@ -306,9 +306,9 @@ final class PomodoroStateMachine {
     }
 
     private func resetDailyCountIfNeeded() {
-        let today = Calendar.current.startOfDay(for: Date())
+        let today: Date = Calendar.current.startOfDay(for: Date())
 
-        if let lastReset = lastResetDate, !Calendar.current.isDate(lastReset, inSameDayAs: today) {
+        if let lastReset: Date = lastResetDate, !Calendar.current.isDate(lastReset, inSameDayAs: today) {
             totalCompletedToday = 0
             completedPomodorosInCycle = 0
             lastResetDate = today
@@ -335,7 +335,7 @@ final class PomodoroStateMachine {
         }
 
         // Check if we need to reset for a new day
-        let today = Calendar.current.startOfDay(for: Date())
+        let today: Date = Calendar.current.startOfDay(for: Date())
         if Calendar.current.isDate(state.lastResetDate, inSameDayAs: today) {
             totalCompletedToday = state.totalCompletedToday
             completedPomodorosInCycle = state.completedPomodorosInCycle
@@ -344,7 +344,7 @@ final class PomodoroStateMachine {
 
         // Restore timer state if applicable
         if let engineState = state.timerEngineState {
-            let adjustedRemaining = engineState.adjustedRemainingSeconds()
+            let adjustedRemaining: TimeInterval = engineState.adjustedRemainingSeconds()
 
             if adjustedRemaining > 0 {
                 // Timer was active and hasn't completed

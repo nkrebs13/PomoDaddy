@@ -10,11 +10,11 @@ import SwiftUI
 
 /// Manages user settings with persistence to UserDefaults.
 @Observable
-final class SettingsManager: SettingsManaging {
+internal final class SettingsManager: SettingsManaging {
     // MARK: - Constants
 
     private enum Keys {
-        static let settings = "com.pomodaddy.settings"
+        static let settings: String = "com.pomodaddy.settings"
     }
 
     // MARK: - Properties
@@ -36,10 +36,10 @@ final class SettingsManager: SettingsManaging {
     private let defaults: UserDefaults
 
     /// JSON encoder for serialization.
-    private let encoder = JSONEncoder()
+    private let encoder: JSONEncoder = JSONEncoder()
 
     /// JSON decoder for deserialization.
-    private let decoder = JSONDecoder()
+    private let decoder: JSONDecoder = JSONDecoder()
 
     // MARK: - Initialization
 
@@ -62,7 +62,7 @@ final class SettingsManager: SettingsManaging {
     /// Updates a specific setting using a closure.
     /// - Parameter transform: A closure that modifies the settings.
     func update(_ transform: (inout PomodoroSettings) -> Void) {
-        var modified = settings
+        var modified: PomodoroSettings = settings
         transform(&modified)
         settings = modified.validated
     }
@@ -169,7 +169,7 @@ final class SettingsManager: SettingsManaging {
     /// Saves settings to UserDefaults.
     private func save() {
         do {
-            let data = try encoder.encode(settings)
+            let data: Data = try encoder.encode(settings)
             defaults.set(data, forKey: Keys.settings)
         } catch {
             Logger.logError(error, context: "Failed to encode settings", log: Logger.persistence)
@@ -180,7 +180,7 @@ final class SettingsManager: SettingsManaging {
 // MARK: - Settings Presets
 
 /// Available preset configurations.
-enum SettingsPreset: String, CaseIterable, Identifiable {
+internal enum SettingsPreset: String, CaseIterable, Identifiable {
     case classic = "Classic"
     case extendedFocus = "Extended Focus"
     case quickSprints = "Quick Sprints"

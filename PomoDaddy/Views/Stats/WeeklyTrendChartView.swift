@@ -14,21 +14,21 @@ import SwiftUI
 ///
 /// `WeeklyTrendChartView` shows a bar chart of the past 7 days' focus minutes,
 /// with today's bar highlighted in a distinct color.
-struct WeeklyTrendChartView: View {
+internal struct WeeklyTrendChartView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext: ModelContext
 
     @State private var weeklyData: [DayData] = []
-    @State private var hasAppeared = false
+    @State private var hasAppeared: Bool = false
     @State private var selectedDay: DayData?
 
     // MARK: - Data Model
 
     /// Represents a single day's data for the chart.
     struct DayData: Identifiable {
-        let id = UUID()
+        let id: UUID = UUID()
         let date: Date
         let dayName: String
         let focusMinutes: Int
@@ -174,24 +174,24 @@ struct WeeklyTrendChartView: View {
 
     /// Loads the weekly trend data from the data store.
     private func loadWeeklyData() {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
+        let calendar: Calendar = Calendar.current
+        let today: Date = calendar.startOfDay(for: Date())
 
         // Generate array for past 7 days
         var data: [DayData] = []
 
         do {
-            let calculator = StatsCalculator(modelContext: modelContext)
-            let stats = try calculator.weeklyTrend()
+            let calculator: StatsCalculator = StatsCalculator(modelContext: modelContext)
+            let stats: [DailyStats] = try calculator.weeklyTrend()
 
             for dayOffset in (0 ..< 7).reversed() {
                 guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
 
-                let dayName = dayAbbreviation(for: date)
-                let isToday = dayOffset == 0
+                let dayName: String = dayAbbreviation(for: date)
+                let isToday: Bool = dayOffset == 0
 
                 // Find stats for this date
-                let focusMinutes = stats.first {
+                let focusMinutes: Int = stats.first {
                     calendar.isDate($0.date, inSameDayAs: date)
                 }?.totalFocusMinutes ?? 0
 
@@ -222,14 +222,14 @@ struct WeeklyTrendChartView: View {
 
     /// Returns the abbreviated day name for a date.
     private func dayAbbreviation(for date: Date) -> String {
-        let formatter = DateFormatter()
+        let formatter: DateFormatter = DateFormatter()
         formatter.dateFormat = "EEE"
         return formatter.string(from: date)
     }
 
     /// Returns the full day name for a date.
     private func fullDayName(_ date: Date) -> String {
-        let formatter = DateFormatter()
+        let formatter: DateFormatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d"
         return formatter.string(from: date)
     }
