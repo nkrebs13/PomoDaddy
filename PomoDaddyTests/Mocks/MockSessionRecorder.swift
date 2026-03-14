@@ -43,7 +43,7 @@ actor MockSessionRecorder: SessionRecording {
         lastRecordedWasCompleted = wasCompleted
     }
 
-    func recordBatch(_ entries: [(startDate: Date, endDate: Date, durationMinutes: Int, wasCompleted: Bool)]) throws {
+    func recordBatch(_ entries: [SessionEntry]) throws {
         if shouldThrow {
             throw MockError.simulatedFailure
         }

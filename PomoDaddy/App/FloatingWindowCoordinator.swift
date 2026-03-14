@@ -26,7 +26,7 @@ final class FloatingWindowCoordinator: FloatingWindowCoordinating {
 
     /// Sets the app coordinator reference.
     func setAppCoordinator(_ coordinator: AppCoordinator) {
-        self.appCoordinator = coordinator
+        appCoordinator = coordinator
     }
 
     // MARK: - Window Management

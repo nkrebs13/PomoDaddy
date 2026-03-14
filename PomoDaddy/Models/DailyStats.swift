@@ -74,7 +74,7 @@ final class DailyStats {
 extension DailyStats {
     /// Predicate to find stats for a specific date.
     static func forDate(_ date: Date) -> Predicate<DailyStats> {
-        let startOfDay = Calendar.current.startOfDay(for: date)
+        let startOfDay: Date = Calendar.current.startOfDay(for: date)
         return #Predicate<DailyStats> { stats in
             stats.date == startOfDay
         }
@@ -82,8 +82,8 @@ extension DailyStats {
 
     /// Predicate for stats within a date range.
     static func inRange(from startDate: Date, to endDate: Date) -> Predicate<DailyStats> {
-        let start = Calendar.current.startOfDay(for: startDate)
-        let end = Calendar.current.startOfDay(for: endDate)
+        let start: Date = Calendar.current.startOfDay(for: startDate)
+        let end: Date = Calendar.current.startOfDay(for: endDate)
 
         return #Predicate<DailyStats> { stats in
             stats.date >= start && stats.date <= end
@@ -109,14 +109,14 @@ extension DailyStats {
     /// - Returns: The DailyStats for today.
     @MainActor
     static func forToday(in context: ModelContext) throws -> DailyStats {
-        let today = Calendar.current.startOfDay(for: Date())
+        let today: Date = Calendar.current.startOfDay(for: Date())
 
         var descriptor = FetchDescriptor<DailyStats>(
             predicate: forDate(today)
         )
         descriptor.fetchLimit = 1
 
-        let existing = try context.fetch(descriptor)
+        let existing: [DailyStats] = try context.fetch(descriptor)
 
         if let stats = existing.first {
             return stats

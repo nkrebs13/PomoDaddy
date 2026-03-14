@@ -68,7 +68,6 @@ struct FloatingTimerView: View {
 
             // Confetti overlay for celebrations
             ConfettiOverlayView(trigger: $confettiTrigger)
-
         }
         .frame(
             width: isCompact ? compactSize.width : expandedSize.width,
@@ -174,7 +173,9 @@ struct FloatingTimerView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(coordinator.stateMachine.currentState.displayName), \(coordinator.stateMachine.formattedTime) remaining, \(Int(coordinator.stateMachine.progress * 100)) percent complete")
+            .accessibilityLabel(
+                "\(coordinator.stateMachine.currentState.displayName), \(coordinator.stateMachine.formattedTime) remaining, \(Int(coordinator.stateMachine.progress * 100)) percent complete"
+            )
             .accessibilityAddTraits(.updatesFrequently)
 
             // Mode label
@@ -261,7 +262,9 @@ struct FloatingTimerView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(coordinator.stateMachine.completedPomodorosInCycle) of \(coordinator.stateMachine.settings.pomodorosUntilLongBreak) pomodoros completed in current cycle")
+        .accessibilityLabel(
+            "\(coordinator.stateMachine.completedPomodorosInCycle) of \(coordinator.stateMachine.settings.pomodorosUntilLongBreak) pomodoros completed in current cycle"
+        )
         .padding(.top, 4)
     }
 }

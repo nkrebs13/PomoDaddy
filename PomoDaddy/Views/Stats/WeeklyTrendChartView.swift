@@ -18,7 +18,7 @@ struct WeeklyTrendChartView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext: ModelContext
 
     @State private var weeklyData: [DayData] = []
     @State private var hasAppeared = false
@@ -133,7 +133,9 @@ struct WeeklyTrendChartView: View {
         .chartYScale(domain: 0 ... (maxMinutes > 0 ? Double(maxMinutes) * 1.2 : 60))
         .animation(.spring(response: 0.8, dampingFraction: 0.7), value: hasAppeared)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Weekly focus chart: \(weeklyData.map { "\($0.dayName) \($0.formattedTime)" }.joined(separator: ", "))")
+        .accessibilityLabel(
+            "Weekly focus chart: \(weeklyData.map { "\($0.dayName) \($0.formattedTime)" }.joined(separator: ", "))"
+        )
     }
 
     /// Detail view for a selected day.
@@ -175,23 +177,23 @@ struct WeeklyTrendChartView: View {
     /// Loads the weekly trend data from the data store.
     private func loadWeeklyData() {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
+        let today: Date = calendar.startOfDay(for: Date())
 
         // Generate array for past 7 days
         var data: [DayData] = []
 
         do {
             let calculator = StatsCalculator(modelContext: modelContext)
-            let stats = try calculator.weeklyTrend()
+            let stats: [DailyStats] = try calculator.weeklyTrend()
 
             for dayOffset in (0 ..< 7).reversed() {
                 guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
 
-                let dayName = dayAbbreviation(for: date)
-                let isToday = dayOffset == 0
+                let dayName: String = dayAbbreviation(for: date)
+                let isToday: Bool = dayOffset == 0
 
                 // Find stats for this date
-                let focusMinutes = stats.first {
+                let focusMinutes: Int = stats.first {
                     calendar.isDate($0.date, inSameDayAs: date)
                 }?.totalFocusMinutes ?? 0
 

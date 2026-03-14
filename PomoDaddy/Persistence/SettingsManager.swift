@@ -62,7 +62,7 @@ final class SettingsManager: SettingsManaging {
     /// Updates a specific setting using a closure.
     /// - Parameter transform: A closure that modifies the settings.
     func update(_ transform: (inout PomodoroSettings) -> Void) {
-        var modified = settings
+        var modified: PomodoroSettings = settings
         transform(&modified)
         settings = modified.validated
     }
@@ -169,7 +169,7 @@ final class SettingsManager: SettingsManaging {
     /// Saves settings to UserDefaults.
     private func save() {
         do {
-            let data = try encoder.encode(settings)
+            let data: Data = try encoder.encode(settings)
             defaults.set(data, forKey: Keys.settings)
         } catch {
             Logger.logError(error, context: "Failed to encode settings", log: Logger.persistence)

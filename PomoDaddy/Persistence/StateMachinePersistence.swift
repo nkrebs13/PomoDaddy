@@ -59,7 +59,7 @@ final class StateMachinePersistence {
         )
 
         do {
-            let encoded = try encoder.encode(state)
+            let encoded: Data = try encoder.encode(state)
             defaults.set(encoded, forKey: stateKey)
         } catch {
             Logger.logError(error, context: "Failed to persist state machine state", log: Logger.persistence)

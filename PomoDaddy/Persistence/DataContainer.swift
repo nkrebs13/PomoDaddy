@@ -39,7 +39,11 @@ enum PomodoroDataContainer {
             )
         } catch {
             // Log the error for debugging
-            Logger.logError(error, context: "Failed to create persistent ModelContainer, falling back to in-memory storage", log: Logger.persistence)
+            Logger.logError(
+                error,
+                context: "Failed to create persistent ModelContainer, falling back to in-memory storage",
+                log: Logger.persistence
+            )
 
             // Fall back to in-memory storage so app remains functional
             return createInMemory()
@@ -71,8 +75,8 @@ enum PomodoroDataContainer {
     /// - Returns: A configured ModelContainer populated with sample data.
     @MainActor
     static func createPreview() -> ModelContainer {
-        let container = createInMemory()
-        let context = container.mainContext
+        let container: ModelContainer = createInMemory()
+        let context: ModelContext = container.mainContext
 
         // Add sample data
         populateSampleData(in: context)
@@ -90,20 +94,20 @@ enum PomodoroDataContainer {
         // Create sample sessions for the past week
         for dayOffset in 0 ..< 7 {
             guard let day = calendar.date(byAdding: .day, value: -dayOffset, to: now) else { continue }
-            let startOfDay = calendar.startOfDay(for: day)
+            let startOfDay: Date = calendar.startOfDay(for: day)
 
             // Create 2-4 sessions per day
             let sessionCount = Int.random(in: 2 ... 4)
             var dailyMinutes = 0
 
             for sessionIndex in 0 ..< sessionCount {
-                let sessionStart = calendar.date(
+                let sessionStart: Date = calendar.date(
                     byAdding: .hour,
                     value: 9 + (sessionIndex * 2),
                     to: startOfDay
                 ) ?? startOfDay
                 let duration = 25
-                let sessionEnd = calendar.date(
+                let sessionEnd: Date = calendar.date(
                     byAdding: .minute,
                     value: duration,
                     to: sessionStart
@@ -156,7 +160,7 @@ extension ModelContext {
 
     /// Performs a fetch and returns the first result, or nil if none found.
     func fetchFirst<T: PersistentModel>(_ descriptor: FetchDescriptor<T>) throws -> T? {
-        var limitedDescriptor = descriptor
+        var limitedDescriptor: FetchDescriptor<T> = descriptor
         limitedDescriptor.fetchLimit = 1
         return try fetch(limitedDescriptor).first
     }

@@ -89,7 +89,7 @@ struct PomodoroSettings: Codable, Equatable {
 
     /// Validates the settings and returns corrected values if needed.
     var validated: PomodoroSettings {
-        var corrected = self
+        var corrected: PomodoroSettings = self
 
         // Ensure positive durations
         corrected.workDurationMinutes = max(1, workDurationMinutes)

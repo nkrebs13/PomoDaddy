@@ -69,7 +69,7 @@ final class NotificationScheduler: NotificationScheduling {
     ///
     /// - Returns: `true` if notifications are currently authorized.
     func checkAuthorizationStatus() async -> Bool {
-        let settings = await center.notificationSettings()
+        let settings: UNNotificationSettings = await center.notificationSettings()
         return settings.authorizationStatus == .authorized
     }
 

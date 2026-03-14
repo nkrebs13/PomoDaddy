@@ -20,7 +20,7 @@ struct DailyFocusView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext: ModelContext
 
     @State private var focusMinutes = 0
     @State private var completedPomodoros = 0
@@ -28,10 +28,10 @@ struct DailyFocusView: View {
     @State private var hasAppeared = false
 
     /// Daily goal in minutes.
-    private let dailyGoalMinutes = AppConstants.DailyFocus.dailyGoalMinutes
+    private let dailyGoalMinutes: Int = AppConstants.DailyFocus.dailyGoalMinutes
 
     /// Maximum tomatoes to display in the row.
-    private let maxTomatoDisplay = AppConstants.DailyFocus.maxTomatoDisplay
+    private let maxTomatoDisplay: Int = AppConstants.DailyFocus.maxTomatoDisplay
 
     // MARK: - Body
 
@@ -114,7 +114,9 @@ struct DailyFocusView: View {
         }
         .frame(width: 180, height: 180)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Daily focus progress: \(formattedFocusTime) of \(dailyGoalMinutes / 60) hour goal, \(Int(ringProgress * 100)) percent complete")
+        .accessibilityLabel(
+            "Daily focus progress: \(formattedFocusTime) of \(dailyGoalMinutes / 60) hour goal, \(Int(ringProgress * 100)) percent complete"
+        )
         .accessibilityAddTraits(.updatesFrequently)
     }
 
@@ -182,7 +184,7 @@ struct DailyFocusView: View {
     /// Animates the ring and icons on appear.
     private func animateOnAppear() {
         // Calculate target progress (capped at 100%)
-        let targetProgress = min(Double(focusMinutes) / Double(dailyGoalMinutes), 1.0)
+        let targetProgress: Double = min(Double(focusMinutes) / Double(dailyGoalMinutes), 1.0)
 
         // Delay the animation slightly for visual impact
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

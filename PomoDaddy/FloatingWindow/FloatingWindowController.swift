@@ -33,7 +33,7 @@ final class FloatingWindowController {
     // MARK: - Constants
 
     /// Frame autosave name for position persistence.
-    private static let frameAutosaveName = AppConstants.FloatingWindow.frameAutosaveName
+    private static let frameAutosaveName: String = AppConstants.FloatingWindow.frameAutosaveName
 
     /// Default window size.
     private static let defaultSize = NSSize(
@@ -93,7 +93,7 @@ final class FloatingWindowController {
 
         // Create and set the content view
         let floatingView = FloatingTimerView(coordinator: coordinator)
-        let hostingView = NSHostingView(rootView: floatingView)
+        let hostingView: NSHostingView<FloatingTimerView> = NSHostingView(rootView: floatingView)
         hostingView.frame = contentRect
 
         panel.contentView = hostingView
@@ -149,9 +149,9 @@ final class FloatingWindowController {
         // Otherwise, center the window on the main screen
         if !panel.setFrameUsingName(Self.frameAutosaveName) {
             if let screen = NSScreen.main {
-                let screenFrame = screen.visibleFrame
-                let x = screenFrame.maxX - panel.frame.width - 20
-                let y = screenFrame.maxY - panel.frame.height - 20
+                let screenFrame: NSRect = screen.visibleFrame
+                let x: CGFloat = screenFrame.maxX - panel.frame.width - 20
+                let y: CGFloat = screenFrame.maxY - panel.frame.height - 20
                 panel.setFrameOrigin(NSPoint(x: x, y: y))
             }
         }
@@ -190,14 +190,14 @@ final class FloatingWindowController {
     func setCompactMode(_ compact: Bool) {
         guard let panel else { return }
 
-        let newSize = compact ? Self.compactSize : Self.defaultSize
+        let newSize: NSSize = compact ? Self.compactSize : Self.defaultSize
 
         // Animate the size change
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.3
             context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 
-            var newFrame = panel.frame
+            var newFrame: NSRect = panel.frame
             // Keep top-right corner anchored
             newFrame.origin.y += newFrame.height - newSize.height
             newFrame.size = newSize

@@ -32,7 +32,7 @@ final class TimerEngine: TimerEngineProtocol {
     /// Progress from 0.0 (just started) to 1.0 (completed).
     var progress: Double {
         guard totalDuration > 0 else { return 0 }
-        let elapsed = totalDuration - remainingSeconds
+        let elapsed: TimeInterval = totalDuration - remainingSeconds
         return min(1.0, max(0.0, elapsed / totalDuration))
     }
 
@@ -175,9 +175,9 @@ final class TimerEngine: TimerEngineProtocol {
     /// Adds time to the current timer session.
     /// - Parameter seconds: The number of seconds to add (can be negative to subtract).
     func addTime(_ seconds: TimeInterval) {
-        if isRunning, let endDate = targetEndDate {
-            let newEndDate = endDate.addingTimeInterval(seconds)
-            let newRemaining = newEndDate.timeIntervalSince(Date())
+        if isRunning, let endDate: Date = targetEndDate {
+            let newEndDate: Date = endDate.addingTimeInterval(seconds)
+            let newRemaining: TimeInterval = newEndDate.timeIntervalSince(Date())
 
             if newRemaining > 0 {
                 targetEndDate = newEndDate
@@ -210,7 +210,7 @@ final class TimerEngine: TimerEngineProtocol {
     private func tick() {
         guard isRunning, let endDate = targetEndDate else { return }
 
-        let remaining = endDate.timeIntervalSince(Date())
+        let remaining: TimeInterval = endDate.timeIntervalSince(Date())
 
         if remaining <= 0 {
             // Timer completed
@@ -218,7 +218,7 @@ final class TimerEngine: TimerEngineProtocol {
             isRunning = false
             stopTimerPublisher()
 
-            let completion = completionHandler
+            let completion: (() -> Void)? = completionHandler
             completionHandler = nil
             tickHandler = nil
 
@@ -252,7 +252,7 @@ struct TimerEngineState: Codable {
     /// - Parameter adjustForElapsed: If true, subtracts time elapsed since save (for running timers).
     func adjustedRemainingSeconds(adjustForElapsed: Bool = true) -> TimeInterval {
         if wasRunning, adjustForElapsed {
-            let elapsed = Date().timeIntervalSince(savedAt)
+            let elapsed: TimeInterval = Date().timeIntervalSince(savedAt)
             return max(0, remainingSeconds - elapsed)
         }
         return remainingSeconds

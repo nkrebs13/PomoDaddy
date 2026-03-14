@@ -32,7 +32,6 @@ final class SessionCoordinator: SessionCoordinating {
         self.sessionRecorder = sessionRecorder
     }
 
-
     // MARK: - Session Management
 
     /// Starts tracking a work session.

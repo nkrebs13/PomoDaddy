@@ -6,6 +6,7 @@
 //
 
 import os.log
+import SwiftData
 import SwiftUI
 
 // MARK: - Menu Popover View
@@ -27,7 +28,7 @@ struct MenuPopoverView: View {
     @Bindable var coordinator: AppCoordinator
 
     /// The model context for creating StatsCalculator.
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext: ModelContext
 
     /// Whether the settings section is expanded.
     @State private var showingSettings = false
@@ -183,7 +184,10 @@ struct MenuPopoverView: View {
                 // Background track
                 Circle()
                     .stroke(accentColor.opacity(0.2), lineWidth: 8)
-                    .frame(width: AppConstants.MenuPopover.timerRingSize, height: AppConstants.MenuPopover.timerRingSize)
+                    .frame(
+                        width: AppConstants.MenuPopover.timerRingSize,
+                        height: AppConstants.MenuPopover.timerRingSize
+                    )
 
                 // Progress ring
                 Circle()
@@ -195,7 +199,10 @@ struct MenuPopoverView: View {
                             lineCap: .round
                         )
                     )
-                    .frame(width: AppConstants.MenuPopover.timerRingSize, height: AppConstants.MenuPopover.timerRingSize)
+                    .frame(
+                        width: AppConstants.MenuPopover.timerRingSize,
+                        height: AppConstants.MenuPopover.timerRingSize
+                    )
                     .rotationEffect(.degrees(-90))
                     .animation(.timerTick, value: progress)
 
@@ -211,7 +218,9 @@ struct MenuPopoverView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(timerState.displayName), \(formattedTime) remaining, \(Int(progress * 100)) percent complete")
+            .accessibilityLabel(
+                "\(timerState.displayName), \(formattedTime) remaining, \(Int(progress * 100)) percent complete"
+            )
             .accessibilityAddTraits(.updatesFrequently)
             .padding(.vertical, 8)
         }
@@ -294,7 +303,9 @@ struct MenuPopoverView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(completedPomodoros) of \(pomodorosUntilLongBreak) pomodoros completed in current cycle")
+            .accessibilityLabel(
+                "\(completedPomodoros) of \(pomodorosUntilLongBreak) pomodoros completed in current cycle"
+            )
         }
     }
 

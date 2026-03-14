@@ -80,7 +80,7 @@ actor SessionRecorder: SessionRecording {
         // Only count completed sessions in stats
         guard session.wasCompleted else { return }
 
-        let calendarDay = session.calendarDay
+        let calendarDay: Date = session.calendarDay
 
         // Try to find existing stats for this day
         var descriptor = FetchDescriptor<DailyStats>(
@@ -88,7 +88,7 @@ actor SessionRecorder: SessionRecording {
         )
         descriptor.fetchLimit = 1
 
-        let existingStats = try modelContext.fetch(descriptor)
+        let existingStats: [DailyStats] = try modelContext.fetch(descriptor)
 
         let stats: DailyStats
         if let existing = existingStats.first {
@@ -110,7 +110,7 @@ actor SessionRecorder: SessionRecording {
     private func updateStreak(for date: Date) throws {
         // Get or create the user streak
         let descriptor = FetchDescriptor<UserStreak>()
-        let existingStreaks = try modelContext.fetch(descriptor)
+        let existingStreaks: [UserStreak] = try modelContext.fetch(descriptor)
 
         let streak: UserStreak
         if let existing = existingStreaks.first {
@@ -136,7 +136,7 @@ extension SessionRecorder {
     ///
     /// - Parameter sessions: The sessions to record.
     /// - Throws: Any SwiftData errors that occur during the save operation.
-    func recordBatch(_ entries: [(startDate: Date, endDate: Date, durationMinutes: Int, wasCompleted: Bool)]) throws {
+    func recordBatch(_ entries: [SessionEntry]) throws {
         // Cache DailyStats per calendar day to avoid re-fetching unsaved objects
         var dailyStatsCache: [Date: DailyStats] = [:]
 
@@ -151,7 +151,7 @@ extension SessionRecorder {
 
             guard session.wasCompleted else { continue }
 
-            let calendarDay = session.calendarDay
+            let calendarDay: Date = session.calendarDay
             let stats: DailyStats
             if let cached = dailyStatsCache[calendarDay] {
                 stats = cached
@@ -194,7 +194,7 @@ extension SessionRecorder {
 
         // Adjust daily stats if the session was completed
         if session.wasCompleted {
-            let calendarDay = session.calendarDay
+            let calendarDay: Date = session.calendarDay
 
             var descriptor = FetchDescriptor<DailyStats>(
                 predicate: DailyStats.forDate(calendarDay)

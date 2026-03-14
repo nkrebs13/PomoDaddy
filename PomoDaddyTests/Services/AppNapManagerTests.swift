@@ -124,7 +124,6 @@ final class AppNapManagerTests: XCTestCase {
         XCTAssertFalse(appNapManager.isTimingActivityActive)
     }
 
-
     // MARK: - Integration Tests
 
     func testTimerSimulation() async {

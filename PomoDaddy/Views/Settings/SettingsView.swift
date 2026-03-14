@@ -15,7 +15,7 @@ struct SettingsView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) private var dismiss: DismissAction
 
     // MARK: - Body
 
@@ -164,20 +164,23 @@ struct SettingsView: View {
 
                 // Reset Section
                 SettingsSection(title: "Reset") {
-                    Button(action: {
-                        withAnimation(.modeTransition) {
-                            coordinator.settingsManager.resetToDefaults()
+                    Button(
+                        action: {
+                            withAnimation(.modeTransition) {
+                                coordinator.settingsManager.resetToDefaults()
+                            }
+                        },
+                        label: {
+                            HStack {
+                                Image(systemName: "arrow.counterclockwise")
+                                    .foregroundStyle(.secondary)
+                                Text("Reset to Defaults")
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                            }
+                            .padding(.vertical, 8)
                         }
-                    }) {
-                        HStack {
-                            Image(systemName: "arrow.counterclockwise")
-                                .foregroundStyle(.secondary)
-                            Text("Reset to Defaults")
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                        }
-                        .padding(.vertical, 8)
-                    }
+                    )
                     .buttonStyle(.plain)
                 }
 
@@ -189,9 +192,11 @@ struct SettingsView: View {
                         Text("PomoDaddy")
                             .fontWeight(.medium)
                         Spacer()
-                        Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")")
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
+                        Text(
+                            "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")"
+                        )
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
                     }
                     .padding(.vertical, 4)
                 }
@@ -207,7 +212,9 @@ struct SettingsView: View {
     /// Header section with back button and title.
     private var headerSection: some View {
         HStack {
-            Button(action: { dismiss() }) {
+            Button {
+                dismiss()
+            } label: {
                 HStack(spacing: 4) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 12, weight: .semibold))
@@ -243,7 +250,7 @@ struct SettingsView: View {
 
     /// Checks if the given preset matches the current settings.
     private func isPresetSelected(_ preset: SettingsPreset) -> Bool {
-        let current = coordinator.settingsManager.settings
+        let current: PomodoroSettings = coordinator.settingsManager.settings
         let target: PomodoroSettings = switch preset {
         case .classic: .classic
         case .extendedFocus: .extendedFocus

@@ -57,7 +57,7 @@ final class AppCoordinator {
 
     /// Creates a new AppCoordinator, initializing all dependencies.
     convenience init() {
-        let modelContainer = PomodoroDataContainer.create()
+        let modelContainer: ModelContainer = PomodoroDataContainer.create()
         let settingsManager = SettingsManager()
         let timerEngine = TimerEngine()
         let sessionRecorder = SessionRecorder(modelContainer: modelContainer)

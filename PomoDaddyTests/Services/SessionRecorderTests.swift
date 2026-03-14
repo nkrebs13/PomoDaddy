@@ -99,11 +99,11 @@ final class SessionRecorderTests: XCTestCase {
     func testRecordMultipleSessions() async throws {
         // Use noon to avoid midnight boundary issues
         let calendar = Calendar.current
-        let startDate = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+        let startDate = try XCTUnwrap(calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()))
 
         // Record 3 sessions
-        for i in 0 ..< 3 {
-            let sessionStart = startDate.addingTimeInterval(TimeInterval(i * 30 * 60))
+        for index in 0 ..< 3 {
+            let sessionStart = startDate.addingTimeInterval(TimeInterval(index * 30 * 60))
             let sessionEnd = sessionStart.addingTimeInterval(25 * 60)
 
             try await sessionRecorder.record(
@@ -168,11 +168,11 @@ final class SessionRecorderTests: XCTestCase {
     func testRecordBatch() async throws {
         // Use a fixed date at noon to avoid midnight boundary issues
         let calendar = Calendar.current
-        let noon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
-        let entries: [(startDate: Date, endDate: Date, durationMinutes: Int, wasCompleted: Bool)] = (0 ..< 5).map { i in
-            let sessionStart = noon.addingTimeInterval(TimeInterval(i * 30 * 60))
+        let noon = try XCTUnwrap(calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()))
+        let entries: [SessionEntry] = (0 ..< 5).map { index in
+            let sessionStart = noon.addingTimeInterval(TimeInterval(index * 30 * 60))
             let sessionEnd = sessionStart.addingTimeInterval(25 * 60)
-            return (startDate: sessionStart, endDate: sessionEnd, durationMinutes: 25, wasCompleted: true)
+            return SessionEntry(startDate: sessionStart, endDate: sessionEnd, durationMinutes: 25, wasCompleted: true)
         }
 
         try await sessionRecorder.recordBatch(entries)
@@ -243,10 +243,10 @@ final class SessionRecorderTests: XCTestCase {
     func testDeleteSessionAdjustsStats() async throws {
         // Use noon to avoid midnight boundary issues
         let calendar = Calendar.current
-        let startDate = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+        let startDate = try XCTUnwrap(calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date()))
 
-        for i in 0 ..< 3 {
-            let sessionStart = startDate.addingTimeInterval(TimeInterval(i * 30 * 60))
+        for index in 0 ..< 3 {
+            let sessionStart = startDate.addingTimeInterval(TimeInterval(index * 30 * 60))
             let sessionEnd = sessionStart.addingTimeInterval(25 * 60)
 
             try await sessionRecorder.record(

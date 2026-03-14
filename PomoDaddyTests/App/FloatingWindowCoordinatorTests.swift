@@ -47,9 +47,9 @@ final class FloatingWindowCoordinatorTests: XCTestCase {
         XCTAssertEqual(mockCoordinator.savePositionCallCount, 1)
     }
 
-    func testSetAppCoordinatorIncrementsCallCount() {
-        let persistence = StateMachinePersistence(
-            defaults: UserDefaults(suiteName: "test.fwc.\(UUID())")!
+    func testSetAppCoordinatorIncrementsCallCount() throws {
+        let persistence = try StateMachinePersistence(
+            defaults: XCTUnwrap(UserDefaults(suiteName: "test.fwc.\(UUID())"))
         )
         let coordinator = AppCoordinator(
             modelContainer: TestHelpers.createTestContainer(),

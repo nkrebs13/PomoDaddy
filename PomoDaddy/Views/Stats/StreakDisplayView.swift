@@ -18,7 +18,7 @@ struct StreakDisplayView: View {
     // MARK: - Properties
 
     @Bindable var coordinator: AppCoordinator
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var modelContext: ModelContext
 
     @State private var streakDays = 0
     @State private var longestStreak = 0

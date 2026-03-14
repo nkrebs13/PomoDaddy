@@ -132,8 +132,8 @@ struct TimerRingView: View {
 
     /// Formats remaining seconds as MM:SS.
     private func formatTime(_ seconds: Int) -> String {
-        let minutes = seconds / 60
-        let secs = seconds % 60
+        let minutes: Int = seconds / 60
+        let secs: Int = seconds % 60
         return String(format: "%02d:%02d", minutes, secs)
     }
 }

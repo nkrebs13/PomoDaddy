@@ -161,23 +161,23 @@ extension TimerState: Codable {
     }
 
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let type = try container.decode(StateType.self, forKey: .type)
+        let container: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
+        let type: StateType = try container.decode(StateType.self, forKey: .type)
 
         switch type {
         case .idle:
             self = .idle
         case .running:
-            let intervalType = try container.decode(IntervalType.self, forKey: .intervalType)
+            let intervalType: IntervalType = try container.decode(IntervalType.self, forKey: .intervalType)
             self = .running(intervalType)
         case .paused:
-            let intervalType = try container.decode(IntervalType.self, forKey: .intervalType)
+            let intervalType: IntervalType = try container.decode(IntervalType.self, forKey: .intervalType)
             self = .paused(intervalType)
         }
     }
 
     func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container: KeyedEncodingContainer<CodingKeys> = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
         case .idle:

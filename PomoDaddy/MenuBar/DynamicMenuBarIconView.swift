@@ -72,7 +72,7 @@ final class DynamicMenuBarIconView: NSView {
         guard let coordinator else { return }
 
         let content = MenuBarIconContent(coordinator: coordinator)
-        let hosting = NSHostingView(rootView: content)
+        let hosting: NSHostingView<MenuBarIconContent> = NSHostingView(rootView: content)
         hosting.frame = bounds
         hosting.autoresizingMask = [.width, .height]
 

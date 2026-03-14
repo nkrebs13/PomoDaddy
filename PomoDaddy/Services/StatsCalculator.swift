@@ -26,15 +26,6 @@ struct StatsCalculator: StatsCalculating {
     /// The model context used for queries.
     let modelContext: ModelContext
 
-    // MARK: - Initialization
-
-    /// Creates a new stats calculator.
-    ///
-    /// - Parameter modelContext: The SwiftData model context to query.
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
-    }
-
     // MARK: - Daily Stats
 
     /// Returns the daily statistics for today, if any exist.
@@ -42,7 +33,7 @@ struct StatsCalculator: StatsCalculating {
     /// - Returns: The `DailyStats` for today, or `nil` if no sessions were recorded.
     /// - Throws: Any SwiftData fetch errors.
     func todayStats() throws -> DailyStats? {
-        let today = Calendar.current.startOfDay(for: Date())
+        let today: Date = Calendar.current.startOfDay(for: Date())
 
         var descriptor = FetchDescriptor<DailyStats>(
             predicate: DailyStats.forDate(today)
@@ -74,7 +65,7 @@ struct StatsCalculator: StatsCalculating {
     /// - Returns: The `DailyStats` for that date, or `nil` if no sessions were recorded.
     /// - Throws: Any SwiftData fetch errors.
     func stats(for date: Date) throws -> DailyStats? {
-        let targetDay = Calendar.current.startOfDay(for: date)
+        let targetDay: Date = Calendar.current.startOfDay(for: date)
 
         var descriptor = FetchDescriptor<DailyStats>(
             predicate: DailyStats.forDate(targetDay)
@@ -95,7 +86,7 @@ struct StatsCalculator: StatsCalculating {
     /// - Throws: Any SwiftData fetch errors.
     func weeklyTrend() throws -> [DailyStats] {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
+        let today: Date = calendar.startOfDay(for: Date())
 
         guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: today) else {
             return []
@@ -146,11 +137,11 @@ struct StatsCalculator: StatsCalculating {
     /// - Returns: A `WeeklySummary` containing aggregated statistics.
     /// - Throws: Any SwiftData fetch errors.
     func weeklySummary() throws -> WeeklySummary {
-        let dailyStats = try weeklyTrend()
+        let dailyStats: [DailyStats] = try weeklyTrend()
 
-        let totalMinutes = dailyStats.reduce(0) { $0 + $1.totalFocusMinutes }
-        let totalPomodoros = dailyStats.reduce(0) { $0 + $1.completedPomodoros }
-        let activeDays = dailyStats.filter { $0.completedPomodoros > 0 }.count
+        let totalMinutes: Int = dailyStats.reduce(0) { $0 + $1.totalFocusMinutes }
+        let totalPomodoros: Int = dailyStats.reduce(0) { $0 + $1.completedPomodoros }
+        let activeDays: Int = dailyStats.filter { $0.completedPomodoros > 0 }.count
 
         return WeeklySummary(
             totalFocusMinutes: totalMinutes,
@@ -290,11 +281,11 @@ extension StatsCalculator {
             sortBy: [DailyStats.chronologicalSort]
         )
 
-        let dailyStats = try modelContext.fetch(descriptor)
+        let dailyStats: [DailyStats] = try modelContext.fetch(descriptor)
 
-        let totalMinutes = dailyStats.reduce(0) { $0 + $1.totalFocusMinutes }
-        let totalPomodoros = dailyStats.reduce(0) { $0 + $1.completedPomodoros }
-        let activeDays = dailyStats.filter { $0.completedPomodoros > 0 }.count
+        let totalMinutes: Int = dailyStats.reduce(0) { $0 + $1.totalFocusMinutes }
+        let totalPomodoros: Int = dailyStats.reduce(0) { $0 + $1.completedPomodoros }
+        let activeDays: Int = dailyStats.filter { $0.completedPomodoros > 0 }.count
 
         return MonthlySummary(
             month: monthStart,

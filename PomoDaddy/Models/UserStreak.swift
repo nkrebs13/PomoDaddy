@@ -50,10 +50,10 @@ final class UserStreak {
     var daysSinceLastActivity: Int {
         guard let lastActive = lastActiveDate else { return -1 }
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        let lastDay = calendar.startOfDay(for: lastActive)
+        let today: Date = calendar.startOfDay(for: Date())
+        let lastDay: Date = calendar.startOfDay(for: lastActive)
 
-        let components = calendar.dateComponents([.day], from: lastDay, to: today)
+        let components: DateComponents = calendar.dateComponents([.day], from: lastDay, to: today)
         return components.day ?? 0
     }
 
@@ -80,7 +80,7 @@ final class UserStreak {
     /// - Parameter date: The date of the activity (defaults to now).
     func recordActivity(on date: Date = Date()) {
         let calendar = Calendar.current
-        let activityDay = calendar.startOfDay(for: date)
+        let activityDay: Date = calendar.startOfDay(for: date)
 
         // If no previous activity, start the streak
         guard let lastActive = lastActiveDate else {
@@ -90,7 +90,7 @@ final class UserStreak {
             return
         }
 
-        let lastActiveDay = calendar.startOfDay(for: lastActive)
+        let lastActiveDay: Date = calendar.startOfDay(for: lastActive)
 
         // Already recorded activity for this day
         if calendar.isDate(activityDay, inSameDayAs: lastActiveDay) {
@@ -98,7 +98,8 @@ final class UserStreak {
         }
 
         // Check if this is the next consecutive day
-        let daysDifference = calendar.dateComponents([.day], from: lastActiveDay, to: activityDay).day ?? 0
+        let daysDifference: Int =
+            calendar.dateComponents([.day], from: lastActiveDay, to: activityDay).day ?? 0
 
         if daysDifference == 1 {
             // Consecutive day - extend the streak
@@ -121,10 +122,10 @@ final class UserStreak {
         guard let lastActive = lastActiveDate else { return }
 
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        let lastActiveDay = calendar.startOfDay(for: lastActive)
+        let today: Date = calendar.startOfDay(for: Date())
+        let lastActiveDay: Date = calendar.startOfDay(for: lastActive)
 
-        let daysDifference = calendar.dateComponents([.day], from: lastActiveDay, to: today).day ?? 0
+        let daysDifference: Int = calendar.dateComponents([.day], from: lastActiveDay, to: today).day ?? 0
 
         // If more than 1 day has passed, the streak is broken
         if daysDifference > 1 {
@@ -149,7 +150,7 @@ extension UserStreak {
     @MainActor
     static func current(in context: ModelContext) throws -> UserStreak {
         let descriptor = FetchDescriptor<UserStreak>()
-        let existing = try context.fetch(descriptor)
+        let existing: [UserStreak] = try context.fetch(descriptor)
 
         if let streak = existing.first {
             // Validate streak on access

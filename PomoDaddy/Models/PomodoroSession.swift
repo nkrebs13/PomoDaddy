@@ -37,7 +37,7 @@ final class PomodoroSession {
 
     /// The actual duration of the session in minutes.
     var actualDurationMinutes: Int {
-        let interval = endDate.timeIntervalSince(startDate)
+        let interval: TimeInterval = endDate.timeIntervalSince(startDate)
         return Int(interval / 60)
     }
 
@@ -84,7 +84,7 @@ extension PomodoroSession {
     /// Predicate for sessions on a specific calendar day.
     static func onDay(_ date: Date) -> Predicate<PomodoroSession> {
         let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: date)
+        let startOfDay: Date = calendar.startOfDay(for: date)
         guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
             // Calendar arithmetic should never fail, but handle defensively
             return #Predicate<PomodoroSession> { _ in false }

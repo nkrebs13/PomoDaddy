@@ -162,7 +162,7 @@ final class StatusBarController {
 
         // Update accessibility label
         if let coordinator {
-            let state = coordinator.stateMachine.currentState
+            let state: TimerState = coordinator.stateMachine.currentState
             statusItem.button?.setAccessibilityLabel("PomoDaddy: \(state.displayName)")
         }
     }
@@ -226,7 +226,7 @@ final class StatusBarController {
 
         // Quick actions
         if let coordinator {
-            let state = coordinator.stateMachine.currentState
+            let state: TimerState = coordinator.stateMachine.currentState
 
             if state.isRunning {
                 menu.addItem(NSMenuItem(title: "Pause", action: #selector(pauseTimer), keyEquivalent: ""))
