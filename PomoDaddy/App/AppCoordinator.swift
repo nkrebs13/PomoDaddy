@@ -319,7 +319,7 @@ final class AppCoordinator {
                 )
             }
 
-            saveState()
+            // Note: saveState() is handled by onStateChange to avoid redundant persists
         }
 
         // Break completion callback
@@ -334,13 +334,12 @@ final class AppCoordinator {
                 )
             }
 
-            saveState()
+            // Note: saveState() is handled by onStateChange to avoid redundant persists
         }
 
-        // Cycle completion callback
-        stateMachine.onCycleComplete = { [weak self] _ in
-            self?.saveState()
-        }
+        // Cycle completion callback — no additional work needed;
+        // onStateChange handles persistence for all transitions.
+        stateMachine.onCycleComplete = { _ in }
 
         // State change callback - manage App Nap
         stateMachine.onStateChange = { [weak self] _, newState in

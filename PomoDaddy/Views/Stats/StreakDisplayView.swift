@@ -69,8 +69,13 @@ struct StreakDisplayView: View {
     private func loadStreakData() {
         do {
             let calculator = StatsCalculator(modelContext: modelContext)
-            streakDays = try calculator.currentStreakDays()
-            longestStreak = try calculator.longestStreakDays()
+            if let streak = try calculator.currentStreak() {
+                streakDays = streak.currentStreakDays
+                longestStreak = streak.longestStreakDays
+            } else {
+                streakDays = 0
+                longestStreak = 0
+            }
         } catch {
             Logger.logError(error, context: "Failed to load streak data", log: Logger.stats)
             streakDays = 0

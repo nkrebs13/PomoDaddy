@@ -172,8 +172,9 @@ struct DailyFocusView: View {
     private func loadTodayStats() {
         do {
             let calculator = StatsCalculator(modelContext: modelContext)
-            focusMinutes = try calculator.todayFocusMinutes()
-            completedPomodoros = try calculator.todayCompletedPomodoros()
+            let stats = try calculator.todayStats()
+            focusMinutes = stats?.totalFocusMinutes ?? 0
+            completedPomodoros = stats?.completedPomodoros ?? 0
         } catch {
             Logger.logError(error, context: "Failed to load today's stats", log: Logger.stats)
             focusMinutes = 0

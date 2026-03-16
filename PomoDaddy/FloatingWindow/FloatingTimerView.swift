@@ -135,24 +135,16 @@ struct FloatingTimerView: View {
     }
 
     /// Returns the appropriate gradient based on current timer state.
+    /// Idle uses a subtle gray gradient for the floating window background tint.
     private var stateGradient: LinearGradient {
-        switch coordinator.currentState {
-        case .idle:
-            LinearGradient(
-                colors: [.gray.opacity(0.3), .gray.opacity(0.1)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        case .running(let type), .paused(let type):
-            switch type {
-            case .work:
-                .focusGradient
-            case .shortBreak:
-                .breakGradient
-            case .longBreak:
-                .longBreakGradient
-            }
+        if coordinator.currentState.isActive {
+            return coordinator.currentState.gradient
         }
+        return LinearGradient(
+            colors: [.gray.opacity(0.3), .gray.opacity(0.1)],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
     }
 
     // MARK: - Timer Display View
@@ -199,19 +191,7 @@ struct FloatingTimerView: View {
 
     /// Returns the accent color based on current state.
     private var currentAccentColor: Color {
-        switch coordinator.currentState {
-        case .idle:
-            .gray
-        case .running(let type), .paused(let type):
-            switch type {
-            case .work:
-                .tomatoRed
-            case .shortBreak:
-                .mint
-            case .longBreak:
-                .lavender
-            }
-        }
+        coordinator.currentState.accentColor
     }
 
     // MARK: - Control Buttons View

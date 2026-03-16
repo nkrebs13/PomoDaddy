@@ -306,13 +306,14 @@ final class PomodoroStateMachine {
     }
 
     private func resetDailyCountIfNeeded() {
-        let today: Date = Calendar.current.startOfDay(for: Date())
-
-        if let lastReset: Date = lastResetDate, !Calendar.current.isDate(lastReset, inSameDayAs: today) {
-            totalCompletedToday = 0
-            completedPomodorosInCycle = 0
-            lastResetDate = today
-        }
+        guard let lastReset: Date = lastResetDate else { return }
+        // Fast path: skip Calendar arithmetic when still on the same day
+        let now = Date()
+        guard !Calendar.current.isDate(lastReset, inSameDayAs: now) else { return }
+        let today: Date = Calendar.current.startOfDay(for: now)
+        totalCompletedToday = 0
+        completedPomodorosInCycle = 0
+        lastResetDate = today
     }
 
     // MARK: - Persistence

@@ -90,14 +90,7 @@ struct MenuPopoverView: View {
 
     /// Accent gradient for the current state.
     private var accentGradient: LinearGradient {
-        switch timerState {
-        case .idle, .running(.work), .paused(.work):
-            .focusGradient
-        case .running(.shortBreak), .paused(.shortBreak):
-            .breakGradient
-        case .running(.longBreak), .paused(.longBreak):
-            .longBreakGradient
-        }
+        timerState.gradient
     }
 
     // MARK: - Body

@@ -11,10 +11,7 @@ final class StatsCalculatorTests: XCTestCase {
     override func setUp() async throws {
         try await super.setUp()
 
-        // Create in-memory container for testing
-        let schema = Schema([DailyStats.self, UserStreak.self, PomodoroSession.self])
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: schema, configurations: [config])
+        container = TestHelpers.createTestContainer()
         context = container.mainContext
         calculator = StatsCalculator(modelContext: context)
     }

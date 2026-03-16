@@ -84,12 +84,9 @@ final class DynamicMenuBarIconView: NSView {
 
     /// Updates the icon view to reflect current state.
     func update() {
-        // Invalidate intrinsic content size to trigger relayout
+        // Invalidate intrinsic content size to trigger relayout.
+        // rootView replacement is unnecessary — @Observable drives re-renders automatically.
         invalidateIntrinsicContentSize()
-
-        // Update the hosting view's root view
-        guard let coordinator else { return }
-        hostingView?.rootView = MenuBarIconContent(coordinator: coordinator)
     }
 }
 
@@ -134,20 +131,9 @@ struct MenuBarIconContent: View {
     }
 
     /// The accent color for the current state.
+    /// Menu bar tomato stays red even when idle (unlike floating window which grays out).
     private var accentColor: Color {
-        switch timerState {
-        case .idle:
-            .tomatoRed
-        case .running(let type), .paused(let type):
-            switch type {
-            case .work:
-                .tomatoRed
-            case .shortBreak:
-                .mint
-            case .longBreak:
-                .lavender
-            }
-        }
+        timerState.isActive ? timerState.accentColor : .tomatoRed
     }
 
     /// The background track color.
