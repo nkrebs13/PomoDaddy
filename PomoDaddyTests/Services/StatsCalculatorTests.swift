@@ -199,4 +199,137 @@ final class StatsCalculatorTests: XCTestCase {
         _ = try calculator.todayStats()
         _ = try calculator.weeklyTrend()
     }
+
+    // MARK: - Edge Case Tests
+
+    func testTodayCompletedPomodorosReturnsZeroWithNoData() throws {
+        let count = try calculator.todayCompletedPomodoros()
+        XCTAssertEqual(count, 0)
+    }
+
+    func testStatsForSpecificDateReturnsNilWhenNoData() throws {
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let stats = try calculator.stats(for: yesterday)
+        XCTAssertNil(stats)
+    }
+
+    func testStatsForSpecificDateReturnsCorrectData() throws {
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let yesterdayStart = Calendar.current.startOfDay(for: yesterday)
+        let dailyStats = DailyStats(date: yesterdayStart)
+        dailyStats.recordPomodoro(durationMinutes: 25)
+        dailyStats.recordPomodoro(durationMinutes: 25)
+        context.insert(dailyStats)
+        try context.save()
+
+        let stats = try calculator.stats(for: yesterday)
+        XCTAssertNotNil(stats)
+        XCTAssertEqual(stats?.completedPomodoros, 2)
+        XCTAssertEqual(stats?.totalFocusMinutes, 50)
+    }
+
+    func testTotalCompletedSessionsReturnsZeroWithNoData() throws {
+        let count = try calculator.totalCompletedSessions()
+        XCTAssertEqual(count, 0)
+    }
+
+    func testTotalCompletedSessionsCountsOnlyCompleted() throws {
+        let now = Date()
+
+        // Create a completed session
+        let completed = PomodoroSession(
+            startDate: now.addingTimeInterval(-1500),
+            endDate: now,
+            durationMinutes: 25,
+            wasCompleted: true
+        )
+        context.insert(completed)
+
+        // Create an incomplete session
+        let incomplete = PomodoroSession(
+            startDate: now.addingTimeInterval(-600),
+            endDate: now,
+            durationMinutes: 25,
+            wasCompleted: false
+        )
+        context.insert(incomplete)
+        try context.save()
+
+        let count = try calculator.totalCompletedSessions()
+        XCTAssertEqual(count, 1)
+    }
+
+    func testTodaySessionsReturnsOnlyTodaySessions() throws {
+        let now = Date()
+
+        // Today's session
+        let todaySession = PomodoroSession(
+            startDate: now.addingTimeInterval(-1500),
+            endDate: now,
+            durationMinutes: 25,
+            wasCompleted: true
+        )
+        context.insert(todaySession)
+
+        // Yesterday's session
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+        let yesterdaySession = PomodoroSession(
+            startDate: yesterday,
+            endDate: yesterday.addingTimeInterval(1500),
+            durationMinutes: 25,
+            wasCompleted: true
+        )
+        context.insert(yesterdaySession)
+        try context.save()
+
+        let sessions = try calculator.todaySessions()
+        XCTAssertEqual(sessions.count, 1)
+    }
+
+    func testCurrentStreakDaysReturnsZeroWithNoStreak() throws {
+        let days = try calculator.currentStreakDays()
+        XCTAssertEqual(days, 0)
+    }
+
+    func testLongestStreakDaysReturnsZeroWithNoStreak() throws {
+        let days = try calculator.longestStreakDays()
+        XCTAssertEqual(days, 0)
+    }
+
+    func testSessionsInDateRangeReturnsCorrectResults() throws {
+        let now = Date()
+        let twoDaysAgo = Calendar.current.date(byAdding: .day, value: -2, to: now)!
+
+        let session = PomodoroSession(
+            startDate: now.addingTimeInterval(-1500),
+            endDate: now,
+            durationMinutes: 25,
+            wasCompleted: true
+        )
+        context.insert(session)
+        try context.save()
+
+        let sessions = try calculator.sessions(from: twoDaysAgo, to: now)
+        XCTAssertEqual(sessions.count, 1)
+    }
+
+    func testSessionsInDateRangeExcludesOutOfRange() throws {
+        let now = Date()
+        let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: now)!
+        let twoDaysAgo = Calendar.current.date(byAdding: .day, value: -2, to: now)!
+
+        // Session from 3 days ago
+        let oldSession = PomodoroSession(
+            startDate: threeDaysAgo,
+            endDate: threeDaysAgo.addingTimeInterval(1500),
+            durationMinutes: 25,
+            wasCompleted: true
+        )
+        context.insert(oldSession)
+        try context.save()
+
+        // Query only last 1 day
+        let sessions = try calculator.sessions(from: twoDaysAgo, to: now)
+        XCTAssertEqual(sessions.count, 0)
+    }
 }

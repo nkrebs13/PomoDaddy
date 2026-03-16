@@ -52,7 +52,7 @@ A macOS menu bar Pomodoro timer app with playful design, stats tracking, and cel
 - **Persistence isolation**: Always use `UserDefaults(suiteName: "test.<context>.\(UUID())")` — never `.standard`
 - **SwiftData isolation**: Use `ModelContainer` with `isStoredInMemoryOnly: true`
 - **Async assertions**: Use `assertEventually(timeout:)` for async test verification
-- **Coverage threshold**: 35% (whole-app including untestable SwiftUI views; core/services coverage is 85%+)
+- **Coverage threshold**: 39% (whole-app including untestable SwiftUI views; core/services coverage is 85%+)
 
 ## Key Files
 

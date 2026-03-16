@@ -256,4 +256,57 @@ final class SettingsManagerTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(settingsManager.settings.workDurationMinutes, 20)
         XCTAssertLessThanOrEqual(settingsManager.settings.workDurationMinutes, 30)
     }
+
+    // MARK: - onChange Callback Tests
+
+    func testOnChangeCallbackFiresOnSettingChange() {
+        var callbackCount = 0
+        settingsManager.onChange = { callbackCount += 1 }
+
+        settingsManager.setWorkDuration(minutes: 30)
+
+        XCTAssertGreaterThan(callbackCount, 0)
+    }
+
+    func testOnChangeCallbackNotSetDoesNotCrash() {
+        // onChange is nil by default, setting changes should not crash
+        settingsManager.onChange = nil
+        settingsManager.setWorkDuration(minutes: 30)
+        XCTAssertEqual(settingsManager.settings.workDurationMinutes, 30)
+    }
+
+    // MARK: - Individual Setter Tests
+
+    func testSetWorkDurationUpdatesAndPersists() {
+        settingsManager.setWorkDuration(minutes: 45)
+        XCTAssertEqual(settingsManager.settings.workDurationMinutes, 45)
+
+        // Verify persistence
+        let reloaded = SettingsManager(defaults: mockDefaults)
+        XCTAssertEqual(reloaded.settings.workDurationMinutes, 45)
+    }
+
+    func testSetShortBreakDurationUpdatesAndPersists() {
+        settingsManager.setShortBreakDuration(minutes: 10)
+        XCTAssertEqual(settingsManager.settings.shortBreakDurationMinutes, 10)
+
+        let reloaded = SettingsManager(defaults: mockDefaults)
+        XCTAssertEqual(reloaded.settings.shortBreakDurationMinutes, 10)
+    }
+
+    func testSetLongBreakDurationUpdatesAndPersists() {
+        settingsManager.setLongBreakDuration(minutes: 20)
+        XCTAssertEqual(settingsManager.settings.longBreakDurationMinutes, 20)
+
+        let reloaded = SettingsManager(defaults: mockDefaults)
+        XCTAssertEqual(reloaded.settings.longBreakDurationMinutes, 20)
+    }
+
+    func testSetPomodorosUntilLongBreakUpdatesAndPersists() {
+        settingsManager.setPomodorosUntilLongBreak(count: 6)
+        XCTAssertEqual(settingsManager.settings.pomodorosUntilLongBreak, 6)
+
+        let reloaded = SettingsManager(defaults: mockDefaults)
+        XCTAssertEqual(reloaded.settings.pomodorosUntilLongBreak, 6)
+    }
 }

@@ -58,11 +58,11 @@ jobs:
             fi
             if [ ! -z "$COVERAGE" ]; then
               echo "Coverage: $COVERAGE%"
-              if (( $(echo "$COVERAGE < 35" | bc -l) )); then
-                echo "❌ FAIL: Coverage $COVERAGE% is below minimum threshold of 35%"
+              if (( $(echo "$COVERAGE < 39" | bc -l) )); then
+                echo "❌ FAIL: Coverage $COVERAGE% is below minimum threshold of 39%"
                 exit 1
               else
-                echo "✅ Coverage check passed: $COVERAGE% (threshold: 35%)"
+                echo "✅ Coverage check passed: $COVERAGE% (threshold: 39%)"
               fi
             else
               echo "⚠️ Could not parse coverage — skipping check"
