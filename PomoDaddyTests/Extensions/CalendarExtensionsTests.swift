@@ -41,8 +41,10 @@ final class CalendarExtensionsTests: XCTestCase {
         let dates = Calendar.dateRange(days: 5)
 
         for index in 1 ..< dates.count {
-            XCTAssertTrue(dates[index] > dates[index - 1],
-                          "Date at index \(index) should be after date at index \(index - 1)")
+            XCTAssertTrue(
+                dates[index] > dates[index - 1],
+                "Date at index \(index) should be after date at index \(index - 1)"
+            )
         }
     }
 

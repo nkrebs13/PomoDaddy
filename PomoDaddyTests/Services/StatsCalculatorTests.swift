@@ -205,13 +205,13 @@ final class StatsCalculatorTests: XCTestCase {
     }
 
     func testStatsForSpecificDateReturnsNilWhenNoData() throws {
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let yesterday = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: -1, to: Date()))
         let stats = try calculator.stats(for: yesterday)
         XCTAssertNil(stats)
     }
 
     func testStatsForSpecificDateReturnsCorrectData() throws {
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let yesterday = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: -1, to: Date()))
         let yesterdayStart = Calendar.current.startOfDay(for: yesterday)
         let dailyStats = DailyStats(date: yesterdayStart)
         dailyStats.recordPomodoro(durationMinutes: 25)
@@ -269,7 +269,7 @@ final class StatsCalculatorTests: XCTestCase {
         context.insert(todaySession)
 
         // Yesterday's session
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+        let yesterday = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: -1, to: now))
         let yesterdaySession = PomodoroSession(
             startDate: yesterday,
             endDate: yesterday.addingTimeInterval(1500),
@@ -295,7 +295,7 @@ final class StatsCalculatorTests: XCTestCase {
 
     func testSessionsInDateRangeReturnsCorrectResults() throws {
         let now = Date()
-        let twoDaysAgo = Calendar.current.date(byAdding: .day, value: -2, to: now)!
+        let twoDaysAgo = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: -2, to: now))
 
         let session = PomodoroSession(
             startDate: now.addingTimeInterval(-1500),
@@ -312,8 +312,8 @@ final class StatsCalculatorTests: XCTestCase {
 
     func testSessionsInDateRangeExcludesOutOfRange() throws {
         let now = Date()
-        let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: now)!
-        let twoDaysAgo = Calendar.current.date(byAdding: .day, value: -2, to: now)!
+        let threeDaysAgo = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: -3, to: now))
+        let twoDaysAgo = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: -2, to: now))
 
         // Session from 3 days ago
         let oldSession = PomodoroSession(
