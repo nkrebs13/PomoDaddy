@@ -153,7 +153,7 @@ final class StatusBarController {
         // Update status item length based on whether time is shown
         if let coordinator,
            coordinator.isMenuBarCountdownVisible,
-           coordinator.stateMachine.currentState.isActive
+           coordinator.currentState.isActive
         {
             statusItem.length = NSStatusItem.variableLength
         } else {
@@ -162,7 +162,7 @@ final class StatusBarController {
 
         // Update accessibility label
         if let coordinator {
-            let state: TimerState = coordinator.stateMachine.currentState
+            let state: TimerState = coordinator.currentState
             statusItem.button?.setAccessibilityLabel("PomoDaddy: \(state.displayName)")
         }
     }
@@ -226,7 +226,7 @@ final class StatusBarController {
 
         // Quick actions
         if let coordinator {
-            let state: TimerState = coordinator.stateMachine.currentState
+            let state: TimerState = coordinator.currentState
 
             if state.isRunning {
                 menu.addItem(NSMenuItem(title: "Pause", action: #selector(pauseTimer), keyEquivalent: ""))

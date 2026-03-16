@@ -128,7 +128,7 @@ final class AppCoordinator {
 
         // Request notification authorization
         Task {
-            await notificationScheduler.requestAuthorization()
+            _ = await notificationScheduler.requestAuthorization()
             notificationScheduler.registerCategories()
         }
     }
@@ -190,6 +190,23 @@ final class AppCoordinator {
                 hideFloatingWindow()
             }
         }
+    }
+
+    /// The current user settings (read-only).
+    var settings: PomodoroSettings {
+        settingsManager.settings
+    }
+
+    /// Whether auto-start breaks is enabled.
+    var autoStartBreaks: Bool {
+        get { settingsManager.settings.autoStartBreaks }
+        set { settingsManager.setAutoStartBreaks(enabled: newValue) }
+    }
+
+    /// Whether auto-start work is enabled.
+    var autoStartWork: Bool {
+        get { settingsManager.settings.autoStartWork }
+        set { settingsManager.setAutoStartWork(enabled: newValue) }
     }
 
     /// Whether the menu bar countdown is visible.
@@ -302,7 +319,7 @@ final class AppCoordinator {
                 )
             }
 
-            saveState()
+            // Note: saveState() is handled by onStateChange to avoid redundant persists
         }
 
         // Break completion callback
@@ -317,13 +334,12 @@ final class AppCoordinator {
                 )
             }
 
-            saveState()
+            // Note: saveState() is handled by onStateChange to avoid redundant persists
         }
 
-        // Cycle completion callback
-        stateMachine.onCycleComplete = { [weak self] _ in
-            self?.saveState()
-        }
+        // Cycle completion callback — no additional work needed;
+        // onStateChange handles persistence for all transitions.
+        stateMachine.onCycleComplete = { _ in }
 
         // State change callback - manage App Nap
         stateMachine.onStateChange = { [weak self] _, newState in

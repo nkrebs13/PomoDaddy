@@ -43,32 +43,32 @@ struct MenuPopoverView: View {
 
     /// The current timer state.
     private var timerState: TimerState {
-        coordinator.stateMachine.currentState
+        coordinator.currentState
     }
 
     /// The current progress (0-1).
     private var progress: Double {
-        coordinator.stateMachine.progress
+        coordinator.progress
     }
 
     /// The formatted remaining time.
     private var formattedTime: String {
-        coordinator.stateMachine.formattedTime
+        coordinator.formattedTime
     }
 
     /// Number of completed pomodoros in the current cycle.
     private var completedPomodoros: Int {
-        coordinator.stateMachine.completedPomodorosInCycle
+        coordinator.completedPomodorosInCycle
     }
 
     /// Total pomodoros completed today.
     private var totalToday: Int {
-        coordinator.stateMachine.totalCompletedToday
+        coordinator.totalCompletedToday
     }
 
     /// Number of pomodoros until long break.
     private var pomodorosUntilLongBreak: Int {
-        coordinator.stateMachine.settings.pomodorosUntilLongBreak
+        coordinator.pomodorosUntilLongBreak
     }
 
     /// Accent color for the current state.
@@ -90,14 +90,7 @@ struct MenuPopoverView: View {
 
     /// Accent gradient for the current state.
     private var accentGradient: LinearGradient {
-        switch timerState {
-        case .idle, .running(.work), .paused(.work):
-            .focusGradient
-        case .running(.shortBreak), .paused(.shortBreak):
-            .breakGradient
-        case .running(.longBreak), .paused(.longBreak):
-            .longBreakGradient
-        }
+        timerState.gradient
     }
 
     // MARK: - Body
@@ -144,7 +137,7 @@ struct MenuPopoverView: View {
         .frame(width: AppConstants.MenuPopover.width)
         .padding()
         .onAppear { refreshFocusTime() }
-        .onChange(of: coordinator.stateMachine.totalCompletedToday) { _, _ in refreshFocusTime() }
+        .onChange(of: coordinator.totalCompletedToday) { _, _ in refreshFocusTime() }
     }
 
     // MARK: - Header Section
@@ -389,24 +382,14 @@ struct MenuPopoverView: View {
                     Divider()
 
                     // Auto-start breaks
-                    Toggle(isOn: Binding(
-                        get: { coordinator.settingsManager.settings.autoStartBreaks },
-                        set: {
-                            coordinator.settingsManager.setAutoStartBreaks(enabled: $0)
-                        }
-                    )) {
+                    Toggle(isOn: $coordinator.autoStartBreaks) {
                         Text("Auto-start Breaks")
                             .font(.subheadline)
                     }
                     .toggleStyle(.switch)
 
                     // Auto-start work
-                    Toggle(isOn: Binding(
-                        get: { coordinator.settingsManager.settings.autoStartWork },
-                        set: {
-                            coordinator.settingsManager.setAutoStartWork(enabled: $0)
-                        }
-                    )) {
+                    Toggle(isOn: $coordinator.autoStartWork) {
                         Text("Auto-start Work")
                             .font(.subheadline)
                     }

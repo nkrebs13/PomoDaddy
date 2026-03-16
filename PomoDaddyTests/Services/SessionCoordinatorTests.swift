@@ -16,7 +16,7 @@ final class SessionCoordinatorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        let modelContainer = PomodoroDataContainer.create()
+        let modelContainer = PomodoroDataContainer.createInMemory()
         recorder = SessionRecorder(modelContainer: modelContainer)
         coordinator = SessionCoordinator(sessionRecorder: recorder)
     }

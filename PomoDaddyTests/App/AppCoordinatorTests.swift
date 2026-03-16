@@ -209,4 +209,93 @@ final class AppCoordinatorTests: XCTestCase {
     func testFloatingWindowCoordinatorReceivesAppCoordinator() {
         XCTAssertEqual(mockFloatingWindowCoordinator.setAppCoordinatorCallCount, 1)
     }
+
+    // MARK: - Facade Properties
+
+    func testSettingsPropertyReturnsCurrent() {
+        XCTAssertEqual(coordinator.settings, mockSettingsManager.settings)
+    }
+
+    func testAutoStartBreaksGetterReflectsSettings() {
+        mockSettingsManager.update { $0.autoStartBreaks = true }
+        XCTAssertTrue(coordinator.autoStartBreaks)
+
+        mockSettingsManager.update { $0.autoStartBreaks = false }
+        XCTAssertFalse(coordinator.autoStartBreaks)
+    }
+
+    func testAutoStartBreaksSetterUpdatesSettings() {
+        coordinator.autoStartBreaks = true
+        XCTAssertTrue(mockSettingsManager.settings.autoStartBreaks)
+
+        coordinator.autoStartBreaks = false
+        XCTAssertFalse(mockSettingsManager.settings.autoStartBreaks)
+    }
+
+    func testAutoStartWorkGetterReflectsSettings() {
+        mockSettingsManager.update { $0.autoStartWork = true }
+        XCTAssertTrue(coordinator.autoStartWork)
+    }
+
+    func testAutoStartWorkSetterUpdatesSettings() {
+        coordinator.autoStartWork = true
+        XCTAssertTrue(mockSettingsManager.settings.autoStartWork)
+    }
+
+    func testCurrentIntervalTypeIsNilWhenIdle() {
+        XCTAssertNil(coordinator.currentIntervalType)
+    }
+
+    func testCurrentIntervalTypeIsWorkWhenRunning() {
+        coordinator.start()
+        XCTAssertEqual(coordinator.currentIntervalType, .work)
+    }
+
+    func testPomodorosUntilLongBreakReflectsSettings() {
+        XCTAssertEqual(coordinator.pomodorosUntilLongBreak, mockSettingsManager.settings.pomodorosUntilLongBreak)
+    }
+
+    func testIsMenuBarCountdownVisibleSetterUpdatesSettings() {
+        coordinator.isMenuBarCountdownVisible = false
+        XCTAssertFalse(mockSettingsManager.settings.showMenuBarCountdown)
+
+        coordinator.isMenuBarCountdownVisible = true
+        XCTAssertTrue(mockSettingsManager.settings.showMenuBarCountdown)
+    }
+
+    func testSaveStateSavesFloatingWindowPosition() {
+        coordinator.saveState()
+        XCTAssertEqual(mockFloatingWindowCoordinator.savePositionCallCount, 1)
+    }
+
+    func testRestoreStateShowsFloatingWindowWhenEnabled() {
+        mockSettingsManager.update { $0.showFloatingWindow = true }
+        coordinator.restoreState()
+        XCTAssertEqual(mockFloatingWindowCoordinator.showCallCount, 1)
+    }
+
+    func testRestoreStateDoesNotShowFloatingWindowWhenDisabled() {
+        mockSettingsManager.update { $0.showFloatingWindow = false }
+        coordinator.restoreState()
+        XCTAssertEqual(mockFloatingWindowCoordinator.showCallCount, 0)
+    }
+
+    // MARK: - Break Completion Notifications
+
+    func testBreakCompletionNotifiesWhenEnabled() {
+        mockSettingsManager.update { $0.showNotifications = true }
+        coordinator.start(intervalType: .shortBreak)
+        mockTimerEngine.simulateCompletion()
+
+        XCTAssertEqual(mockNotificationScheduler.scheduleCompletionCallCount, 1)
+        XCTAssertEqual(mockNotificationScheduler.lastScheduledIntervalType, .shortBreak)
+    }
+
+    func testBreakCompletionDoesNotNotifyWhenDisabled() {
+        mockSettingsManager.update { $0.showNotifications = false }
+        coordinator.start(intervalType: .shortBreak)
+        mockTimerEngine.simulateCompletion()
+
+        XCTAssertEqual(mockNotificationScheduler.scheduleCompletionCallCount, 0)
+    }
 }

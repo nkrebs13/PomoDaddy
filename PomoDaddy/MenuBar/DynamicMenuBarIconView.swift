@@ -52,7 +52,7 @@ final class DynamicMenuBarIconView: NSView {
         // Calculate width based on whether time text is shown
         if let coordinator,
            coordinator.isMenuBarCountdownVisible,
-           coordinator.stateMachine.currentState.isActive
+           coordinator.currentState.isActive
         {
             // Icon + spacing + time text (approximately)
             return NSSize(width: 70, height: Self.iconSize)
@@ -84,12 +84,9 @@ final class DynamicMenuBarIconView: NSView {
 
     /// Updates the icon view to reflect current state.
     func update() {
-        // Invalidate intrinsic content size to trigger relayout
+        // Invalidate intrinsic content size to trigger relayout.
+        // rootView replacement is unnecessary — @Observable drives re-renders automatically.
         invalidateIntrinsicContentSize()
-
-        // Update the hosting view's root view
-        guard let coordinator else { return }
-        hostingView?.rootView = MenuBarIconContent(coordinator: coordinator)
     }
 }
 
@@ -115,17 +112,17 @@ struct MenuBarIconContent: View {
 
     /// The current timer state.
     private var timerState: TimerState {
-        coordinator.stateMachine.currentState
+        coordinator.currentState
     }
 
     /// The current progress (0-1).
     private var progress: Double {
-        coordinator.stateMachine.progress
+        coordinator.progress
     }
 
     /// The formatted remaining time.
     private var formattedTime: String {
-        coordinator.stateMachine.formattedTime
+        coordinator.formattedTime
     }
 
     /// Whether time text should be shown.
@@ -134,20 +131,9 @@ struct MenuBarIconContent: View {
     }
 
     /// The accent color for the current state.
+    /// Menu bar tomato stays red even when idle (unlike floating window which grays out).
     private var accentColor: Color {
-        switch timerState {
-        case .idle:
-            .tomatoRed
-        case .running(let type), .paused(let type):
-            switch type {
-            case .work:
-                .tomatoRed
-            case .shortBreak:
-                .mint
-            case .longBreak:
-                .lavender
-            }
-        }
+        timerState.isActive ? timerState.accentColor : .tomatoRed
     }
 
     /// The background track color.

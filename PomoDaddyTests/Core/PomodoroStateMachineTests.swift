@@ -501,4 +501,64 @@ final class PomodoroStateMachineTests: XCTestCase {
         XCTAssertEqual(stateMachine.currentState, .idle)
         XCTAssertEqual(stateMachine.completedPomodorosInCycle, 0)
     }
+
+    // MARK: - Additional Edge Cases
+
+    func testResumeWhileRunningIsNoOp() {
+        stateMachine.send(.start(.work))
+        let stateBefore = stateMachine.currentState
+        stateMachine.send(.resume)
+        XCTAssertEqual(stateMachine.currentState, stateBefore)
+    }
+
+    func testDoubleStartResetsTimer() {
+        stateMachine.send(.start(.work))
+        stateMachine.send(.start(.shortBreak))
+        XCTAssertEqual(stateMachine.currentState, .running(.shortBreak))
+    }
+
+    func testCycleCompletionCallbackFiresAfterLongBreak() {
+        var callbackFired = false
+        stateMachine.onCycleComplete = { _ in callbackFired = true }
+
+        // Complete enough work sessions to reach long break
+        for _ in 0 ..< stateMachine.settings.pomodorosUntilLongBreak {
+            stateMachine.send(.start(.work))
+            stateMachine.send(.complete)
+        }
+
+        // Complete the long break
+        stateMachine.send(.start(.longBreak))
+        stateMachine.send(.complete)
+
+        XCTAssertTrue(callbackFired)
+    }
+
+    func testStateChangeCallbackReceivesOldAndNewState() {
+        var receivedOld: TimerState?
+        var receivedNew: TimerState?
+        stateMachine.onStateChange = { old, new in
+            receivedOld = old
+            receivedNew = new
+        }
+
+        stateMachine.send(.start(.work))
+
+        XCTAssertEqual(receivedOld, .idle)
+        XCTAssertEqual(receivedNew, .running(.work))
+    }
+
+    func testNextIntervalTypeAfterWorkBeforeLongBreak() {
+        // With pomodorosUntilLongBreak = 2, after 1 work session
+        // the next should be short break
+        stateMachine.send(.start(.work))
+        let nextType = stateMachine.nextIntervalType()
+        XCTAssertEqual(nextType, .shortBreak)
+    }
+
+    func testFormattedTimeFromStateMachine() {
+        // Just verify it returns a non-empty string
+        let time = stateMachine.formattedTime
+        XCTAssertFalse(time.isEmpty)
+    }
 }

@@ -8,7 +8,6 @@
 import AppKit
 import Combine
 import Foundation
-import Observation
 
 /// Manages application lifecycle events to ensure proper state persistence and timer accuracy.
 ///
@@ -27,7 +26,6 @@ import Observation
 ///     onRestore: { timerEngine.restoreState() }
 /// )
 /// ```
-@Observable
 final class AppLifecycleHandler {
     // MARK: - Properties
 
@@ -140,7 +138,7 @@ final class AppLifecycleHandler {
 
         // Small delay to let the system stabilize after wake
         Task { @MainActor in
-            try await Task.sleep(nanoseconds: 500_000_000)
+            try? await Task.sleep(nanoseconds: 500_000_000)
             onRestore()
         }
     }

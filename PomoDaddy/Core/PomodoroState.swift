@@ -5,7 +5,7 @@
 //  Core state definitions for the Pomodoro timer.
 //
 
-import SwiftUI
+import Foundation
 
 // MARK: - Interval Type
 
@@ -28,18 +28,6 @@ enum IntervalType: String, Codable, CaseIterable, Identifiable {
             "Short Break"
         case .longBreak:
             "Long Break"
-        }
-    }
-
-    /// Accent color associated with this interval type.
-    var accentColor: Color {
-        switch self {
-        case .work:
-            .tomatoRed
-        case .shortBreak:
-            .mint
-        case .longBreak:
-            .lavender
         }
     }
 
@@ -110,16 +98,6 @@ enum TimerState: Equatable {
             type.displayName
         case .paused(let type):
             "\(type.displayName) (Paused)"
-        }
-    }
-
-    /// Accent color for the current state.
-    var accentColor: Color {
-        switch self {
-        case .idle:
-            .gray
-        case .running(let type), .paused(let type):
-            type.accentColor
         }
     }
 
