@@ -7,14 +7,11 @@ final class SettingsManagerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        // Use a separate suite for testing
-        mockDefaults = UserDefaults(suiteName: "com.pomodaddy.tests")!
-        mockDefaults.removePersistentDomain(forName: "com.pomodaddy.tests")
+        mockDefaults = UserDefaults(suiteName: "test.settings.\(UUID())")!
         settingsManager = SettingsManager(defaults: mockDefaults)
     }
 
     override func tearDown() {
-        mockDefaults.removePersistentDomain(forName: "com.pomodaddy.tests")
         settingsManager = nil
         mockDefaults = nil
         super.tearDown()

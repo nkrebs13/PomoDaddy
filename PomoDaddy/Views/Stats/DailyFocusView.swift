@@ -65,6 +65,9 @@ struct DailyFocusView: View {
             loadTodayStats()
             animateOnAppear()
         }
+        .onChange(of: coordinator.totalCompletedToday) { _, _ in
+            loadTodayStats()
+        }
     }
 
     // MARK: - Subviews

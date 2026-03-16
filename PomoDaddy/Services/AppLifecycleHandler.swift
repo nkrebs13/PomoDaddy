@@ -137,7 +137,7 @@ final class AppLifecycleHandler {
 
         // Small delay to let the system stabilize after wake
         Task { @MainActor in
-            try await Task.sleep(nanoseconds: 500_000_000)
+            try? await Task.sleep(nanoseconds: 500_000_000)
             onRestore()
         }
     }
