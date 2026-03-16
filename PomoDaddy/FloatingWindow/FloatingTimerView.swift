@@ -35,8 +35,14 @@ struct FloatingTimerView: View {
 
     // MARK: - Constants
 
-    private let expandedSize = CGSize(width: 280, height: 320)
-    private let compactSize = CGSize(width: 180, height: 180)
+    private let expandedSize = CGSize(
+        width: AppConstants.FloatingWindow.defaultWidth,
+        height: AppConstants.FloatingWindow.defaultHeight
+    )
+    private let compactSize = CGSize(
+        width: AppConstants.FloatingWindow.compactWidth,
+        height: AppConstants.FloatingWindow.compactHeight
+    )
     private let timerRingSize: CGFloat = 160
     private let compactTimerRingSize: CGFloat = 120
 
@@ -106,7 +112,7 @@ struct FloatingTimerView: View {
                 isHovering = hovering
             }
         }
-        .onChange(of: coordinator.stateMachine.completedPomodorosInCycle) { oldValue, newValue in
+        .onChange(of: coordinator.completedPomodorosInCycle) { oldValue, newValue in
             // Trigger confetti when a pomodoro completes (count increases)
             if newValue > oldValue {
                 confettiTrigger += 1
@@ -130,7 +136,7 @@ struct FloatingTimerView: View {
 
     /// Returns the appropriate gradient based on current timer state.
     private var stateGradient: LinearGradient {
-        switch coordinator.stateMachine.currentState {
+        switch coordinator.currentState {
         case .idle:
             LinearGradient(
                 colors: [.gray.opacity(0.3), .gray.opacity(0.1)],
@@ -157,24 +163,24 @@ struct FloatingTimerView: View {
             ZStack {
                 // Timer ring (to be created as TimerRingView)
                 TimerRingView(
-                    progress: coordinator.stateMachine.progress,
+                    progress: coordinator.progress,
                     ringColor: currentAccentColor,
                     size: isCompact ? compactTimerRingSize : timerRingSize
                 )
 
                 // Countdown text in center
                 VStack(spacing: 2) {
-                    Text(coordinator.stateMachine.formattedTime)
+                    Text(coordinator.formattedTime)
                         .font(.system(size: isCompact ? 28 : 48, weight: .bold, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(currentAccentColor)
                         .contentTransition(.numericText())
-                        .animation(AnimationConstants.timerTick, value: coordinator.stateMachine.formattedTime)
+                        .animation(AnimationConstants.timerTick, value: coordinator.formattedTime)
                 }
             }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(
-                "\(coordinator.stateMachine.currentState.displayName), \(coordinator.stateMachine.formattedTime) remaining, \(Int(coordinator.stateMachine.progress * 100)) percent complete"
+                "\(coordinator.currentState.displayName), \(coordinator.formattedTime) remaining, \(Int(coordinator.progress * 100)) percent complete"
             )
             .accessibilityAddTraits(.updatesFrequently)
 
@@ -182,18 +188,18 @@ struct FloatingTimerView: View {
             Text(modeLabelText)
                 .font(.system(size: isCompact ? 12 : 14, weight: .semibold, design: .rounded))
                 .foregroundStyle(.secondary)
-                .animation(AnimationConstants.modeTransition, value: coordinator.stateMachine.currentState)
+                .animation(AnimationConstants.modeTransition, value: coordinator.currentState)
         }
     }
 
     /// Returns the display text for current mode.
     private var modeLabelText: String {
-        coordinator.stateMachine.currentState.displayName
+        coordinator.currentState.displayName
     }
 
     /// Returns the accent color based on current state.
     private var currentAccentColor: Color {
-        switch coordinator.stateMachine.currentState {
+        switch coordinator.currentState {
         case .idle:
             .gray
         case .running(let type), .paused(let type):
@@ -219,13 +225,13 @@ struct FloatingTimerView: View {
                 action: {
                     coordinator.reset()
                 },
-                isEnabled: coordinator.stateMachine.currentState.isActive
+                isEnabled: coordinator.currentState.isActive
             )
 
             // Play / Pause button
             ControlButton(
-                icon: coordinator.stateMachine.currentState.playPauseIcon,
-                accessibilityLabel: coordinator.stateMachine.currentState.playPauseLabel,
+                icon: coordinator.currentState.playPauseIcon,
+                accessibilityLabel: coordinator.currentState.playPauseLabel,
                 action: {
                     coordinator.togglePlayPause()
                 },
@@ -240,7 +246,7 @@ struct FloatingTimerView: View {
                 action: {
                     coordinator.skip()
                 },
-                isEnabled: coordinator.stateMachine.currentState.isActive
+                isEnabled: coordinator.currentState.isActive
             )
         }
     }
@@ -249,21 +255,21 @@ struct FloatingTimerView: View {
 
     private var sessionProgressView: some View {
         HStack(spacing: 8) {
-            ForEach(0 ..< coordinator.stateMachine.settings.pomodorosUntilLongBreak, id: \.self) { index in
+            ForEach(0 ..< coordinator.pomodorosUntilLongBreak, id: \.self) { index in
                 Circle()
-                    .fill(index < coordinator.stateMachine.completedPomodorosInCycle
+                    .fill(index < coordinator.completedPomodorosInCycle
                         ? currentAccentColor
                         : Color.gray.opacity(0.3))
                     .frame(width: 8, height: 8)
                     .animation(
                         AnimationConstants.modeTransition,
-                        value: coordinator.stateMachine.completedPomodorosInCycle
+                        value: coordinator.completedPomodorosInCycle
                     )
             }
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(
-            "\(coordinator.stateMachine.completedPomodorosInCycle) of \(coordinator.stateMachine.settings.pomodorosUntilLongBreak) pomodoros completed in current cycle"
+            "\(coordinator.completedPomodorosInCycle) of \(coordinator.pomodorosUntilLongBreak) pomodoros completed in current cycle"
         )
         .padding(.top, 4)
     }

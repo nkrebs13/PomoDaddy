@@ -52,7 +52,7 @@ final class DynamicMenuBarIconView: NSView {
         // Calculate width based on whether time text is shown
         if let coordinator,
            coordinator.isMenuBarCountdownVisible,
-           coordinator.stateMachine.currentState.isActive
+           coordinator.currentState.isActive
         {
             // Icon + spacing + time text (approximately)
             return NSSize(width: 70, height: Self.iconSize)
@@ -115,17 +115,17 @@ struct MenuBarIconContent: View {
 
     /// The current timer state.
     private var timerState: TimerState {
-        coordinator.stateMachine.currentState
+        coordinator.currentState
     }
 
     /// The current progress (0-1).
     private var progress: Double {
-        coordinator.stateMachine.progress
+        coordinator.progress
     }
 
     /// The formatted remaining time.
     private var formattedTime: String {
-        coordinator.stateMachine.formattedTime
+        coordinator.formattedTime
     }
 
     /// Whether time text should be shown.

@@ -8,8 +8,6 @@
 import AppKit
 import Combine
 import Foundation
-import Observation
-
 /// Manages application lifecycle events to ensure proper state persistence and timer accuracy.
 ///
 /// `AppLifecycleHandler` observes system notifications for events that require
@@ -27,7 +25,6 @@ import Observation
 ///     onRestore: { timerEngine.restoreState() }
 /// )
 /// ```
-@Observable
 final class AppLifecycleHandler {
     // MARK: - Properties
 
