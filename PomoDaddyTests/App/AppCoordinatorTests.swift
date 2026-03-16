@@ -171,7 +171,7 @@ final class AppCoordinatorTests: XCTestCase {
         mockTimerEngine.simulateCompletion()
 
         // Allow async work to complete
-        await assertEventually(timeout: 2.0) {
+        await assertEventually(timeout: 0.5) {
             self.mockSessionCoordinator.completeSessionCallCount == 1
         }
     }
@@ -297,5 +297,39 @@ final class AppCoordinatorTests: XCTestCase {
         mockTimerEngine.simulateCompletion()
 
         XCTAssertEqual(mockNotificationScheduler.scheduleCompletionCallCount, 0)
+    }
+
+    // MARK: - Error Path & Multi-Cycle Tests
+
+    func testCoordinatorFunctionsAfterWorkCompletion() {
+        coordinator.start()
+        mockTimerEngine.simulateCompletion()
+
+        // After completion, coordinator may auto-start break or go idle
+        // (depends on default settings). Either way, reset and verify clean state.
+        coordinator.reset()
+        XCTAssertEqual(coordinator.currentState, .idle)
+
+        // Coordinator should still be fully functional after reset
+        coordinator.start()
+        XCTAssertTrue(coordinator.currentState.isRunning)
+        coordinator.pause()
+        XCTAssertTrue(coordinator.currentState.isPaused)
+        coordinator.resume()
+        XCTAssertTrue(coordinator.currentState.isRunning)
+    }
+
+    func testResetAfterCompletionLeavesCleanState() async {
+        coordinator.start()
+        mockTimerEngine.simulateCompletion()
+
+        await assertEventually(timeout: 0.5) {
+            self.mockSessionCoordinator.completeSessionCallCount == 1
+        }
+
+        coordinator.reset()
+        XCTAssertEqual(coordinator.currentState, .idle)
+        XCTAssertFalse(coordinator.isRunning)
+        XCTAssertEqual(mockSessionCoordinator.clearSessionCallCount, 1)
     }
 }

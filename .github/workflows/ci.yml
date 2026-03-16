@@ -25,6 +25,9 @@ jobs:
       - name: Run SwiftFormat check
         run: swiftformat --lint .
 
+      - name: Security scan
+        run: bash scripts/security-scan.sh
+
       - name: Build
         run: |
           xcodebuild build \
