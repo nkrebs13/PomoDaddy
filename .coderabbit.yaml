@@ -1,0 +1,29 @@
+# CodeRabbit — PomoDaddy (Swift/SwiftUI pomodoro app)
+language: en-US
+
+reviews:
+  profile: assertive
+  auto_review:
+    enabled: true
+    drafts: true
+  request_changes_workflow: true
+  review_effort: 4
+  collapse_walkthrough: true
+  poem: false
+
+  path_instructions:
+    - path: "PomoDaddy/**"
+      instructions: |
+        SwiftUI pomodoro timer app. Check for:
+        - Timer accuracy (use DispatchSourceTimer, not Timer.scheduledTimer)
+        - Background execution (BGTaskScheduler for timer continuation)
+        - Memory management (weak self in closures)
+        - SwiftUI state management (@State, @StateObject, @ObservedObject usage)
+        - Notification scheduling correctness
+
+  tools:
+    actionlint:
+      enabled: true
+
+chat:
+  auto_reply: true
