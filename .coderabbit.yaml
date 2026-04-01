@@ -1,5 +1,8 @@
 # CodeRabbit — PomoDaddy (Swift/SwiftUI pomodoro app)
 language: en-US
+tone_instructions: >
+  Be direct and concise. No pleasantries. Focus on bugs, security,
+  performance, and correctness. Flag deferred work (TODOs without issues).
 
 reviews:
   profile: assertive
@@ -10,6 +13,13 @@ reviews:
   review_effort: 4
   collapse_walkthrough: true
   poem: false
+  slop_detection:
+    enabled: true
+  path_filters:
+    - "!**/*.lock"
+    - "!**/generated/**"
+    - "!**/*.min.js"
+    - "!**/*.min.css"
 
   path_instructions:
     - path: "PomoDaddy/**"
@@ -27,3 +37,13 @@ reviews:
 
 chat:
   auto_reply: true
+
+knowledge_base:
+  learnings:
+    scope: local
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "CLAUDE.md"
+  web_search:
+    enabled: true
